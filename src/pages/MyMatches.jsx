@@ -90,6 +90,18 @@ export default function MyMatches() {
 
   const handleDeleteMatch = async (matchId, targetProfile) => {
     try {
+      // Delete all messages between the two users
+      const allMessages = await base44.entities.Message.filter({});
+      const messagesToDelete = allMessages.filter(
+        msg => (msg.sender_id === myProfile.id && msg.receiver_id === targetProfile.id) ||
+                (msg.sender_id === targetProfile.id && msg.receiver_id === myProfile.id)
+      );
+
+      for (const msg of messagesToDelete) {
+        await base44.entities.Message.delete(msg.id);
+      }
+
+      // Delete the match
       await base44.entities.Match.delete(matchId);
       setMatchProfiles(prev => prev.filter(item => item.match.id !== matchId));
       setMatches(prev => prev.filter(m => m.id !== matchId));
