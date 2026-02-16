@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { Users, Heart, Wine, Trash2, Ban, RefreshCw, Shield } from "lucide-react";
+import { Users, Heart, Wine, Trash2, Ban, RefreshCw, Shield, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +26,9 @@ export default function Admin() {
   const [swipes, setSwipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordVerified, setPasswordVerified] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -120,6 +124,63 @@ export default function Admin() {
         <Shield className="w-16 h-16 text-red-400 mb-4" />
         <h1 className="text-2xl font-bold text-white mb-2">גישה נדחתה</h1>
         <p className="text-white/40">עמוד זה מיועד למנהלים בלבד</p>
+      </div>
+    );
+  }
+
+  if (!passwordVerified) {
+    const handlePasswordSubmit = () => {
+      if (password === "Roy998!") {
+        setPasswordVerified(true);
+        toast({ title: "סיסמה נכונה!", duration: 1500 });
+      } else {
+        toast({ title: "סיסמה שגויה", variant: "destructive", duration: 2000 });
+        setPassword("");
+      }
+    };
+
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0F0F0F] px-6">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-sm"
+        >
+          <div className="text-center mb-8">
+            <Shield className="w-16 h-16 text-[#D4AF37] mb-4 mx-auto" />
+            <h1 className="text-2xl font-bold text-white mb-2">איזור מנהל</h1>
+            <p className="text-white/40">הזן סיסמה כדי להמשיך</p>
+          </div>
+
+          <Card className="bg-[#1A1A1A] border-[#333]">
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && handlePasswordSubmit()}
+                    placeholder="הזן סיסמה"
+                    className="bg-[#252525] border-[#444] text-white pr-10"
+                  />
+                  <button
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <Button
+                  onClick={handlePasswordSubmit}
+                  className="w-full bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold hover:opacity-90"
+                >
+                  כניסה
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }
