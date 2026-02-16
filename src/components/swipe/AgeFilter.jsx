@@ -52,18 +52,33 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
 
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="fixed top-20 right-4 left-4 mx-auto max-w-[280px] bg-[#1A1A1A] border border-[#333] rounded-2xl p-5 z-50 shadow-2xl"
-            dir="rtl"
-          >
-            <div className="flex justify-end items-center mb-4">
-              <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              className="fixed top-20 right-4 left-4 mx-auto max-w-[280px] bg-[#1A1A1A] border border-[#333] rounded-2xl p-5 z-50 shadow-2xl"
+              dir="rtl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-end items-center mb-4">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpen(false);
+                  }} 
+                  className="text-white/40 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
             {/* Location filter */}
             <div className="mb-4">
@@ -121,7 +136,8 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
                 נקה סינון
               </button>
             )}
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>
