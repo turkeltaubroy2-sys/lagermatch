@@ -66,23 +66,6 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
               </button>
             </div>
 
-            {/* Presets */}
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {PRESETS.map(p => (
-                <button
-                  key={p.label}
-                  onClick={() => applyPreset(p)}
-                  className={`px-3 py-2 rounded-xl text-sm transition-all ${
-                    ageRange.min === p.min && ageRange.max === p.max
-                      ? "bg-[#D4AF37] text-[#0F0F0F] font-semibold"
-                      : "bg-[#252525] text-white/60 hover:bg-[#333]"
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-
             {/* Location filter */}
             <div className="mb-4">
               <label className="text-xs text-white/60 mb-2 block">איזור מגורים</label>
