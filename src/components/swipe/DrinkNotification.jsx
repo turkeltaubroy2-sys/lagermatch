@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
 export default function DrinkNotification({ show, senderName, onAccept, onDecline, onClose }) {
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [show, onClose]);
+
   if (!show) return null;
 
   const handleClose = (e) => {

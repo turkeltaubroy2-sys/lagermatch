@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { X, Wine } from "lucide-react";
 
 export default function MatchPopup({ show, matchProfile, myProfile, onClose, onSendDrink }) {
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [show, onClose]);
+
   return (
     <AnimatePresence>
       {show && matchProfile && myProfile && (
