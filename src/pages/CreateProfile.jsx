@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import QRCode from "@/components/QRCode";
 
 const BAD_WORDS = ["מילהגסה1", "מילהגסה2"]; // Basic filter
 
@@ -145,6 +146,13 @@ export default function CreateProfile() {
         </div>
 
         <p className="text-center text-white/20 text-xs mb-6">💍 רועי ויעל</p>
+
+        {/* QR Code */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-white p-3 rounded-xl">
+            <QRCode value={window.location.origin} size={150} />
+          </div>
+        </div>
 
         {/* Photo upload */}
         <div className="flex justify-center mb-8">
