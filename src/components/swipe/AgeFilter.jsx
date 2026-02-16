@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SlidersHorizontal, X } from "lucide-react";
 
 const PRESETS = [
@@ -11,7 +12,7 @@ const PRESETS = [
   { label: "35–45", min: 35, max: 45 },
 ];
 
-export default function AgeFilter({ ageRange, onChangeRange }) {
+export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onChangeLocation }) {
   const [open, setOpen] = useState(false);
   const [custom, setCustom] = useState({ min: ageRange.min, max: ageRange.max });
 
@@ -30,9 +31,10 @@ export default function AgeFilter({ ageRange, onChangeRange }) {
   const clearFilter = () => {
     setCustom({ min: 18, max: 60 });
     onChangeRange(18, 60);
+    onChangeLocation("all");
   };
 
-  const isFiltered = ageRange.min !== 18 || ageRange.max !== 60;
+  const isFiltered = ageRange.min !== 18 || ageRange.max !== 60 || locationFilter !== "all";
 
   return (
     <div className="relative">
@@ -78,6 +80,22 @@ export default function AgeFilter({ ageRange, onChangeRange }) {
                   {p.label}
                 </button>
               ))}
+            </div>
+
+            {/* Location filter */}
+            <div className="mb-4">
+              <label className="text-xs text-white/60 mb-2 block">איזור מגורים</label>
+              <Select value={locationFilter} onValueChange={onChangeLocation}>
+                <SelectTrigger className="bg-[#252525] border-[#444] text-white h-10 rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1A1A1A] border-[#333]">
+                  <SelectItem value="all" className="text-white">כל האיזורים</SelectItem>
+                  <SelectItem value="tel_aviv" className="text-white">תל אביב</SelectItem>
+                  <SelectItem value="south" className="text-white">דרום</SelectItem>
+                  <SelectItem value="north" className="text-white">צפון</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Custom range */}

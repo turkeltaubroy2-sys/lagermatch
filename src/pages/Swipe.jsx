@@ -20,6 +20,7 @@ export default function Swipe() {
   const [showMatch, setShowMatch] = useState(false);
   const [matchProfile, setMatchProfile] = useState(null);
   const [ageRange, setAgeRange] = useState({ min: 18, max: 60 });
+  const [locationFilter, setLocationFilter] = useState("all");
   const [swipedIds, setSwipedIds] = useState(new Set());
   const [drinkNotif, setDrinkNotif] = useState(null);
   const { toast } = useToast();
@@ -84,8 +85,12 @@ export default function Swipe() {
   };
 
   const filteredProfiles = useMemo(
-    () => profiles.filter(p => p.age >= ageRange.min && p.age <= ageRange.max),
-    [profiles, ageRange]
+    () => profiles.filter(p => 
+      p.age >= ageRange.min && 
+      p.age <= ageRange.max &&
+      (locationFilter === "all" || p.location === locationFilter)
+    ),
+    [profiles, ageRange, locationFilter]
   );
 
   const handleSwipe = useCallback(async (liked) => {
@@ -156,6 +161,10 @@ export default function Swipe() {
     setAgeRange({ min, max });
   }, []);
 
+  const handleLocationChange = useCallback((location) => {
+    setLocationFilter(location);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
@@ -177,10 +186,15 @@ export default function Swipe() {
       <div className="flex items-center justify-between px-5 py-4">
         <div>
           <h1 className="text-xl font-bold shimmer-gold">💍 Match</h1>
-          <p className="text-[10px] text-white/20">איתי ויעל</p>
+          <p className="text-[10px] text-white/20">רועי ויעל</p>
         </div>
         <div className="flex items-center gap-3">
-          <AgeFilter ageRange={ageRange} onChangeRange={handleAgeRangeChange} />
+          <AgeFilter 
+            ageRange={ageRange} 
+            locationFilter={locationFilter}
+            onChangeRange={handleAgeRangeChange}
+            onChangeLocation={handleLocationChange}
+          />
           <Link
             to={createPageUrl("MyMatches")}
             className="relative flex items-center gap-1 px-4 py-2 rounded-full bg-[#1A1A1A] border border-[#333] text-white/60 hover:text-white text-sm transition-all"
@@ -225,20 +239,20 @@ export default function Swipe() {
 
       {/* Action buttons */}
       {currentProfile && (
-        <div className="flex justify-center gap-6 pb-8 px-5">
+        <div className="flex justify-center items-center gap-8 pb-8 px-5">
           <motion.button
-            whileTap={{ scale: 0.85 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe(false)}
-            className="w-16 h-16 rounded-full bg-[#1A1A1A] border-2 border-red-500/30 flex items-center justify-center shadow-lg shadow-red-500/10 hover:bg-red-500/10 transition-all"
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-[#1A1A1A] to-[#252525] border-3 border-red-500/40 flex items-center justify-center shadow-2xl shadow-red-500/20 hover:border-red-500/60 transition-all active:shadow-red-500/40"
           >
-            <X className="w-7 h-7 text-red-400" />
+            <X className="w-10 h-10 text-red-500" strokeWidth={2.5} />
           </motion.button>
           <motion.button
-            whileTap={{ scale: 0.85 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe(true)}
-            className="w-16 h-16 rounded-full bg-[#1A1A1A] border-2 border-green-500/30 flex items-center justify-center shadow-lg shadow-green-500/10 hover:bg-green-500/10 transition-all"
+            className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-2xl shadow-green-500/40 hover:from-green-400 hover:to-green-500 transition-all active:shadow-green-500/60"
           >
-            <Heart className="w-7 h-7 text-green-400" fill="currentColor" />
+            <Heart className="w-12 h-12 text-white" fill="white" strokeWidth={0} />
           </motion.button>
         </div>
       )}
@@ -258,6 +272,7 @@ export default function Swipe() {
         senderName={drinkNotif?.senderName}
         onAccept={() => handleDrinkResponse(true)}
         onDecline={() => handleDrinkResponse(false)}
+        onClose={() => setDrinkNotif(null)}
       />
     </div>
   );

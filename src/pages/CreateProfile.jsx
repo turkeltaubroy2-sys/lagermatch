@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 
 const BAD_WORDS = ["מילהגסה1", "מילהגסה2"]; // Basic filter
 
 export default function CreateProfile() {
-  const [form, setForm] = useState({ first_name: "", age: "", funny_fact: "" });
+  const [form, setForm] = useState({ first_name: "", age: "", location: "", funny_fact: "", favorite_drink: "" });
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [errors, setErrors] = useState({});
@@ -53,10 +54,9 @@ export default function CreateProfile() {
 
   const checkFunnyFact = (text) => {
     const lowerText = text.toLowerCase();
-    // Check for bride/groom name mentions (bonus feature)
-    const brideGroomNames = ["חתן", "כלה"];
-    const hasMention = brideGroomNames.some(name => lowerText.includes(name));
-    setShowBrideGroom(hasMention);
+    // Check for specific names
+    const hasRoeiYael = lowerText.includes("רועיקי") || lowerText.includes("יעלי");
+    setShowBrideGroom(hasRoeiYael);
   };
 
   const validate = () => {
@@ -67,6 +67,8 @@ export default function CreateProfile() {
     const age = parseInt(form.age);
     if (!form.age) newErrors.age = "גיל הוא שדה חובה";
     else if (isNaN(age) || age < 18 || age > 60) newErrors.age = "גיל חייב להיות בין 18 ל-60";
+
+    if (!form.location) newErrors.location = "איזור מגורים הוא שדה חובה";
 
     if (!photo) newErrors.photo = "תמונה היא שדה חובה";
 
@@ -97,6 +99,8 @@ export default function CreateProfile() {
     await base44.entities.Profile.create({
       first_name: form.first_name.trim(),
       age: parseInt(form.age),
+      location: form.location,
+      favorite_drink: form.favorite_drink.trim() || undefined,
       photo_url: file_url,
       funny_fact: form.funny_fact.trim(),
       device_id: deviceId,
@@ -122,7 +126,7 @@ export default function CreateProfile() {
           <div className="w-6" />
         </div>
 
-        <p className="text-center text-white/20 text-xs mb-6">💍 איתי ויעל</p>
+        <p className="text-center text-white/20 text-xs mb-6">💍 רועי ויעל</p>
 
         {/* Photo upload */}
         <div className="flex justify-center mb-8">
@@ -181,7 +185,7 @@ export default function CreateProfile() {
               max={60}
               value={form.age}
               onChange={(e) => setForm({ ...form, age: e.target.value })}
-              placeholder="כמה את/ה?"
+              placeholder="מה הגיל שלך?"
               className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right"
             />
             {errors.age && (
@@ -189,6 +193,35 @@ export default function CreateProfile() {
                 <AlertCircle className="w-3 h-3" /> {errors.age}
               </p>
             )}
+          </div>
+
+          <div>
+            <Label className="text-white/70 text-sm mb-2 block">איזור מגורים</Label>
+            <Select value={form.location} onValueChange={(value) => setForm({ ...form, location: value })}>
+              <SelectTrigger className="bg-[#1A1A1A] border-[#333] text-white h-12 rounded-xl">
+                <SelectValue placeholder="איפה את/ה גר/ה?" />
+              </SelectTrigger>
+              <SelectContent className="bg-[#1A1A1A] border-[#333]">
+                <SelectItem value="tel_aviv" className="text-white">תל אביב</SelectItem>
+                <SelectItem value="south" className="text-white">דרום</SelectItem>
+                <SelectItem value="north" className="text-white">צפון</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.location && (
+              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" /> {errors.location}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-white/70 text-sm mb-2 block">משקה אהוב (אופציונלי)</Label>
+            <Input
+              value={form.favorite_drink}
+              onChange={(e) => setForm({ ...form, favorite_drink: e.target.value })}
+              placeholder="מה תרצה לשתות?"
+              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right"
+            />
           </div>
 
           <div>

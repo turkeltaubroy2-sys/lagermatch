@@ -43,7 +43,7 @@ export default function MatchPopup({ show, matchProfile, myProfile, onClose, onS
             <p className="text-white/50 text-sm mb-2">
               לכו למצוא אחד את השנייה על הרחבה 💃🕺
             </p>
-            <p className="text-white/20 text-xs mb-6">💍 איתי ויעל</p>
+            <p className="text-white/20 text-xs mb-6">💍 רועי ויעל</p>
 
             {/* Both profiles */}
             <div className="flex items-center justify-center gap-4 mb-8">

@@ -1,8 +1,9 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
-export default function DrinkNotification({ show, senderName, onAccept, onDecline }) {
+export default function DrinkNotification({ show, senderName, onAccept, onDecline, onClose }) {
   return (
     <AnimatePresence>
       {show && (
@@ -11,14 +12,22 @@ export default function DrinkNotification({ show, senderName, onAccept, onDeclin
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onClick={onClose}
         >
           <motion.div
-            className="w-full max-w-sm bg-[#1A1A1A] border border-[#D4AF37]/30 rounded-3xl p-6 text-center"
+            className="w-full max-w-sm bg-[#1A1A1A] border border-[#D4AF37]/30 rounded-3xl p-6 text-center relative"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", damping: 20 }}
+            onClick={(e) => e.stopPropagation()}
           >
+            <button
+              onClick={onClose}
+              className="absolute top-4 left-4 text-white/40 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
             <div className="text-5xl mb-3">🍸</div>
             <h3 className="text-xl font-bold text-white mb-1">
               מישהו רוצה לשלוח לך משקה 😉
