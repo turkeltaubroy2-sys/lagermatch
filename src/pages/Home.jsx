@@ -10,6 +10,7 @@ import QRCode from "@/components/QRCode";
 export default function Home() {
   const [hasProfile, setHasProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showQR, setShowQR] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -131,12 +132,26 @@ export default function Home() {
           רועי ויעל ❤️
         </p>
 
-        <div className="mt-8 pt-8 border-t border-white/20 flex flex-col items-center">
-          <p className="text-sm text-white/60 mb-4">סרוק כדי להצטרף</p>
-          <div className="bg-white p-3 rounded-xl">
-            <QRCode value={window.location.origin} size={150} />
-          </div>
-        </div>
+        {showQR && (
+          <motion.div
+            className="mt-8 pt-8 border-t border-white/20 flex flex-col items-center"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <p className="text-sm text-white/60 mb-4">סרוק כדי להצטרף</p>
+            <div className="bg-white p-3 rounded-xl">
+              <QRCode value={window.location.origin} size={150} />
+            </div>
+          </motion.div>
+        )}
+
+        <Button
+          onClick={() => setShowQR(!showQR)}
+          variant="outline"
+          className="mt-6 border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-xl"
+        >
+          {showQR ? "הסתר QR Code" : "📱 הצג QR Code"}
+        </Button>
         </motion.div>
         </div>
         );
