@@ -50,14 +50,6 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
-      {/* Admin link (ring) */}
-      <Link 
-        to={createPageUrl("Admin")} 
-        className="absolute top-4 right-4 z-50 text-5xl hover:opacity-80 transition-opacity"
-      >
-        💍
-      </Link>
-
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl" />
