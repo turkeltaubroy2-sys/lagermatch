@@ -77,10 +77,6 @@ export default function MyMatches() {
       await base44.entities.Match.delete(matchId);
       setMatchProfiles(prev => prev.filter(item => item.match.id !== matchId));
       setMatches(prev => prev.filter(m => m.id !== matchId));
-      toast({
-        title: "ההתאמה הוסרה",
-        description: `הוסרת את ההתאמה עם ${targetProfile.first_name}`,
-      });
     } catch (error) {
       // Match already deleted, just update UI
       setMatchProfiles(prev => prev.filter(item => item.match.id !== matchId));
