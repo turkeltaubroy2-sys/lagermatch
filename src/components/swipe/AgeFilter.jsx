@@ -59,21 +59,20 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
             className="fixed top-20 right-4 left-4 mx-auto max-w-[280px] bg-[#1A1A1A] border border-[#333] rounded-2xl p-5 z-50 shadow-2xl"
             dir="rtl"
           >
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-end items-center mb-4">
               <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white">
                 <X className="w-4 h-4" />
               </button>
-              <h3 className="text-white font-semibold">סינון</h3>
             </div>
 
             {/* Location filter */}
             <div className="mb-4">
               <label className="text-xs text-white/60 mb-2 block text-right">איזור מגורים</label>
               <Select value={locationFilter} onValueChange={onChangeLocation}>
-                <SelectTrigger className="bg-[#252525] border-[#444] text-white h-10 rounded-xl">
+                <SelectTrigger className="bg-[#252525] border-[#444] text-white h-10 rounded-xl text-right">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1A1A1A] border-[#333]">
+                <SelectContent className="bg-[#1A1A1A] border-[#333]" align="end">
                   <SelectItem value="all" className="text-white">כל האיזורים</SelectItem>
                   <SelectItem value="tel_aviv" className="text-white">תל אביב</SelectItem>
                   <SelectItem value="south" className="text-white">דרום</SelectItem>
