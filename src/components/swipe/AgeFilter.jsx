@@ -60,15 +60,15 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
             dir="rtl"
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white font-semibold">סינון לפי גיל</h3>
               <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white">
                 <X className="w-4 h-4" />
               </button>
+              <h3 className="text-white font-semibold">סינון</h3>
             </div>
 
             {/* Location filter */}
             <div className="mb-4">
-              <label className="text-xs text-white/60 mb-2 block">איזור מגורים</label>
+              <label className="text-xs text-white/60 mb-2 block text-right">איזור מגורים</label>
               <Select value={locationFilter} onValueChange={onChangeLocation}>
                 <SelectTrigger className="bg-[#252525] border-[#444] text-white h-10 rounded-xl">
                   <SelectValue />
@@ -81,6 +81,9 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Age range title */}
+            <label className="text-xs text-white/60 mb-2 block text-right">גיל</label>
 
             {/* Custom range */}
             <div className="flex items-center gap-3 mb-4">
