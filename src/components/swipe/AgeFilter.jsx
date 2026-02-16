@@ -56,7 +56,8 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute top-12 left-0 right-0 min-w-[280px] bg-[#1A1A1A] border border-[#333] rounded-2xl p-5 z-50 shadow-2xl"
+            className="absolute top-12 right-0 w-[280px] bg-[#1A1A1A] border border-[#333] rounded-2xl p-5 z-50 shadow-2xl"
+            dir="rtl"
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-white font-semibold">סינון לפי גיל</h3>
