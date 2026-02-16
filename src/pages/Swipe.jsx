@@ -390,20 +390,24 @@ export default function Swipe() {
 
       {/* Action buttons */}
       {currentProfile && (
-        <div className="flex justify-center items-center gap-8 pb-8 px-5">
+        <div className="flex justify-center items-center gap-6 pb-8 px-5">
           <motion.button
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.85 }}
+            whileHover={{ scale: 1.05 }}
             onClick={() => handleSwipe(false)}
-            className="w-16 h-16 rounded-full bg-gradient-to-br from-[#1A1A1A] to-[#252525] border-3 border-red-500/40 flex items-center justify-center shadow-2xl shadow-red-500/20 hover:border-red-500/60 transition-all active:shadow-red-500/40"
+            className="relative w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_10px_40px_rgba(239,68,68,0.3)] transition-all duration-300 group"
           >
-            <X className="w-8 h-8 text-red-500" strokeWidth={2.5} />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white to-gray-100" />
+            <X className="w-7 h-7 text-[#EF4444] relative z-10 group-hover:scale-110 transition-transform" strokeWidth={3} />
           </motion.button>
+
           <motion.button
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.85 }}
+            whileHover={{ scale: 1.05 }}
             onClick={() => handleSwipe(true)}
-            className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-2xl shadow-green-500/40 hover:from-green-400 hover:to-green-500 transition-all active:shadow-green-500/60"
+            className="relative w-[70px] h-[70px] rounded-full bg-gradient-to-br from-[#FF6B9D] to-[#FE3C72] flex items-center justify-center shadow-[0_8px_30px_rgba(254,60,114,0.4)] hover:shadow-[0_10px_40px_rgba(254,60,114,0.6)] transition-all duration-300 group"
           >
-            <Heart className="w-8 h-8 text-white" fill="white" strokeWidth={0} />
+            <Heart className="w-7 h-7 text-white relative z-10 group-hover:scale-110 transition-transform" fill="white" strokeWidth={0} />
           </motion.button>
         </div>
       )}
