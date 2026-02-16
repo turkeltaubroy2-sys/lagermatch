@@ -103,7 +103,7 @@ export default function Swipe() {
 
     const me = myProfiles[0];
     if (me.is_blocked) {
-      toast({ title: "הפרופיל שלך נחסם", variant: "destructive" });
+      toast({ title: "הפרופיל שלך נחסם", variant: "destructive", duration: 2000 });
       navigate(createPageUrl("Home"));
       return;
     }
@@ -177,6 +177,7 @@ export default function Swipe() {
     toast({
       title: "🍸 המשקה נשלח!",
       description: `שלחת משקה ל${targetProfile.first_name}`,
+      duration: 2000,
     });
     await base44.entities.Drink.create({
       sender_id: myProfile.id,
@@ -190,6 +191,7 @@ export default function Swipe() {
       setDrinkNotif(null);
       toast({
         title: accepted ? "🎉 המשקה בדרך!" : "אולי בפעם הבאה",
+        duration: 2000,
       });
       await base44.entities.Drink.update(drinkNotif.drink.id, {
         status: accepted ? "accepted" : "declined",
@@ -209,14 +211,14 @@ export default function Swipe() {
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
-    toast({ title: "🔄 הרשימה עודכנה" });
+    toast({ title: "🔄 הרשימה עודכנה", duration: 2000 });
   }, [loadData, toast]);
 
   const handleDeleteProfile = useCallback(async () => {
     if (!myProfile) return;
     await base44.entities.Profile.delete(myProfile.id);
     localStorage.removeItem("wedding_device_id");
-    toast({ title: "הפרופיל נמחק בהצלחה" });
+    toast({ title: "הפרופיל נמחק בהצלחה", duration: 2000 });
     navigate(createPageUrl("Home"));
   }, [myProfile, navigate, toast]);
 
