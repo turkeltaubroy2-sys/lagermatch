@@ -80,6 +80,7 @@ export default function MyMatches() {
     toast({
       title: "🍸 המשקה נשלח!",
       description: `שלחת משקה ל${targetProfile.first_name}`,
+      duration: 2000,
     });
   };
 
@@ -103,7 +104,7 @@ export default function MyMatches() {
     setRefreshing(true);
     await loadMatches();
     setRefreshing(false);
-    toast({ title: "🔄 הרשימה עודכנה" });
+    toast({ title: "🔄 הרשימה עודכנה", duration: 2000 });
   };
 
   useEffect(() => {

@@ -109,7 +109,7 @@ export default function CreateProfile() {
     const deviceId = getDeviceId();
     const existing = await base44.entities.Profile.filter({ device_id: deviceId });
     if (existing.length > 0) {
-      toast({ title: "כבר יש לך פרופיל!", variant: "destructive" });
+      toast({ title: "כבר יש לך פרופיל!", variant: "destructive", duration: 2000 });
       navigate(createPageUrl("Swipe"));
       return;
     }
