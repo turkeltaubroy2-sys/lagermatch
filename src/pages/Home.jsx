@@ -94,7 +94,7 @@ export default function Home() {
         </motion.div>
 
         <h1 className="text-4xl font-black mb-3 shimmer-gold">
-          Match לחתונה
+          WedMatch ❤️
         </h1>
 
         <motion.div

@@ -287,7 +287,7 @@ export default function Swipe() {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4">
         <div>
-          <h1 className="text-xl font-bold shimmer-gold">💍 Match</h1>
+          <h1 className="text-xl font-bold shimmer-gold">WedMatch ❤️</h1>
           <p className="text-[10px] text-white/20">רועי ויעל</p>
         </div>
         <div className="flex items-center gap-3">
