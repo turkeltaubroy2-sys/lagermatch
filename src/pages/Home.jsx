@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { Heart, Sparkles, Shield } from "lucide-react";
+import { Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -50,14 +50,6 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
-      {/* Admin button */}
-      <Link 
-        to={createPageUrl("Admin")} 
-        className="absolute top-4 left-4 z-20 text-white/30 hover:text-[#D4AF37] transition-colors"
-      >
-        <Shield className="w-6 h-6" />
-      </Link>
-
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl" />
@@ -92,13 +84,15 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <motion.div
-          className="text-5xl mb-4"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          💍
-        </motion.div>
+        <Link to={createPageUrl("Admin")}>
+          <motion.div
+            className="text-5xl mb-4 cursor-pointer"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            💍
+          </motion.div>
+        </Link>
 
         <h1 className="text-4xl font-black mb-3 shimmer-gold">
           Match לחתונה
