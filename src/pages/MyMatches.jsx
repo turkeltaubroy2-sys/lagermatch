@@ -73,12 +73,19 @@ export default function MyMatches() {
   };
 
   const handleDeleteMatch = async (matchId, targetProfile) => {
-    await base44.entities.Match.delete(matchId);
-    toast({
-      title: "ההתאמה הוסרה",
-      description: `הוסרת את ההתאמה עם ${targetProfile.first_name}`,
-    });
-    loadMatches();
+    try {
+      await base44.entities.Match.delete(matchId);
+      setMatchProfiles(prev => prev.filter(item => item.match.id !== matchId));
+      setMatches(prev => prev.filter(m => m.id !== matchId));
+      toast({
+        title: "ההתאמה הוסרה",
+        description: `הוסרת את ההתאמה עם ${targetProfile.first_name}`,
+      });
+    } catch (error) {
+      // Match already deleted, just update UI
+      setMatchProfiles(prev => prev.filter(item => item.match.id !== matchId));
+      setMatches(prev => prev.filter(m => m.id !== matchId));
+    }
   };
 
   if (loading) {
