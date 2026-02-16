@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import QRCode from "@/components/QRCode";
 
 export default function Home() {
   const [hasProfile, setHasProfile] = useState(null);
