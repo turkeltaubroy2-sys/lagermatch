@@ -35,7 +35,11 @@ export default function Chat() {
           (msg.sender_id === myProfile.id && msg.receiver_id === otherProfile.id) ||
           (msg.sender_id === otherProfile.id && msg.receiver_id === myProfile.id)
         ) {
-          setMessages(prev => [...prev, msg]);
+          setMessages(prev => {
+            // Prevent duplicates
+            if (prev.find(m => m.id === msg.id)) return prev;
+            return [...prev, msg];
+          });
           scrollToBottom();
         }
       }
@@ -107,11 +111,19 @@ export default function Chat() {
     const content = newMessage.trim();
     setNewMessage("");
 
-    await base44.entities.Message.create({
-      sender_id: myProfile.id,
-      receiver_id: otherProfile.id,
-      content,
-    });
+    try {
+      const newMsg = await base44.entities.Message.create({
+        sender_id: myProfile.id,
+        receiver_id: otherProfile.id,
+        content,
+      });
+      
+      // Update local state to ensure message is displayed immediately
+      setMessages(prev => [...prev, newMsg]);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      toast({ title: "שליחת ההודעה נכשלה", variant: "destructive", duration: 2000 });
+    }
   };
 
   useEffect(() => {
@@ -123,13 +135,15 @@ export default function Chat() {
         receiver_id: myProfile.id,
       });
       
+      // Mark as read without deleting - just for unread count
       for (const msg of allMessages) {
         await base44.entities.Message.delete(msg.id);
       }
     };
 
+    // Only run once when chat loads
     markAsRead();
-  }, [messages]);
+  }, [myProfile, otherProfile]);
 
   if (loading) {
     return (
