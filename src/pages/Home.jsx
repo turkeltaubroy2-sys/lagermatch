@@ -93,7 +93,7 @@ export default function Home() {
           💍
         </motion.div>
 
-        <h1 className="text-4xl font-black mb-3 flex items-center justify-center gap-2">
+        <h1 className="text-4xl font-black mb-8 flex items-center justify-center gap-2">
           <motion.span 
             className="text-4xl"
             animate={{ scale: [1, 1.2, 1] }}
@@ -126,7 +126,7 @@ export default function Home() {
           </Button>
         </Link>
 
-        <p className="text-xs text-white/30 mt-4">
+        <p className="text-lg font-semibold text-[#D4AF37] mt-6">
           רועי ויעל ❤️
         </p>
       </motion.div>
