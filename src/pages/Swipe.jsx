@@ -243,16 +243,16 @@ export default function Swipe() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe(false)}
-            className="w-20 h-20 rounded-full bg-gradient-to-br from-[#1A1A1A] to-[#252525] border-3 border-red-500/40 flex items-center justify-center shadow-2xl shadow-red-500/20 hover:border-red-500/60 transition-all active:shadow-red-500/40"
+            className="w-16 h-16 rounded-full bg-gradient-to-br from-[#1A1A1A] to-[#252525] border-3 border-red-500/40 flex items-center justify-center shadow-2xl shadow-red-500/20 hover:border-red-500/60 transition-all active:shadow-red-500/40"
           >
-            <X className="w-10 h-10 text-red-500" strokeWidth={2.5} />
+            <X className="w-8 h-8 text-red-500" strokeWidth={2.5} />
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe(true)}
-            className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-2xl shadow-green-500/40 hover:from-green-400 hover:to-green-500 transition-all active:shadow-green-500/60"
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-2xl shadow-green-500/40 hover:from-green-400 hover:to-green-500 transition-all active:shadow-green-500/60"
           >
-            <Heart className="w-12 h-12 text-white" fill="white" strokeWidth={0} />
+            <Heart className="w-10 h-10 text-white" fill="white" strokeWidth={0} />
           </motion.button>
         </div>
       )}

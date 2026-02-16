@@ -50,6 +50,14 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
+      {/* Admin link (ring) */}
+      <Link 
+        to={createPageUrl("Admin")} 
+        className="absolute top-4 right-4 z-50 text-5xl hover:opacity-80 transition-opacity"
+      >
+        💍
+      </Link>
+
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl" />
@@ -84,15 +92,13 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <a href={createPageUrl("Admin")} className="inline-block">
-          <motion.div
-            className="text-5xl mb-4 cursor-pointer select-none"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            💍
-          </motion.div>
-        </a>
+        <motion.div
+          className="text-5xl mb-4"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          💍
+        </motion.div>
 
         <h1 className="text-4xl font-black mb-3 shimmer-gold">
           Match לחתונה
