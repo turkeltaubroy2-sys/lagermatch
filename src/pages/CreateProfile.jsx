@@ -19,6 +19,7 @@ export default function CreateProfile() {
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [showBrideGroom, setShowBrideGroom] = useState(false);
+  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,6 +50,21 @@ export default function CreateProfile() {
       setPhoto(file);
       setPhotoPreview(URL.createObjectURL(file));
       setErrors(prev => ({ ...prev, photo: null }));
+      setShowPhotoOptions(false);
+    }
+  };
+
+  const handleCameraCapture = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({ ...prev, photo: "התמונה גדולה מדי (מקסימום 5MB)" }));
+        return;
+      }
+      setPhoto(file);
+      setPhotoPreview(URL.createObjectURL(file));
+      setErrors(prev => ({ ...prev, photo: null }));
+      setShowPhotoOptions(false);
     }
   };
 
@@ -130,10 +146,10 @@ export default function CreateProfile() {
 
         {/* Photo upload */}
         <div className="flex justify-center mb-8">
-          <label className="cursor-pointer relative group">
-            <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+          <div className="cursor-pointer relative group">
             <motion.div
               whileTap={{ scale: 0.95 }}
+              onClick={() => setShowPhotoOptions(true)}
               className={`w-36 h-36 rounded-full border-2 border-dashed ${
                 errors.photo ? "border-red-500" : "border-[#D4AF37]/50"
               } flex items-center justify-center overflow-hidden bg-[#1A1A1A] transition-all group-hover:border-[#D4AF37]`}
@@ -148,12 +164,84 @@ export default function CreateProfile() {
               )}
             </motion.div>
             {photoPreview && (
-              <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center">
+              <div 
+                onClick={() => setShowPhotoOptions(true)}
+                className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center"
+              >
                 <Camera className="w-4 h-4 text-[#0F0F0F]" />
               </div>
             )}
-          </label>
+          </div>
         </div>
+
+        {/* Photo options modal */}
+        <AnimatePresence>
+          {showPhotoOptions && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+                onClick={() => setShowPhotoOptions(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] rounded-t-3xl p-6 z-50"
+                dir="rtl"
+              >
+                <h3 className="text-white text-lg font-bold mb-4 text-center">בחר אופציה</h3>
+                <div className="space-y-3">
+                  <label className="block">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={handleCameraCapture}
+                    />
+                    <Button
+                      type="button"
+                      className="w-full py-6 text-lg font-semibold rounded-2xl bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] hover:opacity-90"
+                      onClick={(e) => e.currentTarget.previousElementSibling.click()}
+                    >
+                      <Camera className="w-5 h-5 ml-2" />
+                      צלם תמונה
+                    </Button>
+                  </label>
+                  
+                  <label className="block">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePhotoChange}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full py-6 text-lg font-semibold rounded-2xl border-[#333] text-white bg-[#252525] hover:bg-[#333]"
+                      onClick={(e) => e.currentTarget.previousElementSibling.click()}
+                    >
+                      📁 בחר מהגלריה
+                    </Button>
+                  </label>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="w-full py-6 text-lg font-semibold rounded-2xl text-white/50 hover:text-white hover:bg-white/5"
+                    onClick={() => setShowPhotoOptions(false)}
+                  >
+                    ביטול
+                  </Button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
         {errors.photo && (
           <p className="text-red-400 text-sm text-center mb-4 flex items-center justify-center gap-1">
             <AlertCircle className="w-3 h-3" /> {errors.photo}
