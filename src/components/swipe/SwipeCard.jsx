@@ -1,8 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Heart, X } from "lucide-react";
 
-export default function SwipeCard({ profile, onSwipe, isTop }) {
+const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const likeOpacity = useTransform(x, [0, 100], [0, 1]);
@@ -85,4 +85,8 @@ export default function SwipeCard({ profile, onSwipe, isTop }) {
       </div>
     </motion.div>
   );
-}
+});
+
+SwipeCard.displayName = "SwipeCard";
+
+export default SwipeCard;

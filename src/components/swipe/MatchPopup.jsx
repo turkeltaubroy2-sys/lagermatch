@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { X, Wine } from "lucide-react";
 
-export default function MatchPopup({ show, matchProfile, onClose, onSendDrink }) {
+export default function MatchPopup({ show, matchProfile, myProfile, onClose, onSendDrink }) {
   return (
     <AnimatePresence>
-      {show && matchProfile && (
+      {show && matchProfile && myProfile && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md px-6"
           initial={{ opacity: 0 }}
@@ -40,25 +40,55 @@ export default function MatchPopup({ show, matchProfile, onClose, onSendDrink })
             <h2 className="text-4xl font-black shimmer-gold mb-2">
               יש התאמה!
             </h2>
-            <p className="text-white/50 text-sm mb-8">
+            <p className="text-white/50 text-sm mb-6">
               לכו למצוא אחד את השנייה על הרחבה 💃🕺
             </p>
 
-            {/* Match photo */}
-            <div className="relative mx-auto w-32 h-32 rounded-full overflow-hidden border-4 border-[#D4AF37] mb-4 gold-glow">
-              <img
-                src={matchProfile.photo_url}
-                alt={matchProfile.first_name}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {/* Both profiles */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <motion.div
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col items-center"
+              >
+                <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-[#D4AF37] gold-glow mb-2">
+                  <img
+                    src={myProfile.photo_url}
+                    alt={myProfile.first_name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-white font-semibold text-sm">{myProfile.first_name}</p>
+                <p className="text-white/40 text-xs">{myProfile.age}</p>
+              </motion.div>
 
-            <h3 className="text-2xl font-bold text-white mb-1">
-              {matchProfile.first_name}
-            </h3>
-            <p className="text-white/50 text-lg mb-8">
-              {matchProfile.age}
-            </p>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+                className="text-3xl"
+              >
+                ❤️
+              </motion.div>
+
+              <motion.div
+                initial={{ x: 30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col items-center"
+              >
+                <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-[#D4AF37] gold-glow mb-2">
+                  <img
+                    src={matchProfile.photo_url}
+                    alt={matchProfile.first_name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-white font-semibold text-sm">{matchProfile.first_name}</p>
+                <p className="text-white/40 text-xs">{matchProfile.age}</p>
+              </motion.div>
+            </div>
 
             <Button
               onClick={() => onSendDrink(matchProfile)}

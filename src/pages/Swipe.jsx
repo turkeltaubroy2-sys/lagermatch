@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -15,7 +15,7 @@ import DrinkNotification from "@/components/swipe/DrinkNotification";
 export default function Swipe() {
   const [myProfile, setMyProfile] = useState(null);
   const [profiles, setProfiles] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [allProfilesCache, setAllProfilesCache] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showMatch, setShowMatch] = useState(false);
   const [matchProfile, setMatchProfile] = useState(null);
@@ -40,13 +40,12 @@ export default function Swipe() {
     return unsub;
   }, [myProfile]);
 
-  const loadSenderForDrink = async (drink) => {
-    const allProfiles = await base44.entities.Profile.filter({});
-    const sender = allProfiles.find(p => p.id === drink.sender_id);
+  const loadSenderForDrink = useCallback((drink) => {
+    const sender = allProfilesCache.find(p => p.id === drink.sender_id);
     if (sender) {
       setDrinkNotif({ drink, senderName: sender.first_name });
     }
-  };
+  }, [allProfilesCache]);
 
   const loadData = async () => {
     const deviceId = getDeviceId();
@@ -75,6 +74,7 @@ export default function Swipe() {
     setSwipedIds(swipedSet);
 
     const allProfiles = await base44.entities.Profile.filter({ is_blocked: false });
+    setAllProfilesCache(allProfiles);
     const available = allProfiles.filter(p => p.id !== me.id && !swipedSet.has(p.id));
     
     // Shuffle
@@ -83,82 +83,78 @@ export default function Swipe() {
     setLoading(false);
   };
 
-  const filteredProfiles = profiles.filter(
-    p => p.age >= ageRange.min && p.age <= ageRange.max
+  const filteredProfiles = useMemo(
+    () => profiles.filter(p => p.age >= ageRange.min && p.age <= ageRange.max),
+    [profiles, ageRange]
   );
 
-  const handleSwipe = async (liked) => {
-    const target = filteredProfiles[currentIndex];
+  const handleSwipe = useCallback(async (liked) => {
+    const target = filteredProfiles[0];
     if (!target || !myProfile) return;
 
+    // Optimistic update
+    setProfiles(prev => prev.filter(p => p.id !== target.id));
+    setSwipedIds(prev => new Set([...prev, target.id]));
+
     // Save swipe
-    await base44.entities.Swipe.create({
+    const swipePromise = base44.entities.Swipe.create({
       swiper_id: myProfile.id,
       target_id: target.id,
       liked,
     });
 
-    setSwipedIds(prev => new Set([...prev, target.id]));
-
-    // Check for match
+    // Check for match in parallel
     if (liked) {
-      const reverseSwipes = await base44.entities.Swipe.filter({
-        swiper_id: target.id,
-        target_id: myProfile.id,
-        liked: true,
-      });
+      const [, reverseSwipes] = await Promise.all([
+        swipePromise,
+        base44.entities.Swipe.filter({
+          swiper_id: target.id,
+          target_id: myProfile.id,
+          liked: true,
+        })
+      ]);
 
       if (reverseSwipes.length > 0) {
-        // Check if match already exists
-        const existingMatches = await base44.entities.Match.filter({});
-        const alreadyMatched = existingMatches.some(
-          m => (m.user1_id === myProfile.id && m.user2_id === target.id) ||
-               (m.user1_id === target.id && m.user2_id === myProfile.id)
-        );
-
-        if (!alreadyMatched) {
-          await base44.entities.Match.create({
-            user1_id: myProfile.id,
-            user2_id: target.id,
-          });
-          setMatchProfile(target);
-          setShowMatch(true);
-        }
+        await base44.entities.Match.create({
+          user1_id: myProfile.id,
+          user2_id: target.id,
+        });
+        setMatchProfile(target);
+        setShowMatch(true);
       }
+    } else {
+      await swipePromise;
     }
+  }, [filteredProfiles, myProfile]);
 
-    // Remove from profiles
-    setProfiles(prev => prev.filter(p => p.id !== target.id));
-  };
-
-  const handleSendDrink = async (targetProfile) => {
+  const handleSendDrink = useCallback(async (targetProfile) => {
+    setShowMatch(false);
+    toast({
+      title: "🍸 המשקה נשלח!",
+      description: `שלחת משקה ל${targetProfile.first_name}`,
+    });
     await base44.entities.Drink.create({
       sender_id: myProfile.id,
       receiver_id: targetProfile.id,
       status: "pending",
     });
-    toast({
-      title: "🍸 המשקה נשלח!",
-      description: `שלחת משקה ל${targetProfile.first_name}`,
-    });
-    setShowMatch(false);
-  };
+  }, [myProfile, toast]);
 
-  const handleDrinkResponse = async (accepted) => {
+  const handleDrinkResponse = useCallback(async (accepted) => {
     if (drinkNotif) {
-      await base44.entities.Drink.update(drinkNotif.drink.id, {
-        status: accepted ? "accepted" : "declined",
-      });
+      setDrinkNotif(null);
       toast({
         title: accepted ? "🎉 המשקה בדרך!" : "אולי בפעם הבאה",
       });
-      setDrinkNotif(null);
+      await base44.entities.Drink.update(drinkNotif.drink.id, {
+        status: accepted ? "accepted" : "declined",
+      });
     }
-  };
+  }, [drinkNotif, toast]);
 
-  const handleAgeRangeChange = (min, max) => {
+  const handleAgeRangeChange = useCallback((min, max) => {
     setAgeRange({ min, max });
-  };
+  }, []);
 
   if (loading) {
     return (
@@ -248,6 +244,7 @@ export default function Swipe() {
       <MatchPopup
         show={showMatch}
         matchProfile={matchProfile}
+        myProfile={myProfile}
         onClose={() => setShowMatch(false)}
         onSendDrink={handleSendDrink}
       />
