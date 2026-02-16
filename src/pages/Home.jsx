@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import QRCode from "@/components/QRCode";
 
 export default function Home() {
   const [hasProfile, setHasProfile] = useState(null);
@@ -129,6 +130,13 @@ export default function Home() {
         <p className="text-lg font-semibold text-[#D4AF37] mt-6">
           רועי ויעל ❤️
         </p>
+
+        <div className="mt-8 pt-8 border-t border-white/20 flex flex-col items-center">
+          <p className="text-sm text-white/60 mb-4">סרוק כדי להצטרף</p>
+          <div className="bg-white p-3 rounded-xl">
+            <QRCode value={window.location.origin} size={150} />
+          </div>
+        </div>
         </motion.div>
         </div>
         );
