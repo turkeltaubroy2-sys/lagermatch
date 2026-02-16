@@ -83,9 +83,9 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
             {/* Location filter */}
             <div className="mb-4">
               <label className="text-xs text-white/60 mb-2 block text-right">איזור מגורים</label>
-              <Select value={locationFilter} onValueChange={onChangeLocation}>
-                <SelectTrigger className="bg-[#252525] border-[#444] text-white h-10 rounded-xl text-right">
-                  <SelectValue />
+              <Select value={locationFilter} onValueChange={onChangeLocation} dir="rtl">
+                <SelectTrigger className="bg-[#252525] border-[#444] text-white h-10 rounded-xl">
+                  <SelectValue className="text-right" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#1A1A1A] border-[#333]" align="end">
                   <SelectItem value="all" className="text-white">כל האיזורים</SelectItem>
