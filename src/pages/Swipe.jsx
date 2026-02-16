@@ -287,7 +287,15 @@ export default function Swipe() {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4">
         <div>
-          <h1 className="text-xl font-bold shimmer-gold">WedMatch ❤️</h1>
+          <h1 className="text-xl font-bold flex items-center gap-1.5">
+            <span className="shimmer-gold">WedMatch</span>
+            <motion.span 
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              ❤️
+            </motion.span>
+          </h1>
           <p className="text-[10px] text-white/20">רועי ויעל</p>
         </div>
         <div className="flex items-center gap-3">

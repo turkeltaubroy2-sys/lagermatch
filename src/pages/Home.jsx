@@ -93,8 +93,15 @@ export default function Home() {
           💍
         </motion.div>
 
-        <h1 className="text-4xl font-black mb-3 shimmer-gold">
-          WedMatch ❤️
+        <h1 className="text-4xl font-black mb-3 flex items-center justify-center gap-2">
+          <span className="shimmer-gold">WedMatch</span>
+          <motion.span 
+            className="text-4xl"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            ❤️
+          </motion.span>
         </h1>
 
         <motion.div
