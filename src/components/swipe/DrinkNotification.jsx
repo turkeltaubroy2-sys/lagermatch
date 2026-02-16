@@ -23,8 +23,11 @@ export default function DrinkNotification({ show, senderName, onAccept, onDeclin
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              onClick={onClose}
-              className="absolute top-4 left-4 text-white/40 hover:text-white transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="absolute top-4 left-4 text-white/40 hover:text-white transition-colors z-10"
             >
               <X className="w-5 h-5" />
             </button>
