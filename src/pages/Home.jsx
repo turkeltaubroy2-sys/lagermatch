@@ -84,19 +84,15 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <motion.div
-          className="text-5xl mb-4 cursor-pointer select-none relative z-20"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = createPageUrl("Admin");
-          }}
-          style={{ pointerEvents: 'auto' }}
-        >
-          💍
-        </motion.div>
+        <a href={createPageUrl("Admin")} className="inline-block">
+          <motion.div
+            className="text-5xl mb-4 cursor-pointer select-none"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            💍
+          </motion.div>
+        </a>
 
         <h1 className="text-4xl font-black mb-3 shimmer-gold">
           Match לחתונה
