@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { ArrowRight, Heart, Wine, MessageCircle, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Trash2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import BottomNav from "@/components/BottomNav";
 
 export default function MyMatches() {
   const [myProfile, setMyProfile] = useState(null);
   const [matches, setMatches] = useState([]);
   const [matchProfiles, setMatchProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadMatches();
@@ -21,13 +24,13 @@ export default function MyMatches() {
   const loadMatches = async () => {
     const deviceId = localStorage.getItem("wedding_device_id");
     if (!deviceId) {
-      window.location.href = createPageUrl("Home");
+      navigate(createPageUrl("Home"));
       return;
     }
 
     const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
     if (myProfiles.length === 0) {
-      window.location.href = createPageUrl("Home");
+      navigate(createPageUrl("Home"));
       return;
     }
 
@@ -88,6 +91,38 @@ export default function MyMatches() {
     }
   };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadMatches();
+    setRefreshing(false);
+    toast({ title: "🔄 הרשימה עודכנה" });
+  };
+
+  useEffect(() => {
+    let startY = 0;
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (window.scrollY === 0 && !refreshing) {
+        const currentY = e.touches[0].clientY;
+        if (currentY - startY > 80) {
+          handleRefresh();
+        }
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [refreshing]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
@@ -102,16 +137,18 @@ export default function MyMatches() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] px-5 py-6 max-w-md mx-auto">
+    <div className="min-h-screen bg-[#0F0F0F] px-5 py-6 max-w-md mx-auto pb-20">
+      {/* Pull to refresh indicator */}
+      {refreshing && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold">
+          <RefreshCw className="w-4 h-4 inline ml-1 animate-spin" />
+          מעדכן...
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col items-center mb-8">
-        <div className="flex items-center justify-between w-full mb-2">
-          <Link to={createPageUrl("Swipe")} className="text-white/50 hover:text-white">
-            <ArrowRight className="w-6 h-6" />
-          </Link>
-          <h1 className="text-2xl font-bold shimmer-gold">💕 ההתאמות שלי</h1>
-          <div className="w-6" />
-        </div>
+        <h1 className="text-2xl font-bold shimmer-gold mb-1">💕 ההתאמות שלי</h1>
         <p className="text-xs text-white/20">רועי ויעל 💍</p>
       </div>
 
@@ -126,14 +163,9 @@ export default function MyMatches() {
           </motion.div>
           <h2 className="text-xl font-bold text-white/80 mb-2">עדיין אין התאמות</h2>
           <p className="text-white/40 text-sm text-center mb-6">
-            המשיכו להחליק, ההתאמה הבאה מחכה לכם!
+          המשיכו להחליק, ההתאמה הבאה מחכה לכם!
           </p>
-          <Link to={createPageUrl("Swipe")}>
-            <Button className="bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] font-bold rounded-xl px-8">
-              חזרה להחלקות
-            </Button>
-          </Link>
-        </div>
+          </div>
       ) : (
         <div className="space-y-3">
           {matchProfiles.map((item, i) => (
@@ -184,6 +216,9 @@ export default function MyMatches() {
           ))}
         </div>
       )}
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

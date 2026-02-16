@@ -23,6 +23,14 @@ body {
   direction: rtl;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+button, a, input, select, textarea {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @layer base {

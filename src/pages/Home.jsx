@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   const [hasProfile, setHasProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkExistingProfile();
@@ -19,7 +20,7 @@ export default function Home() {
     const profiles = await base44.entities.Profile.filter({ device_id: deviceId });
     if (profiles.length > 0 && !profiles[0].is_blocked) {
       setHasProfile(true);
-      window.location.href = createPageUrl("Swipe");
+      navigate(createPageUrl("Swipe"));
       return;
     }
     setHasProfile(false);

@@ -1,29 +1,52 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, X, Users, Wine } from "lucide-react";
+import { Heart, X, Settings, RefreshCw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import SwipeCard from "@/components/swipe/SwipeCard";
 import MatchPopup from "@/components/swipe/MatchPopup";
 import AgeFilter from "@/components/swipe/AgeFilter";
 import DrinkNotification from "@/components/swipe/DrinkNotification";
+import BottomNav from "@/components/BottomNav";
 
 export default function Swipe() {
   const [myProfile, setMyProfile] = useState(null);
   const [profiles, setProfiles] = useState([]);
   const [allProfilesCache, setAllProfilesCache] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [showMatch, setShowMatch] = useState(false);
   const [matchProfile, setMatchProfile] = useState(null);
   const [ageRange, setAgeRange] = useState({ min: 18, max: 60 });
   const [locationFilter, setLocationFilter] = useState("all");
   const [swipedIds, setSwipedIds] = useState(new Set());
   const [drinkNotif, setDrinkNotif] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const getDeviceId = () => localStorage.getItem("wedding_device_id");
 
@@ -51,20 +74,20 @@ export default function Swipe() {
   const loadData = async () => {
     const deviceId = getDeviceId();
     if (!deviceId) {
-      window.location.href = createPageUrl("Home");
+      navigate(createPageUrl("Home"));
       return;
     }
 
     const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
     if (myProfiles.length === 0) {
-      window.location.href = createPageUrl("Home");
+      navigate(createPageUrl("Home"));
       return;
     }
 
     const me = myProfiles[0];
     if (me.is_blocked) {
       toast({ title: "הפרופיל שלך נחסם", variant: "destructive" });
-      window.location.href = createPageUrl("Home");
+      navigate(createPageUrl("Home"));
       return;
     }
 
@@ -165,6 +188,46 @@ export default function Swipe() {
     setLocationFilter(location);
   }, []);
 
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
+    toast({ title: "🔄 הרשימה עודכנה" });
+  }, [loadData, toast]);
+
+  const handleDeleteProfile = useCallback(async () => {
+    if (!myProfile) return;
+    await base44.entities.Profile.delete(myProfile.id);
+    localStorage.removeItem("wedding_device_id");
+    toast({ title: "הפרופיל נמחק בהצלחה" });
+    navigate(createPageUrl("Home"));
+  }, [myProfile, navigate, toast]);
+
+  useEffect(() => {
+    let startY = 0;
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (window.scrollY === 0 && !refreshing) {
+        const currentY = e.touches[0].clientY;
+        if (currentY - startY > 80) {
+          handleRefresh();
+        }
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [refreshing, handleRefresh]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
@@ -181,7 +244,15 @@ export default function Swipe() {
   const currentProfile = filteredProfiles[0];
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] flex flex-col max-w-md mx-auto">
+    <div className="min-h-screen bg-[#0F0F0F] flex flex-col max-w-md mx-auto pb-20">
+      {/* Pull to refresh indicator */}
+      {refreshing && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold">
+          <RefreshCw className="w-4 h-4 inline ml-1 animate-spin" />
+          מעדכן...
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4">
         <div>
@@ -195,13 +266,34 @@ export default function Swipe() {
             onChangeRange={handleAgeRangeChange}
             onChangeLocation={handleLocationChange}
           />
-          <Link
-            to={createPageUrl("MyMatches")}
-            className="relative flex items-center gap-1 px-4 py-2 rounded-full bg-[#1A1A1A] border border-[#333] text-white/60 hover:text-white text-sm transition-all"
-          >
-            <Users className="w-4 h-4" />
-            התאמות
-          </Link>
+          <Sheet open={showSettings} onOpenChange={setShowSettings}>
+            <SheetTrigger asChild>
+              <button className="p-2 rounded-full bg-[#1A1A1A] border border-[#333] text-white/60 hover:text-white transition-all">
+                <Settings className="w-4 h-4" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="bg-[#1A1A1A] border-[#333]">
+              <SheetHeader>
+                <SheetTitle className="text-white text-right">הגדרות</SheetTitle>
+                <SheetDescription className="text-white/40 text-right">
+                  נהל את הפרופיל שלך
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-6">
+                <Button
+                  onClick={() => {
+                    setShowSettings(false);
+                    setShowDeleteDialog(true);
+                  }}
+                  variant="destructive"
+                  className="w-full py-6 text-lg font-bold rounded-xl bg-red-600 hover:bg-red-700"
+                >
+                  <Trash2 className="w-5 h-5 ml-2" />
+                  מחק פרופיל
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
           <Link
             to={createPageUrl("Admin")}
             className="text-xs text-red-500 hover:text-red-400 transition-colors"
@@ -210,6 +302,28 @@ export default function Swipe() {
           </Link>
         </div>
       </div>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="bg-[#1A1A1A] border-[#333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">מחיקת פרופיל</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/50">
+              האם אתה בטוח שברצונך למחוק את הפרופיל? פעולה זו לא ניתנת לביטול.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-[#252525] border-[#444] text-white hover:bg-[#333]">
+              ביטול
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteProfile}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              מחק
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Card area */}
       <div className="flex-1 px-5 pb-4 relative">
@@ -280,6 +394,9 @@ export default function Swipe() {
         onDecline={() => handleDrinkResponse(false)}
         onClose={() => setDrinkNotif(null)}
       />
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

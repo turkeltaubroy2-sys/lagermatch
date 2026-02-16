@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 
 const BAD_WORDS = ["מילהגסה1", "מילהגסה2"]; // Basic filter
@@ -20,16 +20,18 @@ export default function CreateProfile() {
   const [saving, setSaving] = useState(false);
   const [showBrideGroom, setShowBrideGroom] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [showLocationSheet, setShowLocationSheet] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const deviceId = getDeviceId();
     base44.entities.Profile.filter({ device_id: deviceId }).then(profiles => {
       if (profiles.length > 0) {
-        window.location.href = createPageUrl("Swipe");
+        navigate(createPageUrl("Swipe"));
       }
     });
-  }, []);
+  }, [navigate]);
 
   const getDeviceId = () => {
     let id = localStorage.getItem("wedding_device_id");
@@ -108,7 +110,7 @@ export default function CreateProfile() {
     const existing = await base44.entities.Profile.filter({ device_id: deviceId });
     if (existing.length > 0) {
       toast({ title: "כבר יש לך פרופיל!", variant: "destructive" });
-      window.location.href = createPageUrl("Swipe");
+      navigate(createPageUrl("Swipe"));
       return;
     }
 
@@ -123,7 +125,7 @@ export default function CreateProfile() {
       is_blocked: false,
     });
 
-    window.location.href = createPageUrl("Swipe");
+    navigate(createPageUrl("Swipe"));
   };
 
   return (
@@ -173,6 +175,60 @@ export default function CreateProfile() {
             )}
           </div>
         </div>
+
+        {/* Location sheet */}
+        <AnimatePresence>
+          {showLocationSheet && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+                onClick={() => setShowLocationSheet(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] rounded-t-3xl p-6 z-50"
+                dir="rtl"
+              >
+                <h3 className="text-white text-lg font-bold mb-4 text-center">בחר איזור מגורים</h3>
+                <div className="space-y-2">
+                  {[
+                    { value: "tel_aviv", label: "תל אביב" },
+                    { value: "south", label: "דרום" },
+                    { value: "north", label: "צפון" },
+                  ].map(option => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setForm({ ...form, location: option.value });
+                        setShowLocationSheet(false);
+                      }}
+                      className={`w-full py-4 px-6 rounded-xl text-right transition-all ${
+                        form.location === option.value
+                          ? "bg-[#D4AF37] text-[#0F0F0F] font-bold"
+                          : "bg-[#252525] text-white hover:bg-[#333]"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full py-6 text-lg font-semibold rounded-2xl text-white/50 hover:text-white hover:bg-white/5 mt-3"
+                  onClick={() => setShowLocationSheet(false)}
+                >
+                  ביטול
+                </Button>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
         {/* Photo options modal */}
         <AnimatePresence>
@@ -285,16 +341,22 @@ export default function CreateProfile() {
 
           <div>
             <Label className="text-white/70 text-sm mb-2 block">איזור מגורים</Label>
-            <Select value={form.location} onValueChange={(value) => setForm({ ...form, location: value })}>
-              <SelectTrigger className="bg-[#1A1A1A] border-[#333] text-white h-12 rounded-xl">
-                <SelectValue placeholder="איפה את/ה גר/ה?" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#1A1A1A] border-[#333]">
-                <SelectItem value="tel_aviv" className="text-white">תל אביב</SelectItem>
-                <SelectItem value="south" className="text-white">דרום</SelectItem>
-                <SelectItem value="north" className="text-white">צפון</SelectItem>
-              </SelectContent>
-            </Select>
+            <button
+              type="button"
+              onClick={() => setShowLocationSheet(true)}
+              className={`w-full h-12 px-4 rounded-xl bg-[#1A1A1A] border ${
+                errors.location ? "border-red-500" : "border-[#333]"
+              } text-right flex items-center justify-between ${
+                form.location ? "text-white" : "text-white/30"
+              }`}
+            >
+              <span>
+                {form.location === "tel_aviv" ? "תל אביב" : 
+                 form.location === "south" ? "דרום" : 
+                 form.location === "north" ? "צפון" : 
+                 "איפה את/ה גר/ה?"}
+              </span>
+            </button>
             {errors.location && (
               <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" /> {errors.location}

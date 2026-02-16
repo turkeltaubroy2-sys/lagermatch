@@ -2,24 +2,19 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SlidersHorizontal, X } from "lucide-react";
 
-const PRESETS = [
-  { label: "18–25", min: 18, max: 25 },
-  { label: "25–30", min: 25, max: 30 },
-  { label: "30–35", min: 30, max: 35 },
-  { label: "35–45", min: 35, max: 45 },
+const LOCATIONS = [
+  { value: "all", label: "כל האיזורים" },
+  { value: "tel_aviv", label: "תל אביב" },
+  { value: "south", label: "דרום" },
+  { value: "north", label: "צפון" },
 ];
 
 export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onChangeLocation }) {
   const [open, setOpen] = useState(false);
+  const [showLocationSheet, setShowLocationSheet] = useState(false);
   const [custom, setCustom] = useState({ min: ageRange.min, max: ageRange.max });
-
-  const applyPreset = (preset) => {
-    setCustom({ min: preset.min, max: preset.max });
-    onChangeRange(preset.min, preset.max);
-  };
 
   const applyCustom = () => {
     const min = Math.max(18, Math.min(parseInt(custom.min) || 18, 60));
@@ -83,17 +78,15 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
             {/* Location filter */}
             <div className="mb-4">
               <label className="text-xs text-white/60 mb-2 block text-right">איזור מגורים</label>
-              <Select value={locationFilter} onValueChange={onChangeLocation} dir="rtl">
-                <SelectTrigger className="bg-[#252525] border-[#444] text-white h-10 rounded-xl">
-                  <SelectValue className="text-right" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1A1A1A] border-[#333]" align="end">
-                  <SelectItem value="all" className="text-white">כל האיזורים</SelectItem>
-                  <SelectItem value="tel_aviv" className="text-white">תל אביב</SelectItem>
-                  <SelectItem value="south" className="text-white">דרום</SelectItem>
-                  <SelectItem value="north" className="text-white">צפון</SelectItem>
-                </SelectContent>
-              </Select>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLocationSheet(true);
+                }}
+                className="w-full h-10 px-3 rounded-xl bg-[#252525] border border-[#444] text-white text-right flex items-center justify-between"
+              >
+                <span>{LOCATIONS.find(l => l.value === locationFilter)?.label}</span>
+              </button>
             </div>
 
             {/* Age range title */}
@@ -138,8 +131,66 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
             )}
             </motion.div>
           </>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
+          )}
+          </AnimatePresence>
+
+          {/* Location bottom sheet */}
+          <AnimatePresence>
+          {showLocationSheet && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLocationSheet(false);
+              }}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] rounded-t-3xl p-6 z-[70]"
+              dir="rtl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-white text-lg font-bold">בחר איזור</h3>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowLocationSheet(false);
+                  }} 
+                  className="text-white/40 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {LOCATIONS.map(location => (
+                  <button
+                    key={location.value}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onChangeLocation(location.value);
+                      setShowLocationSheet(false);
+                    }}
+                    className={`w-full py-4 px-6 rounded-xl text-right transition-all ${
+                      locationFilter === location.value
+                        ? "bg-[#D4AF37] text-[#0F0F0F] font-bold"
+                        : "bg-[#252525] text-white hover:bg-[#333]"
+                    }`}
+                  >
+                    {location.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </>
+          )}
+          </AnimatePresence>
+          </div>
+          );
+          }
