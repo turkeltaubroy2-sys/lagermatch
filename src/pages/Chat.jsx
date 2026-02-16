@@ -19,6 +19,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showImageModal, setShowImageModal] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -160,13 +161,16 @@ export default function Chat() {
         >
           <ArrowRight className="w-5 h-5 text-white" />
         </button>
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#D4AF37]">
+        <button
+          onClick={() => setShowImageModal(true)}
+          className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#D4AF37] hover:opacity-80 transition-opacity"
+        >
           <img
             src={otherProfile?.photo_url}
             alt={otherProfile?.first_name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover cursor-pointer"
           />
-        </div>
+        </button>
         <div className="flex-1">
           <h2 className="text-white font-bold text-lg">{otherProfile?.first_name}</h2>
           <p className="text-white/40 text-xs">
@@ -238,6 +242,25 @@ export default function Chat() {
           <Send className="w-5 h-5 text-[#0F0F0F]" />
         </Button>
       </div>
+
+      {/* Image Modal */}
+      {showImageModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => setShowImageModal(false)}
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+        >
+          <motion.img
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            src={otherProfile?.photo_url}
+            alt={otherProfile?.first_name}
+            className="max-w-sm max-h-[80vh] rounded-2xl object-cover cursor-pointer"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </motion.div>
+      )}
     </div>
   );
 }
