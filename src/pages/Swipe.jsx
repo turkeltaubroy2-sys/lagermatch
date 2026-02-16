@@ -287,7 +287,7 @@ export default function Swipe() {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4">
         <div>
-          <h1 className="text-xl font-bold flex items-center gap-1.5 flex-row-reverse">
+          <h1 className="text-xl font-bold flex items-center gap-1.5">
             <motion.span 
               animate={{ scale: [1, 1.15, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}

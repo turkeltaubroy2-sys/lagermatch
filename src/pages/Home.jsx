@@ -93,7 +93,7 @@ export default function Home() {
           💍
         </motion.div>
 
-        <h1 className="text-4xl font-black mb-3 flex items-center justify-center gap-2 flex-row-reverse">
+        <h1 className="text-4xl font-black mb-3 flex items-center justify-center gap-2">
           <motion.span 
             className="text-4xl"
             animate={{ scale: [1, 1.2, 1] }}
