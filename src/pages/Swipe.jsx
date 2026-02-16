@@ -287,14 +287,14 @@ export default function Swipe() {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4">
         <div>
-          <h1 className="text-xl font-bold flex items-center gap-1.5">
-            <span className="shimmer-gold">WedMatch</span>
+          <h1 className="text-xl font-bold flex items-center gap-1.5 flex-row-reverse">
             <motion.span 
               animate={{ scale: [1, 1.15, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               ❤️
             </motion.span>
+            <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent">WedMatch</span>
           </h1>
           <p className="text-[10px] text-white/20">רועי ויעל</p>
         </div>

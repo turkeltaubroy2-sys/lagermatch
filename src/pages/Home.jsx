@@ -93,8 +93,7 @@ export default function Home() {
           💍
         </motion.div>
 
-        <h1 className="text-4xl font-black mb-3 flex items-center justify-center gap-2">
-          <span className="shimmer-gold">WedMatch</span>
+        <h1 className="text-4xl font-black mb-3 flex items-center justify-center gap-2 flex-row-reverse">
           <motion.span 
             className="text-4xl"
             animate={{ scale: [1, 1.2, 1] }}
@@ -102,6 +101,7 @@ export default function Home() {
           >
             ❤️
           </motion.span>
+          <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent">WedMatch</span>
         </h1>
 
         <motion.div
