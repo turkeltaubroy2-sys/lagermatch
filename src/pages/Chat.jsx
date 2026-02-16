@@ -130,18 +130,10 @@ export default function Chat() {
     if (!myProfile || !otherProfile) return;
     
     const markAsRead = async () => {
-      const allMessages = await base44.entities.Message.filter({
-        sender_id: otherProfile.id,
-        receiver_id: myProfile.id,
-      });
-      
-      // Mark as read without deleting - just for unread count
-      for (const msg of allMessages) {
-        await base44.entities.Message.delete(msg.id);
-      }
+      // Just load messages - no need to delete them
+      // Messages are already loaded in loadChat
     };
 
-    // Only run once when chat loads
     markAsRead();
   }, [myProfile, otherProfile]);
 
