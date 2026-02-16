@@ -130,7 +130,12 @@ export default function Home() {
         <p className="text-lg font-semibold text-[#D4AF37] mt-6">
           רועי ויעל ❤️
         </p>
-      </motion.div>
-    </div>
-  );
-}
+
+        <div className="mt-8 pt-8 border-t border-white/20">
+          <p className="text-sm text-white/60 mb-4">סרוק כדי להצטרף</p>
+          <QRCode value={window.location.origin} size={200} />
+        </div>
+        </motion.div>
+        </div>
+        );
+        }
