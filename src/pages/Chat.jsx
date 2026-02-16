@@ -215,8 +215,8 @@ export default function Chat() {
                   <div
                     className={`max-w-[75%] px-4 py-2 rounded-2xl ${
                       isMe
-                        ? "bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F]"
-                        : "bg-[#1A1A1A] text-white border border-[#333]"
+                        ? "bg-[#1A1A1A] text-white border border-[#333]"
+                        : "bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F]"
                     }`}
                   >
                     <p className="text-sm leading-relaxed break-words">{msg.content}</p>
