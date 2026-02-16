@@ -49,21 +49,21 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
+    <div className="h-screen flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-10 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-80 h-80 bg-[#D4AF37]/3 rounded-full blur-3xl" />
-        {[...Array(6)].map((_, i) => (
+        <div className="absolute top-20 right-10 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-56 h-56 bg-[#D4AF37]/3 rounded-full blur-3xl" />
+        {[...Array(4)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute text-[#D4AF37]/20"
             style={{
-              top: `${15 + i * 15}%`,
+              top: `${20 + i * 20}%`,
               left: `${10 + (i % 3) * 35}%`,
             }}
             animate={{
-              y: [-20, 20, -20],
+              y: [-10, 10, -10],
               rotate: [0, 10, -10, 0],
               opacity: [0.1, 0.3, 0.1],
             }}
@@ -73,52 +73,52 @@ export default function Home() {
               delay: i * 0.5,
             }}
           >
-            <Sparkles className="w-6 h-6" />
+            <Sparkles className="w-5 h-5" />
           </motion.div>
         ))}
       </div>
 
       <motion.div
-        className="relative z-10 text-center max-w-md"
+        className="relative z-10 text-center max-w-md w-full"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <motion.div
-          className="text-6xl mb-6"
+          className="text-5xl mb-4"
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
           💍
         </motion.div>
 
-        <h1 className="text-5xl font-black mb-3 shimmer-gold">
+        <h1 className="text-4xl font-black mb-3 shimmer-gold">
           Match לחתונה
         </h1>
 
         <motion.div
-          className="w-24 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mb-6"
+          className="w-20 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mb-4"
           initial={{ width: 0 }}
-          animate={{ width: 96 }}
+          animate={{ width: 80 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         />
 
-        <p className="text-lg text-white/60 mb-2 leading-relaxed">
+        <p className="text-base text-white/60 mb-1 leading-relaxed">
           רווקים בלבד.
         </p>
-        <p className="text-lg text-white/60 mb-10 leading-relaxed">
+        <p className="text-base text-white/60 mb-8 leading-relaxed">
           בואו נעשה את הערב הזה בלתי נשכח 😉
         </p>
 
         <Link to={createPageUrl("CreateProfile")}>
           <Button
-            className="w-full py-7 text-xl font-bold rounded-2xl bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] hover:opacity-90 transition-all duration-300 shadow-lg shadow-[#D4AF37]/20 gold-glow"
+            className="w-full py-6 text-lg font-bold rounded-2xl bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] hover:opacity-90 transition-all duration-300 shadow-lg shadow-[#D4AF37]/20 gold-glow"
           >
             ✨ צור פרופיל
           </Button>
         </Link>
 
-        <p className="text-xs text-white/30 mt-6">
+        <p className="text-xs text-white/30 mt-4">
           ❤️ בברכה מרועי ויעל
         </p>
       </motion.div>
