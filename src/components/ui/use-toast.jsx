@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 const TOAST_LIMIT = 20;
-const TOAST_REMOVE_DELAY = 2000;
+const TOAST_REMOVE_DELAY = 3000;
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
@@ -128,11 +128,17 @@ function toast({ ...props }) {
       ...props,
       id,
       open: true,
+      duration: props.duration || 2000,
       onOpenChange: (open) => {
         if (!open) dismiss();
       },
     },
   });
+
+  // Auto dismiss after duration
+  setTimeout(() => {
+    dismiss();
+  }, props.duration || 2000);
 
   return {
     id,
