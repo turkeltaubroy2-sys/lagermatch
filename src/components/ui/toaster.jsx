@@ -22,7 +22,14 @@ export function Toaster() {
                 <ToastDescription>{description}</ToastDescription>
               )}
             </div>
-            {action}
+            {action && (
+              <button
+                onClick={action.onClick}
+                className="px-3 py-1.5 text-xs font-semibold bg-[#D4AF37] text-[#0F0F0F] rounded-lg hover:opacity-90 transition-opacity"
+              >
+                {action.label}
+              </button>
+            )}
             <ToastClose />
           </Toast>
         );
@@ -30,4 +37,4 @@ export function Toaster() {
       <ToastViewport />
     </ToastProvider>
   );
-} 
+}
