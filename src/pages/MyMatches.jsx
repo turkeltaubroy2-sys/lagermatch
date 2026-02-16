@@ -12,6 +12,7 @@ export default function MyMatches() {
   const [myProfile, setMyProfile] = useState(null);
   const [matches, setMatches] = useState([]);
   const [matchProfiles, setMatchProfiles] = useState([]);
+  const [unreadCounts, setUnreadCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
@@ -51,8 +52,22 @@ export default function MyMatches() {
       return { match: m, profile: profileMap[otherId] };
     }).filter(item => item.profile);
 
+    // Calculate unread messages per conversation
+    const allMessages = await base44.entities.Message.filter({});
+    const unreadMap = {};
+    matched.forEach(item => {
+      const otherId = item.match.user1_id === me.id ? item.match.user2_id : item.match.user1_id;
+      const unreadFromOther = allMessages.filter(
+        msg => msg.sender_id === otherId && msg.receiver_id === me.id
+      );
+      if (unreadFromOther.length > 0) {
+        unreadMap[otherId] = unreadFromOther.length;
+      }
+    });
+
     setMatches(myMatches);
     setMatchProfiles(matched);
+    setUnreadCounts(unreadMap);
     setLoading(false);
   };
 
@@ -191,9 +206,14 @@ export default function MyMatches() {
                   <Button
                     onClick={() => handleSendMessage(item.match.id)}
                     size="sm"
-                    className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold rounded-xl h-9 px-3 hover:opacity-90 transition-all"
+                    className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold rounded-xl h-9 px-3 hover:opacity-90 transition-all relative"
                   >
                     <MessageCircle className="w-4 h-4" />
+                    {unreadCounts[item.profile.id] > 0 && (
+                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                        {unreadCounts[item.profile.id] > 9 ? "9+" : unreadCounts[item.profile.id]}
+                      </div>
+                    )}
                   </Button>
                   <Button
                     onClick={() => handleDeleteMatch(item.match.id, item.profile)}

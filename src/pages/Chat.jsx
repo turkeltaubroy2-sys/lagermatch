@@ -114,6 +114,23 @@ export default function Chat() {
     });
   };
 
+  useEffect(() => {
+    if (!myProfile || !otherProfile) return;
+    
+    const markAsRead = async () => {
+      const allMessages = await base44.entities.Message.filter({
+        sender_id: otherProfile.id,
+        receiver_id: myProfile.id,
+      });
+      
+      for (const msg of allMessages) {
+        await base44.entities.Message.delete(msg.id);
+      }
+    };
+
+    markAsRead();
+  }, [messages]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">

@@ -56,13 +56,30 @@ export default function Swipe() {
 
   useEffect(() => {
     if (!myProfile) return;
-    const unsub = base44.entities.Drink.subscribe((event) => {
+    const unsubDrink = base44.entities.Drink.subscribe((event) => {
       if (event.type === "create" && event.data.receiver_id === myProfile.id && event.data.status === "pending") {
         loadSenderForDrink(event.data);
       }
     });
-    return unsub;
-  }, [myProfile]);
+
+    const unsubMessage = base44.entities.Message.subscribe((event) => {
+      if (event.type === "create" && event.data.receiver_id === myProfile.id) {
+        const sender = allProfilesCache.find(p => p.id === event.data.sender_id);
+        if (sender) {
+          toast({
+            title: `💬 הודעה חדשה מ${sender.first_name}`,
+            description: event.data.content.substring(0, 50) + (event.data.content.length > 50 ? "..." : ""),
+            duration: 2000,
+          });
+        }
+      }
+    });
+
+    return () => {
+      unsubDrink();
+      unsubMessage();
+    };
+  }, [myProfile, allProfilesCache, toast]);
 
   const loadSenderForDrink = useCallback((drink) => {
     const sender = allProfilesCache.find(p => p.id === drink.sender_id);

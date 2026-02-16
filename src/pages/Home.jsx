@@ -120,7 +120,7 @@ export default function Home() {
         </Link>
 
         <p className="text-xs text-white/30 mt-4">
-          ❤️ בברכה מרועי ויעל
+          רועי ויעל ❤️
         </p>
       </motion.div>
     </div>
