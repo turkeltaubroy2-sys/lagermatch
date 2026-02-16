@@ -17,7 +17,7 @@ export default function DrinkNotification({ show, senderName, onAccept, onDeclin
         onClick={onClose}
       >
         <motion.div
-          className="w-full max-w-sm bg-[#1A1A1A] border border-[#D4AF37]/30 rounded-3xl p-6 text-center relative"
+          className="w-full max-w-sm bg-[#1A1A1A] border border-[#D4AF37]/30 rounded-3xl p-6 text-right relative"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
@@ -25,17 +25,22 @@ export default function DrinkNotification({ show, senderName, onAccept, onDeclin
           onClick={(e) => e.stopPropagation()}
         >
           <button
-            onClick={onClose}
-            className="absolute top-4 left-4 text-white/40 hover:text-white transition-colors z-10 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onClose();
+            }}
+            className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors z-20 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10"
+            type="button"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
-            <div className="text-5xl mb-3">🍸</div>
-            <h3 className="text-xl font-bold text-white mb-1">
+            <div className="text-5xl mb-3 text-center">🍸</div>
+            <h3 className="text-xl font-bold text-white mb-1 text-center">
               מישהו רוצה לשלוח לך משקה 😉
             </h3>
             {senderName && (
-              <p className="text-[#D4AF37] text-sm mb-5">{senderName}</p>
+              <p className="text-[#D4AF37] text-sm mb-5 text-center">{senderName}</p>
             )}
 
             <div className="flex gap-3">
