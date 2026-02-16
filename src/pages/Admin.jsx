@@ -74,6 +74,38 @@ export default function Admin() {
     loadData();
   };
 
+  const resetAllMatches = async () => {
+    const allMatches = await base44.entities.Match.filter({});
+    await Promise.all(allMatches.map(m => base44.entities.Match.delete(m.id)));
+    toast({ 
+      title: "כל המאצ'ים נמחקו", 
+      description: `${allMatches.length} התאמות נמחקו בהצלחה` 
+    });
+    loadData();
+  };
+
+  const resetApp = async () => {
+    const [allProfiles, allMatches, allDrinks, allSwipes] = await Promise.all([
+      base44.entities.Profile.filter({}),
+      base44.entities.Match.filter({}),
+      base44.entities.Drink.filter({}),
+      base44.entities.Swipe.filter({}),
+    ]);
+
+    await Promise.all([
+      ...allProfiles.map(p => base44.entities.Profile.delete(p.id)),
+      ...allMatches.map(m => base44.entities.Match.delete(m.id)),
+      ...allDrinks.map(d => base44.entities.Drink.delete(d.id)),
+      ...allSwipes.map(s => base44.entities.Swipe.delete(s.id)),
+    ]);
+
+    toast({ 
+      title: "האפליקציה אופסה במלואה", 
+      description: "כל הנתונים נמחקו בהצלחה" 
+    });
+    loadData();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
@@ -103,15 +135,82 @@ export default function Admin() {
     <div className="min-h-screen bg-[#0F0F0F] p-5 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold shimmer-gold">🔧 ניהול</h1>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={loadData}
-          className="border-[#333] text-white/60 hover:text-white"
-        >
-          <RefreshCw className="w-4 h-4 ml-2" />
-          רענן
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadData}
+            className="border-[#333] text-white/60 hover:text-white"
+          >
+            <RefreshCw className="w-4 h-4 ml-2" />
+            רענן
+          </Button>
+        </div>
+      </div>
+
+      {/* Reset Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 h-14"
+            >
+              <Trash2 className="w-5 h-5 ml-2" />
+              אפס את כל המאצ׳ים
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-[#1A1A1A] border-[#333]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">מחיקת כל המאצ׳ים</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/50">
+                פעולה זו תמחק את כל ההתאמות ({matches.length}) מהמערכת. הפרופילים יישארו. האם להמשיך?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-[#252525] border-[#444] text-white hover:bg-[#333]">
+                ביטול
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={resetAllMatches}
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                מחק את כל המאצ׳ים
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 h-14"
+            >
+              <Trash2 className="w-5 h-5 ml-2" />
+              אפס את כל האפליקציה
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-[#1A1A1A] border-[#333]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">איפוס מלא של האפליקציה</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/50">
+                ⚠️ אזהרה! פעולה זו תמחק את כל הנתונים: {profiles.length} פרופילים, {matches.length} מאצ׳ים, {drinks.length} משקאות ו-{swipes.length} החלקות. פעולה זו לא ניתנת לביטול!
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-[#252525] border-[#444] text-white hover:bg-[#333]">
+                ביטול
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={resetApp}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                אפס הכל
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {/* Stats */}
