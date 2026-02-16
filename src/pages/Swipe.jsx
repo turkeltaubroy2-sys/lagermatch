@@ -66,10 +66,22 @@ export default function Swipe() {
       if (event.type === "create" && event.data.receiver_id === myProfile.id) {
         const sender = allProfilesCache.find(p => p.id === event.data.sender_id);
         if (sender) {
-          toast({
-            title: `💬 הודעה חדשה מ${sender.first_name}`,
-            description: event.data.content.substring(0, 50) + (event.data.content.length > 50 ? "..." : ""),
-            duration: 2000,
+          // Find the match to get matchId
+          base44.entities.Match.filter({}).then(allMatches => {
+            const match = allMatches.find(m => 
+              (m.user1_id === myProfile.id && m.user2_id === sender.id) ||
+              (m.user2_id === myProfile.id && m.user1_id === sender.id)
+            );
+            
+            toast({
+              title: `💬 הודעה חדשה מ${sender.first_name}`,
+              description: event.data.content.substring(0, 50) + (event.data.content.length > 50 ? "..." : ""),
+              duration: 2000,
+              action: match ? {
+                label: "פתח",
+                onClick: () => navigate(createPageUrl("Chat") + `?matchId=${match.id}`)
+              } : undefined,
+            });
           });
         }
       }
