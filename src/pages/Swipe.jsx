@@ -387,9 +387,9 @@ export default function Swipe() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe(true)}
-            className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-2xl shadow-green-500/40 hover:from-green-400 hover:to-green-500 transition-all active:shadow-green-500/60"
+            className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-2xl shadow-green-500/40 hover:from-green-400 hover:to-green-500 transition-all active:shadow-green-500/60"
           >
-            <Heart className="w-10 h-10 text-white" fill="white" strokeWidth={0} />
+            <Heart className="w-8 h-8 text-white" fill="white" strokeWidth={0} />
           </motion.button>
         </div>
       )}
