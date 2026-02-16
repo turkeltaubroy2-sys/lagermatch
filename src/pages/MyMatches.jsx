@@ -68,11 +68,8 @@ export default function MyMatches() {
     });
   };
 
-  const handleSendMessage = (targetProfile) => {
-    toast({
-      title: `💬 פנה/י ל${targetProfile.first_name}`,
-      description: "לכו למצוא אחד את השנייה על הרחבה!",
-    });
+  const handleSendMessage = (matchId) => {
+    navigate(createPageUrl("Chat") + `?matchId=${matchId}`);
   };
 
   const handleDeleteMatch = async (matchId, targetProfile) => {
@@ -196,7 +193,7 @@ export default function MyMatches() {
                 </div>
                 <div className="flex flex-col gap-2 flex-shrink-0">
                   <Button
-                    onClick={() => handleSendMessage(item.profile)}
+                    onClick={() => handleSendMessage(item.match.id)}
                     size="sm"
                     className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold rounded-xl h-9 px-3 hover:opacity-90 transition-all"
                   >
