@@ -43,6 +43,7 @@ const Toast = React.forwardRef(({ className, variant, ...props }, ref) => {
     <div
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
+      dir="rtl"
       {...props}
     />
   );
@@ -79,7 +80,7 @@ ToastClose.displayName = "ToastClose";
 const ToastTitle = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm font-semibold", className)}
+    className={cn("text-sm font-semibold text-right", className)}
     {...props}
   />
 ));
@@ -88,7 +89,7 @@ ToastTitle.displayName = "ToastTitle";
 const ToastDescription = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm opacity-90", className)}
+    className={cn("text-sm opacity-90 text-right", className)}
     {...props}
   />
 ));
