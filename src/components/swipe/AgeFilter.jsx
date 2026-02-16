@@ -131,12 +131,12 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
             )}
             </motion.div>
           </>
-          )}
-          </AnimatePresence>
+        )}
+      </AnimatePresence>
 
-          {/* Location bottom sheet */}
-          <AnimatePresence>
-          {showLocationSheet && (
+      {/* Location bottom sheet */}
+      <AnimatePresence>
+        {showLocationSheet && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -189,8 +189,8 @@ export default function AgeFilter({ ageRange, locationFilter, onChangeRange, onC
               </div>
             </motion.div>
           </>
-          )}
-          </AnimatePresence>
-          </div>
-          );
-          }
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
