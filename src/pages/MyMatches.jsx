@@ -81,12 +81,15 @@ export default function MyMatches() {
   return (
     <div className="min-h-screen bg-[#0F0F0F] px-5 py-6 max-w-md mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <Link to={createPageUrl("Swipe")} className="text-white/50 hover:text-white">
-          <ArrowRight className="w-6 h-6" />
-        </Link>
-        <h1 className="text-2xl font-bold shimmer-gold">💕 ההתאמות שלי</h1>
-        <div className="w-6" />
+      <div className="flex flex-col items-center mb-8">
+        <div className="flex items-center justify-between w-full mb-2">
+          <Link to={createPageUrl("Swipe")} className="text-white/50 hover:text-white">
+            <ArrowRight className="w-6 h-6" />
+          </Link>
+          <h1 className="text-2xl font-bold shimmer-gold">💕 ההתאמות שלי</h1>
+          <div className="w-6" />
+        </div>
+        <p className="text-xs text-white/20">איתי ויעל 💍</p>
       </div>
 
       {matchProfiles.length === 0 ? (

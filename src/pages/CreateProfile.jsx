@@ -122,6 +122,8 @@ export default function CreateProfile() {
           <div className="w-6" />
         </div>
 
+        <p className="text-center text-white/20 text-xs mb-6">💍 איתי ויעל</p>
+
         {/* Photo upload */}
         <div className="flex justify-center mb-8">
           <label className="cursor-pointer relative group">

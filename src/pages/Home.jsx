@@ -119,7 +119,7 @@ export default function Home() {
         </Link>
 
         <p className="text-xs text-white/30 mt-6">
-          ❤️ made with love for tonight
+          ❤️ בברכה מאיתי ויעל
         </p>
       </motion.div>
     </div>

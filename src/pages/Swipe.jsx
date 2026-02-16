@@ -175,7 +175,10 @@ export default function Swipe() {
     <div className="min-h-screen bg-[#0F0F0F] flex flex-col max-w-md mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4">
-        <h1 className="text-xl font-bold shimmer-gold">💍 Match</h1>
+        <div>
+          <h1 className="text-xl font-bold shimmer-gold">💍 Match</h1>
+          <p className="text-[10px] text-white/20">איתי ויעל</p>
+        </div>
         <div className="flex items-center gap-3">
           <AgeFilter ageRange={ageRange} onChangeRange={handleAgeRangeChange} />
           <Link
