@@ -9,9 +9,9 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
   const nopeOpacity = useTransform(x, [-100, 0], [1, 0]);
 
   const handleDragEnd = (_, info) => {
-    if (info.offset.x > 100) {
+    if (info.offset.x > 80) {
       onSwipe(true);
-    } else if (info.offset.x < -100) {
+    } else if (info.offset.x < -80) {
       onSwipe(false);
     }
   };
@@ -23,6 +23,8 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
           src={profile.photo_url}
           alt={profile.first_name}
           className="w-full h-full object-cover opacity-50"
+          loading="lazy"
+          decoding="async"
         />
       </div>
     );
@@ -31,17 +33,18 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
   return (
     <motion.div
       className="absolute inset-0 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing card-swipe"
-      style={{ x, rotate }}
+      style={{ x, rotate, willChange: "transform" }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.7}
+      dragElastic={0.5}
+      dragMomentum={false}
       onDragEnd={handleDragEnd}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ 
-        x: x.get() > 0 ? 300 : -300,
+        x: x.get() > 0 ? 400 : -400,
         opacity: 0,
-        transition: { duration: 0.3 }
+        transition: { duration: 0.2 }
       }}
     >
       {/* Photo */}
