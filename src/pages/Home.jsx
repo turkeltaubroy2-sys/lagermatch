@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QRCode from "@/components/QRCode";
-import WelcomePopup from "@/components/WelcomePopup";
 
 export default function Home() {
   const [hasProfile, setHasProfile] = useState(null);
