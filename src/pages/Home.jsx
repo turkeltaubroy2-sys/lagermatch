@@ -96,17 +96,24 @@ export default function Home() {
           🍸
         </motion.div>
 
-        <h1 className="font-display text-6xl font-black mb-1 tracking-tight leading-none">
-          <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent drop-shadow-sm">Night</span>
-          <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent drop-shadow-sm">Match</span>
-        </h1>
+        {/* Lager & Ale logo-style title */}
+        <div className="mb-1">
+          <h1 className="font-display text-5xl font-black tracking-tight leading-none"
+            style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.05em" }}
+          >
+            <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">LAGER</span>
+            <span className="text-white/80 mx-1 text-4xl">&amp;</span>
+            <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">ALE</span>
+          </h1>
+          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">EDITION</p>
+        </div>
 
-        <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5">
+        <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5 mt-2">
           Bar · Vibe · Connect
         </p>
 
         <motion.div
-          className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#FE3C72] to-transparent mx-auto mb-6"
+          className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mb-6"
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
