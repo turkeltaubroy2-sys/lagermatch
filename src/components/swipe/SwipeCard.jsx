@@ -43,12 +43,13 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
       dragElastic={0.5}
       dragMomentum={false}
       onDragEnd={handleDragEnd}
+      style={{ x, rotate, willChange: "transform", zIndex: 1 }}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ 
-        x: x.get() > 0 ? 400 : -400,
+        x: x.get() > 0 ? 500 : -500,
         opacity: 0,
-        transition: { duration: 0.2 }
+        transition: { duration: 0.18, ease: "easeIn" }
       }}
     >
       {/* Photo */}
