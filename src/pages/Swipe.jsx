@@ -295,9 +295,12 @@ export default function Swipe() {
             >
               🍸
             </motion.span>
-            <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent font-black">NightMatch</span>
+            <span style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.04em" }}
+              className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent font-black">
+              LAGER &amp; ALE
+            </span>
           </h1>
-          <p className="text-[10px] text-white/30 font-medium">הערב הזה לא נשכח 🔥</p>
+          <p className="text-[10px] text-white/30 font-medium">הערב הזה לא נשכח 🔥 · Edition</p>
         </div>
         <div className="flex items-center gap-3">
           <AgeFilter 
