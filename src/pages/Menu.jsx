@@ -4,131 +4,117 @@ import BottomNav from "@/components/BottomNav";
 
 const categories = [
   {
-    id: "beers",
-    label: "🍺 בירות",
-    items: [
-      { name: "גינס", name_en: "Guinness", price: "₪19 / ₪23", note: "שליש / חצי | Stout אירי קלאסי" },
-      { name: "הוגארדן", name_en: "Hoegaarden", price: "₪19 / ₪23", note: "שליש / חצי | White Ale בלגית" },
-      { name: "מלכה", name_en: "Malka", price: "₪15 / ₪19", note: "שליש / חצי | ישראלית מתחלפת" },
-      { name: "טובורג", name_en: "Tuborg", price: "₪15 / ₪19", note: "שליש / חצי | לאגר ענברי" },
-      { name: "קרלסברג", name_en: "Carlsberg", price: "₪15 / ₪19", note: "שליש / חצי | לאגר קלאסי" },
-      { name: "פאולנר", name_en: "Paulaner", price: "₪19 / ₪23", note: "שליש / חצי | Weiss בווארית" },
-      { name: "פרוטי אייל", name_en: "Fruity Ale", price: "₪19 / ₪23", note: "שליש / חצי | אייל פירותי" },
-      { name: "טריפל אייל", name_en: "Tripel Ale", price: "₪19 / ₪23", note: "שליש / חצי" },
-      { name: "סטרונג פרוטי אייל", name_en: "Strong Fruity Ale", price: "₪19 / ₪23", note: "שליש / חצי" },
-      { name: "בירה מתחלפת", name_en: "Rotating Tap", price: "מ-₪15", note: "שאלו את הברמן 🍻" },
-    ]
-  },
-  {
-    id: "deals",
-    label: "🥃 מבצעים וצ'ייסרים",
-    items: [
-      { name: "צ'ייסר קלאסי", name_en: "Classic Chaser", price: "₪15", note: "ג'ק / וויסקי + שוט בירה" },
-      { name: "צ'ייסר פרימיום", name_en: "Premium Chaser", price: "₪25", note: "ספיריט פרימיום + שוט בירה" },
-      { name: "קוקטייל הבר", name_en: "Bar Cocktail", price: "₪29", note: "שאלו את הברמן 🍹" },
-      { name: "עסקית א׳-ה׳ 12:00-16:00", name_en: "Daily Deal", price: "מיוחד", note: "DEAL WITH IT 🔥 כולל אוכל ושתייה" },
-    ]
-  },
-  {
-    id: "whiskey",
-    label: "🥃 וויסקי",
-    items: [
-      { name: "ג'ק דניאלס", name_en: "Jack Daniel's", price: "₪29", note: "American Whiskey" },
-      { name: "בולייט ריי", name_en: "Bulleit Rye", price: "₪39", note: "American Rye" },
-      { name: "ווילד טרקי 81", name_en: "Wild Turkey 81", price: "₪29", note: "American Bourbon" },
-      { name: "ג'ים בים אפל / הוני", name_en: "Jim Beam Apple / Honey", price: "₪29", note: "Flavored Bourbon" },
-      { name: "ג'יימסון אוריג'ינל", name_en: "Jameson Original", price: "₪29", note: "Irish Whiskey" },
-      { name: "טולמור דיו", name_en: "Tullamore D.E.W.", price: "₪29", note: "Irish Whiskey" },
-      { name: "קונמרה", name_en: "Connemara", price: "₪39", note: "Irish Peated" },
-      { name: "גלנפידיך 12", name_en: "Glenfiddich 12", price: "₪29", note: "Single Malt Scotch" },
-      { name: "גלנפידיך 15", name_en: "Glenfiddich 15", price: "₪39", note: "Single Malt Scotch" },
-      { name: "מקאלן 12", name_en: "The Macallan 12", price: "₪39", note: "Single Malt Scotch" },
-      { name: "גלנמוראנג'י X", name_en: "Glenmorangie X", price: "₪29", note: "Single Malt Scotch" },
-      { name: "גלנמוראנג'י 10", name_en: "Glenmorangie 10", price: "₪29", note: "Single Malt Scotch" },
-      { name: "גלנמוראנג'י לסאנטה", name_en: "Glenmorangie Lasanta", price: "₪39", note: "Sherry Cask Finish" },
-      { name: "גלנמוראנג'י קווינטה רובן", name_en: "Glenmorangie Quinta Ruban", price: "₪39", note: "Port Cask Finish" },
-      { name: "גלנמוראנג'י נקטר דאור", name_en: "Glenmorangie Nectar D'Or", price: "₪39", note: "Sauternes Cask Finish" },
-      { name: "טאליסקר 10", name_en: "Talisker 10", price: "₪39", note: "Island Single Malt" },
-      { name: "ארדבג 10", name_en: "Ardbeg 10", price: "₪39", note: "Islay Single Malt" },
-      { name: "לאפרוייג 10", name_en: "Laphroaig 10", price: "₪39", note: "Islay Single Malt" },
-      { name: "לגווולין 16", name_en: "Lagavulin 16", price: "₪49", note: "Islay Single Malt" },
-      { name: "ג'וני ווקר בלונד", name_en: "Johnnie Walker Blonde", price: "₪29", note: "Blended Scotch" },
-      { name: "ג'וני ווקר בלאק", name_en: "Johnnie Walker Black Label", price: "₪29", note: "Blended Scotch" },
-      { name: "ג'וני ווקר בלו", name_en: "Johnnie Walker Blue Label", price: "₪89", note: "Blended Scotch Premium" },
-      { name: "מאנקי שולדר", name_en: "Monkey Shoulder", price: "₪29", note: "Blended Malt" },
-      { name: "גראנטס", name_en: "Grant's", price: "₪29", note: "Blended Scotch" },
-      { name: "גראנטס 12", name_en: "Grant's 12", price: "₪39", note: "Blended Scotch 12yr" },
-      { name: "ברודוג לאון וולף", name_en: "BrewDog Lone Wolf", price: "₪39", note: "Craft Whisky" },
-      { name: "ברודוג 500 קאטס", name_en: "BrewDog Five Hundred Cuts", price: "₪39", note: "Craft Whisky" },
-      { name: "ביקי", name_en: "Biki", price: "₪49", note: "Japanese Whisky" },
-      { name: "רויאל לוכנגאר", name_en: "Royal Lochnagar", price: "₪39", note: "Highland Single Malt" },
-    ]
-  },
-  {
-    id: "spirits",
-    label: "🍸 ספיריטס",
-    items: [
-      { name: "מילאגרו סילבר", name_en: "Milagro Silver", price: "₪29", note: "Tequila" },
-      { name: "אספולון רפוסאדו", name_en: "Espolon Reposado", price: "₪29", note: "Tequila" },
-      { name: "קאסה אמיגוס בלאנקו", name_en: "Casa Amigos Blanco", price: "₪39", note: "Tequila" },
-      { name: "פטרון רפוסאדו", name_en: "Patron Reposado", price: "₪39", note: "Tequila" },
-      { name: "קטל ואן", name_en: "Ketel One", price: "₪29", note: "Vodka" },
-      { name: "סטוליצ'נאיה", name_en: "Stolichnaya", price: "₪29", note: "Vodka" },
-      { name: "בלבדר", name_en: "Belvedere", price: "₪39", note: "Vodka Premium" },
-      { name: "גריי גוס", name_en: "Grey Goose", price: "₪39", note: "Vodka Premium" },
-      { name: "טאנקריי", name_en: "Tanqueray", price: "₪29", note: "Gin" },
-      { name: "גורדון'ס פינק", name_en: "Gordon's Pink", price: "₪29", note: "Gin Pink" },
-      { name: "לינד & ליים", name_en: "Lind & Lime", price: "₪39", note: "Gin Craft" },
-      { name: "הנדריקס", name_en: "Hendrick's", price: "₪39", note: "Gin Premium" },
-      { name: "קפטן מורגן דארק", name_en: "Captain Morgan Dark", price: "₪29", note: "Rum" },
-      { name: "קפטן מורגן ספייסד", name_en: "Captain Morgan Spiced", price: "₪29", note: "Rum Spiced" },
-      { name: "הנסי VS", name_en: "Hennessy VS", price: "₪29", note: "Cognac" },
-      { name: "קמפרי", name_en: "Campari", price: "₪29", note: "Liqueur" },
-      { name: "פיג", name_en: "Fig", price: "₪29", note: "Liqueur" },
-      { name: "יגרמייסטר", name_en: "Jagermeister", price: "₪29", note: "Herbal Liqueur" },
-      { name: "שרטרז", name_en: "Chartreuse", price: "₪39", note: "Herbal Liqueur" },
-      { name: "ארק", name_en: "Arak", price: "₪29", note: "אניז ישראלי" },
-      { name: "אוזו 12", name_en: "Ouzo 12", price: "₪29", note: "Anise" },
-    ]
-  },
-  {
-    id: "wine",
-    label: "🍷 יין",
-    items: [
-      { name: "אדום", name_en: "Red Wine", price: "₪20 / ₪79", note: "כוס / בקבוק" },
-      { name: "לבן", name_en: "White Wine", price: "₪20 / ₪79", note: "כוס / בקבוק" },
-      { name: "רוזה", name_en: "Rosé", price: "₪19 / ₪79", note: "כוס / בקבוק" },
-      { name: "למברוסקו", name_en: "Lambrusco", price: "₪20 / ₪89", note: "כוס / בקבוק | יין מבעבע אדום" },
-    ]
-  },
-  {
     id: "food_main",
     label: "🍔 אוכל קדימה",
     items: [
-      { name: "ברגר", name_en: "Burger", price: "₪49", note: "קציצת בקר, חסה, עגבנייה, חמוצים, רטב הבר" },
-      { name: "ברגר כפול", name_en: "Double Burger", price: "₪59", note: "שתי קציצות" },
-      { name: "נאגטס", name_en: "Nuggets", price: "₪32", note: "עוף פריך, 8 יח׳, עם רטבים" },
-      { name: "פינגרס", name_en: "Chicken Fingers", price: "₪35", note: "פסי עוף פריכים, עם רטבים" },
-      { name: "נקניקיות ברביקיו", name_en: "BBQ Sausages", price: "₪38", note: "עם חרדל ורוטב ביתי" },
-      { name: "צ'יפס", name_en: "Fries", price: "₪22", note: "פריכות, עם רטבים לבחירה" },
-      { name: "צ'יפס עם גבינה", name_en: "Cheese Fries", price: "₪28", note: "ציפס + גבינה מומסת" },
+      { name: "שניצלונים בטמפורה & צ'יפס", price: "₪55", note: "" },
+      { name: "FISH & CHIPS", price: "₪55", note: "" },
+      { name: "L&A סמאש בורגר+צ'יפס", price: "₪59", note: "סמאש בורגר 160 גרם בלחמניית בריוש רכה עם פרוסות עגבניה, בצל סגל וחסה קאוצ'ה בצד. מוגש בתוספת צ'יפס..." },
+      { name: "המבורגר טבעוני", price: "₪56", note: "קטשופ פלפלים, חסה, עגבניה, בצל. תוספת צ'יפס ₪13+" },
+      { name: "ערעיס", price: "₪48", note: "פיתה בשר מוגשת לצד עגבניות שרי, זיתים וטחינה" },
+      { name: "פיצה מרגריטה", price: "₪35", note: "" },
+      { name: "צ'יפס מיקס", price: "₪34", note: "צ'יפס בטטה ותפו\"א" },
+      { name: "טבעות בצל", price: "₪32", note: "מוגש עם רוטב ציפולה" },
+      { name: "CORNEDBEEF SANDWICH", price: "₪48", note: "160 גרם קורנבדיף עם חרדל דיזיון, בלחם קסטון כפרי וכרוב תוצרת בית" },
+      { name: "CUBANO SANDWICH", price: "₪38", note: "פרוסות נקניק חזיר וכתפי בקר מעושן, מוגש בג'בטה בתנור אבן, איולי שום, ריבת בצל, חרדל דבש, ופרוסות מלפיפון חמוץ" },
     ]
   },
   {
     id: "food_side",
     label: "🥙 אוכל ליד הבירה",
     items: [
-      { name: "ערעיס", name_en: "Ara'is", price: "₪35", note: "⭐ הכי מומלץ! כריך בשר מוגרבי על הגריל" },
-      { name: "נאצ'וס", name_en: "Nachos", price: "₪32", note: "צ'יפס תירס, גבינה, גוואקמולה, סלסה" },
-      { name: "ביצי שלו", name_en: "Deviled Eggs", price: "₪25", note: "ביצים קשות עם מיונז, פפריקה" },
-      { name: "זיתים", name_en: "Olives", price: "₪18", note: "זיתים מתובלים" },
-      { name: "ברקס", name_en: "Borekas", price: "₪22", note: "מוגשים חמים עם רטבים" },
+      { name: "TOAST CHEESE AND CHUTNEY", price: "₪39", note: "גבינת גאודה, צ'טני וחרדל דבש" },
+      { name: "DOUBLE MINI HOTDOG - עוף", price: "₪32", note: "נקניקיית עוף איכותית לבחירה בלחמניה עם חרדל וכרוב כבוש" },
+      { name: "DOUBLE MINI HOTDOG - עגל/ צ'וריסו", price: "₪38", note: "נקניקיה איכותית לבחירה בלחמניה עם חרדל וכרוב כבוש. מגוון נקניקיות לבחירה: עגל/ צ'וריסו" },
+      { name: "נישנושי נקניקיות - עוף", price: "₪14", note: "" },
+      { name: "נישנושי נקניקיות - לבחירה: עגל או צ'וריסו", price: "₪22", note: "" },
+      { name: "CREAMY NACHOS", price: "₪38", note: "נאצ'וס מוקרם עם גבינה כחולה, צ'דר, גואקמולי, סלסת עגבניות וחלפיניו" },
+      { name: "CAPRESE", price: "₪28", note: "שרי צבעוניות, פסטו, בלסמי ובייבי מוצרלה" },
+      { name: "HOME FRIES", price: "₪32", note: "קוביות תפו\"א ברוטב צ'ילי מתוק" },
+      { name: "אדממה", price: "₪34", note: "" },
+      { name: "OLIVE MIX", price: "₪18", note: "זיתי קלמטה, זית ירוק ענק, בצלצלי שאלוט" },
+      { name: "סניידרס בטעמים", price: "₪25", note: "שקית גדולה של שברי ביגלה בטעמים משתנים" },
+    ]
+  },
+  {
+    id: "beers",
+    label: "🍺 בירות",
+    subcategories: [
+      {
+        label: "לאגר",
+        items: [
+          { name: "וויינשטפן WINTERFEST", price: "₪23/39", note: "לאגר גרמני עונתי 5.8% | מוגשת: 500/1,000 מ\"ל | בירת חורף עונתית עם ארומה פירותית וטעם עשיר ומאוזן" },
+          { name: "באדוויזר", price: "₪19/22", note: "לאגר אמריקאי 5%" },
+          { name: "קרלסברג לומה", price: "₪18/21", note: "לאגר לא מסוננת 5.2%" },
+          { name: "סטלה ארטואה", price: "₪18/22/39", note: "לאגר 5%" },
+          { name: "טובורג", price: "₪16/19", note: "לאגר ענברי 5.2%" },
+          { name: "אסטרייה דאם", price: "₪18/22", note: "לאגר 4.6%" },
+        ]
+      },
+      {
+        label: "אייל",
+        items: [
+          { name: "נגב אוואזים", price: "₪19/24", note: "אייל לא מסוננת 4.7%" },
+          { name: "קסטיל רוזי", price: "₪24", note: "אייל דובדבנים חזק 8% | 330ml" },
+          { name: "קסטיל רובוס", price: "₪24", note: "אייל פטל (רובוס) חזק 6.8% | 330ml" },
+          { name: "מרדסו", price: "₪24", note: "טריפל אייל חזקה 10% | 330ml" },
+          { name: "ליפמנס און דה רוקס", price: "₪23", note: "אייל פירותי 3.8% | 280ml" },
+          { name: "מלכה אדמונית", price: "₪19/24", note: "פייל אייל אנגלי 5.5%" },
+          { name: "לף בלונד", price: "₪22", note: "אייל בהירה 6.6% | 330ml" },
+        ]
+      },
+      {
+        label: "IPA",
+        items: [
+          { name: "הרצל HAZY שמייזי", price: "₪19/23", note: "הייזי IPA לא מסוננת 5.5%" },
+          { name: "אלכסנדר גרין", price: "₪19/23", note: "IPA 6%" },
+          { name: "שקמה IPA", price: "₪19/24", note: "IPA 5.2%" },
+        ]
+      },
+      {
+        label: "חיטה",
+        items: [
+          { name: "פראנציסקנר", price: "₪18/23/39", note: "חיטה בהירה 5%" },
+          { name: "וויינשטפן דונקל", price: "₪18/23/39", note: "חיטה כהה 5.3% | מוגשת 330/500/1,000 מ\"ל" },
+          { name: "וויינשטפן ויטוס", price: "₪19/23/39", note: "וויצבוק 7.7%" },
+          { name: "הוגרדן", price: "₪21", note: "חיטה בלגית לא מסוננת 4.9% | 330ml" },
+          { name: "בלאנק 1664", price: "₪19/24", note: "חיטה צרפתית 5%" },
+          { name: "בלומון", price: "₪19/23", note: "חיטה אמריקאית 5.4%" },
+        ]
+      },
+      {
+        label: "סטאוט",
+        items: [
+          { name: "גינס", price: "₪18/23", note: "סטאוט 4.2%" },
+        ]
+      }
+    ]
+  },
+  {
+    id: "deals",
+    label: "🥃 מבצעים וצ'ייסרים",
+    items: [
+      { name: "4 צ'ייסרים לבחירה", price: "₪34", note: "גלנמורנג'י איקס | ג'וני ווקר בלונד | גרנטס | טלמור דיו | קמפרי | גים בים תפוח | גים בים דבש" },
+      { name: "4 צ'ייסרים לבחירה", price: "₪44", note: "גלנמורנג'י 10 | גלנפידיך 12 | ג'וני ווקר בלאק לייבל | מילאגרו סילבר | קאסה אמיגוס בלאנקו | גין ברודוג רון וולף | יגרמייסטר" },
+    ]
+  },
+  {
+    id: "wine",
+    label: "🍷 יין",
+    items: [
+      { name: "עמק האלה אדום", price: "₪25/99", note: "כוס / בקבוק" },
+      { name: "עמק האלה לבן", price: "₪25/99", note: "כוס / בקבוק" },
+      { name: "עמק האלה רוזה", price: "₪99", note: "בקבוק בלבד" },
+      { name: "אדום", price: "₪20/79", note: "כוס / בקבוק" },
+      { name: "לבן", price: "₪20/79", note: "כוס / בקבוק" },
+      { name: "רוזה", price: "₪89", note: "בקבוק בלבד" },
     ]
   },
 ];
 
 export default function Menu() {
-  const [activeCategory, setActiveCategory] = useState("beers");
+  const [activeCategory, setActiveCategory] = useState("food_main");
+  const [openSub, setOpenSub] = useState({ לאגר: true, אייל: false, IPA: false, חיטה: false, סטאוט: false });
 
   const current = categories.find(c => c.id === activeCategory);
 
@@ -150,7 +136,7 @@ export default function Menu() {
         </div>
       </div>
 
-      {/* Category Tabs - scrollable */}
+      {/* Category Tabs */}
       <div className="px-4 mb-5 overflow-x-auto">
         <div className="flex gap-2 pb-1" style={{ width: "max-content" }}>
           {categories.map(cat => (
@@ -179,26 +165,71 @@ export default function Menu() {
           transition={{ duration: 0.2 }}
           className="px-4 space-y-2"
         >
-          {current.items.map((item, i) => (
-            <motion.div
-              key={item.name}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.04 }}
-              className="bg-gradient-to-br from-[#1A1A1A] to-[#161616] border border-white/[0.07] rounded-2xl px-5 py-4 flex items-center justify-between"
-            >
-              <div className="flex-1">
-                <p className="font-bold text-white text-base leading-tight">{item.name}</p>
-                <p className="text-[11px] text-white/35 mt-0.5 font-medium leading-snug">{item.name_en} · {item.note}</p>
-              </div>
-              <div className="mr-4 text-right flex-shrink-0">
-                <span className="font-black text-[#D4AF37] text-base">{item.price}</span>
-              </div>
-            </motion.div>
-          ))}
+          {/* Beer subcategories */}
+          {current.subcategories ? (
+            <div className="space-y-2">
+              {current.subcategories.map(sub => (
+                <div key={sub.label}>
+                  <button
+                    onClick={() => setOpenSub(s => ({ ...s, [sub.label]: !s[sub.label] }))}
+                    className="w-full flex justify-between items-center px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-2xl text-white font-bold text-base mb-1"
+                  >
+                    <span className="text-[#D4AF37]">{sub.label}</span>
+                    <span className="text-white/40 text-lg">{openSub[sub.label] ? "▲" : "▼"}</span>
+                  </button>
+                  <AnimatePresence>
+                    {openSub[sub.label] && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="space-y-2 overflow-hidden"
+                      >
+                        {sub.items.map((item, i) => (
+                          <motion.div
+                            key={item.name}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.04 }}
+                            className="bg-gradient-to-br from-[#1A1A1A] to-[#161616] border border-white/[0.07] rounded-2xl px-5 py-4 flex items-start justify-between"
+                          >
+                            <div className="flex-1">
+                              <p className="font-bold text-white text-base leading-tight">{item.name}</p>
+                              {item.note && <p className="text-[11px] text-white/35 mt-0.5 font-medium leading-snug">{item.note}</p>}
+                            </div>
+                            <div className="mr-4 text-right flex-shrink-0">
+                              <span className="font-black text-[#D4AF37] text-base">{item.price}</span>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          ) : (
+            current.items.map((item, i) => (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.04 }}
+                className="bg-gradient-to-br from-[#1A1A1A] to-[#161616] border border-white/[0.07] rounded-2xl px-5 py-4 flex items-start justify-between"
+              >
+                <div className="flex-1">
+                  <p className="font-bold text-white text-base leading-tight">{item.name}</p>
+                  {item.note && <p className="text-[11px] text-white/35 mt-1 font-medium leading-snug">{item.note}</p>}
+                </div>
+                <div className="mr-4 text-right flex-shrink-0">
+                  <span className="font-black text-[#D4AF37] text-base">{item.price}</span>
+                </div>
+              </motion.div>
+            ))
+          )}
 
           <div className="text-center pt-3 pb-2">
-            <p className="text-[10px] text-white/15 tracking-widest uppercase">עוד אפשרויות? שאלו את הברמן 🍺</p>
+            <p className="text-[10px] text-white/15 tracking-widest uppercase">שירות עצמי · Self Service 🍺</p>
           </div>
         </motion.div>
       </AnimatePresence>
