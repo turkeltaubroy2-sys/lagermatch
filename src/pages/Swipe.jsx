@@ -280,7 +280,7 @@ export default function Swipe() {
   const currentProfile = filteredProfiles[0];
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] flex flex-col max-w-md mx-auto pb-20">
+    <div className="min-h-[100dvh] bg-[#0F0F0F] flex flex-col max-w-md mx-auto pb-20">
       {/* Pull to refresh indicator */}
       {refreshing && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold">
