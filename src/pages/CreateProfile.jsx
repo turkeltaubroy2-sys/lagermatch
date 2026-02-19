@@ -140,7 +140,7 @@ export default function CreateProfile() {
           <button onClick={() => window.history.back()} className="text-white/50 hover:text-white">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-bold shimmer-gold">צור פרופיל</h1>
+          <h1 className="text-2xl font-black bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] bg-clip-text text-transparent">הצג את עצמך 🔥</h1>
           <div className="w-6" />
         </div>
 

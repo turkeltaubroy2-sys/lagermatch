@@ -88,49 +88,39 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <motion.div
-          className="text-5xl mb-4"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="text-6xl mb-4"
+          animate={{ scale: [1, 1.15, 1], rotate: [-5, 5, -5] }}
+          transition={{ duration: 2.5, repeat: Infinity }}
         >
-          💍
+          🍸
         </motion.div>
 
-        <h1 className="text-4xl font-black mb-8 flex items-center justify-center gap-2">
-          <motion.span 
-            className="text-4xl"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            ❤️
-          </motion.span>
-          <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent">WedMatch</span>
+        <h1 className="text-5xl font-black mb-2 flex items-center justify-center gap-2">
+          <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent">Night</span>
+          <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">Match</span>
         </h1>
 
         <motion.div
-          className="w-20 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mb-4"
+          className="w-24 h-[2px] bg-gradient-to-r from-[#FE3C72] via-[#D4AF37] to-[#FE3C72] mx-auto mb-5"
           initial={{ width: 0 }}
-          animate={{ width: 80 }}
+          animate={{ width: 96 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         />
 
-        <p className="text-base text-white/60 mb-1 leading-relaxed">
-          רווקים בלבד.
+        <p className="text-xl font-bold text-white mb-1">
+          🔥 הערב הזה לא נשכח
         </p>
-        <p className="text-base text-white/60 mb-8 leading-relaxed">
-          בואו נעשה את הערב הזה בלתי נשכח 😉
+        <p className="text-sm text-white/50 mb-8 leading-relaxed">
+          מצא/י את מי שתמצא/י הלילה 😉
         </p>
 
         <Link to={createPageUrl("CreateProfile")}>
           <Button
-            className="w-full py-6 text-lg font-bold rounded-2xl bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] hover:opacity-90 transition-all duration-300 shadow-lg shadow-[#D4AF37]/20 gold-glow"
+            className="w-full py-7 text-xl font-black rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] text-white hover:opacity-90 transition-all duration-300 shadow-2xl shadow-[#FE3C72]/30"
           >
-            ✨ צור פרופיל
+            🚀 אני פנוי/ה הערב
           </Button>
         </Link>
-
-        <p className="text-lg font-semibold text-[#D4AF37] mt-6">
-          רועי ויעל ❤️
-        </p>
 
         {showQR && (
           <motion.div

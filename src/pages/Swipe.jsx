@@ -292,11 +292,11 @@ export default function Swipe() {
               animate={{ scale: [1, 1.15, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              ❤️
+              🍸
             </motion.span>
-            <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent">WedMatch</span>
+            <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent font-black">NightMatch</span>
           </h1>
-          <p className="text-[10px] text-white/20">רועי ויעל</p>
+          <p className="text-[10px] text-white/30 font-medium">הערב הזה לא נשכח 🔥</p>
         </div>
         <div className="flex items-center gap-3">
           <AgeFilter 
