@@ -37,7 +37,6 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
   return (
     <motion.div
       className="absolute inset-0 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing card-swipe"
-      style={{ x, rotate, willChange: "transform" }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.5}
