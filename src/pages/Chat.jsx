@@ -203,11 +203,13 @@ export default function Chat() {
           <>
             {messages.map((msg, i) => {
               const isMe = msg.sender_id === myProfile?.id;
+              const isTemp = msg.id?.startsWith("temp_");
               return (
                 <motion.div
                   key={msg.id || i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: isTemp ? 0.6 : 1, y: 0 }}
+                  transition={{ duration: 0.15 }}
                   className={`flex ${isMe ? "justify-start" : "justify-end"}`}
                 >
                   <div
