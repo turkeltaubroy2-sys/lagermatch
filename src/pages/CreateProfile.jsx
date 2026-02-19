@@ -415,7 +415,7 @@ export default function CreateProfile() {
           <Button
             onClick={handleSubmit}
             disabled={saving}
-            className="w-full py-6 text-lg font-bold rounded-2xl bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] hover:opacity-90 transition-all duration-300 shadow-lg shadow-[#D4AF37]/20 mt-4"
+            className="w-full py-6 text-lg font-black rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] text-white hover:opacity-90 transition-all duration-300 shadow-2xl shadow-[#FE3C72]/30 mt-4"
           >
             {saving ? (
               <motion.span

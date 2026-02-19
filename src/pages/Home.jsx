@@ -139,9 +139,9 @@ export default function Home() {
         <Button
           onClick={() => setShowQR(!showQR)}
           variant="outline"
-          className="mt-6 border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-xl"
+          className="mt-6 border-[#FE3C72]/40 text-[#FF6B9D] hover:bg-[#FE3C72]/10 rounded-xl text-sm"
         >
-          {showQR ? "הסתר QR Code" : "📱 הצג QR Code"}
+          {showQR ? "הסתר QR" : "📱 שתף עם חברים"}
         </Button>
         </motion.div>
         </div>
