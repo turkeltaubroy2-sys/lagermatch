@@ -140,7 +140,7 @@ export default function CreateProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] px-5 py-8 max-w-md mx-auto">
+    <div className="min-h-[100dvh] bg-[#0F0F0F] px-5 py-8 max-w-md mx-auto pb-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
