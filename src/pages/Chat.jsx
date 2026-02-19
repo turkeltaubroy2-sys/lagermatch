@@ -228,15 +228,16 @@ export default function Chat() {
       </div>
 
       {/* Input */}
-      <div className="bg-[#1A1A1A] border-t border-[#333] px-4 py-3 flex items-center gap-2">
+      <div className="bg-[#1A1A1A] border-t border-[#333] px-4 py-3 flex items-center gap-2 flex-shrink-0" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
         <Input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           placeholder="כתוב הודעה..."
-          className="flex-1 bg-[#252525] border-[#444] text-white rounded-full px-4 h-11"
+          className="flex-1 bg-[#252525] border-[#444] text-white rounded-full px-4 h-11 text-base"
           autoComplete="off"
           autoCorrect="off"
+          inputMode="text"
         />
         <Button
           onClick={handleSend}
