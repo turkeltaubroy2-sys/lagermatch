@@ -129,9 +129,13 @@ export default function Swipe() {
     const allProfiles = await base44.entities.Profile.filter({ is_blocked: false });
     setAllProfilesCache(allProfiles);
     const available = allProfiles.filter(p => p.id !== me.id && !swipedSet.has(p.id));
-    
-    // Shuffle
-    const shuffled = available.sort(() => Math.random() - 0.5);
+
+    // Fisher-Yates shuffle for better randomness
+    const shuffled = [...available];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
     setProfiles(shuffled);
     setLoading(false);
   };
