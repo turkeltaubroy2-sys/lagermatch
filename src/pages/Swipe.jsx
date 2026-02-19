@@ -354,12 +354,7 @@ export default function Swipe() {
               </div>
             </SheetContent>
           </Sheet>
-          <Link
-            to={createPageUrl("Admin")}
-            className="text-xs text-red-500 hover:text-red-400 transition-colors"
-          >
-            איזור מנהל
-          </Link>
+
         </div>
       </div>
 

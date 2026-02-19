@@ -8,7 +8,7 @@ export default function MatchPopup({ show, matchProfile, myProfile, onClose, onS
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 6000);
       return () => clearTimeout(timer);
     }
   }, [show, onClose]);
@@ -32,7 +32,7 @@ export default function MatchPopup({ show, matchProfile, myProfile, onClose, onS
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-6 left-6 text-white/50 hover:text-white z-10"
+              className="fixed top-6 left-6 text-white/50 hover:text-white z-[60]"
             >
               <X className="w-6 h-6" />
             </button>
