@@ -119,7 +119,7 @@ export default function Menu() {
   const current = categories.find(c => c.id === activeCategory);
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] pb-24 max-w-md mx-auto">
+    <div className="min-h-[100dvh] bg-[#0F0F0F] pb-28 max-w-md mx-auto">
       {/* Header */}
       <div className="relative overflow-hidden pt-10 pb-6 px-5">
         <div className="absolute inset-0 pointer-events-none">
