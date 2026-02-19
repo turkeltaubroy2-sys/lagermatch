@@ -323,7 +323,9 @@ export default function CreateProfile() {
               value={form.first_name}
               onChange={(e) => setForm({ ...form, first_name: e.target.value })}
               placeholder="איך קוראים לך?"
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right"
+              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right text-base"
+              inputMode="text"
+              autoCapitalize="words"
             />
             {errors.first_name && (
               <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
