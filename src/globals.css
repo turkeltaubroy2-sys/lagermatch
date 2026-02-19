@@ -14,6 +14,14 @@
 }
 
 * {
+  font-family: 'Space Grotesk', 'Heebo', sans-serif;
+}
+
+.font-display {
+  font-family: 'Playfair Display', 'Heebo', serif;
+}
+
+.font-hebrew {
   font-family: 'Heebo', sans-serif;
 }
 
