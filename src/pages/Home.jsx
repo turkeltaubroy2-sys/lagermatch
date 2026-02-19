@@ -64,7 +64,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
+    <div className="h-[100dvh] flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-64 h-64 bg-[#FE3C72]/8 rounded-full blur-3xl" />
