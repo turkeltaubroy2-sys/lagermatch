@@ -38,31 +38,42 @@ export default function MyMatches() {
     const me = myProfiles[0];
     setMyProfile(me);
 
-    const allMatches = await base44.entities.Match.filter({});
-    const myMatches = allMatches.filter(
-      m => m.user1_id === me.id || m.user2_id === me.id
+    // Fetch matches as both user1 and user2 in parallel, plus my messages
+    const [matches1, matches2, myMessages] = await Promise.all([
+      base44.entities.Match.filter({ user1_id: me.id }),
+      base44.entities.Match.filter({ user2_id: me.id }),
+      base44.entities.Message.filter({ receiver_id: me.id }),
+    ]);
+
+    const myMatches = [...matches1, ...matches2];
+    if (myMatches.length === 0) {
+      setMatches([]);
+      setMatchProfiles([]);
+      setUnreadCounts({});
+      setLoading(false);
+      return;
+    }
+
+    // Fetch only the profiles we need
+    const otherIds = myMatches.map(m => m.user1_id === me.id ? m.user2_id : m.user1_id);
+    const profileResults = await Promise.all(
+      otherIds.map(id => base44.entities.Profile.filter({ id }))
     );
 
-    const allProfiles = await base44.entities.Profile.filter({});
     const profileMap = {};
-    allProfiles.forEach(p => { profileMap[p.id] = p; });
+    profileResults.forEach(res => {
+      if (res.length > 0) profileMap[res[0].id] = res[0];
+    });
 
     const matched = myMatches.map(m => {
       const otherId = m.user1_id === me.id ? m.user2_id : m.user1_id;
       return { match: m, profile: profileMap[otherId] };
     }).filter(item => item.profile);
 
-    // Calculate unread messages per conversation
-    const allMessages = await base44.entities.Message.filter({});
+    // Count unread per sender from already-fetched messages
     const unreadMap = {};
-    matched.forEach(item => {
-      const otherId = item.match.user1_id === me.id ? item.match.user2_id : item.match.user1_id;
-      const unreadFromOther = allMessages.filter(
-        msg => msg.sender_id === otherId && msg.receiver_id === me.id
-      );
-      if (unreadFromOther.length > 0) {
-        unreadMap[otherId] = unreadFromOther.length;
-      }
+    myMessages.forEach(msg => {
+      unreadMap[msg.sender_id] = (unreadMap[msg.sender_id] || 0) + 1;
     });
 
     setMatches(myMatches);
