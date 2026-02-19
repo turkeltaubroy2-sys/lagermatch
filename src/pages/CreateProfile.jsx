@@ -343,7 +343,8 @@ export default function CreateProfile() {
               value={form.age}
               onChange={(e) => setForm({ ...form, age: e.target.value })}
               placeholder="מה הגיל שלך?"
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right"
+              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right text-base"
+              inputMode="numeric"
             />
             {errors.age && (
               <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
