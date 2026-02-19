@@ -31,7 +31,7 @@ export default function BottomNav() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] z-40 pb-[env(safe-area-inset-bottom)]">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A]/95 backdrop-blur-md border-t border-[#333] z-40" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="max-w-md mx-auto flex justify-around items-center h-16 px-4">
         <Link
           to={createPageUrl("Swipe")}
