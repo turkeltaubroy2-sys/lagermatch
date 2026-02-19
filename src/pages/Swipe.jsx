@@ -372,8 +372,8 @@ export default function Swipe() {
       <div className="flex-1 px-5 pb-4 relative">
         {currentProfile ? (
           <div className="relative w-full" style={{ height: "calc(100vh - 200px)" }}>
-            <AnimatePresence mode="popLayout">
-              {filteredProfiles.slice(0, 2).reverse().map((profile, i) => (
+            <AnimatePresence mode="sync">
+              {filteredProfiles.slice(0, 3).reverse().map((profile) => (
                 <SwipeCard
                   key={profile.id}
                   profile={profile}
