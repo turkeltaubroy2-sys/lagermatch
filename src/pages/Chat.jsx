@@ -59,34 +59,32 @@ export default function Chat() {
 
   const loadChat = async () => {
     const deviceId = localStorage.getItem("wedding_device_id");
-    if (!deviceId) {
+    if (!deviceId || !matchId) {
       navigate(createPageUrl("Home"));
       return;
     }
 
-    const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
-    if (myProfiles.length === 0) {
+    const [myProfiles, matchResult] = await Promise.all([
+      base44.entities.Profile.filter({ device_id: deviceId }),
+      base44.entities.Match.filter({ id: matchId }),
+    ]);
+
+    if (myProfiles.length === 0 || matchResult.length === 0) {
       navigate(createPageUrl("Home"));
       return;
     }
 
     const me = myProfiles[0];
+    const match = matchResult[0];
     setMyProfile(me);
 
-    if (!matchId) {
-      navigate(createPageUrl("MyMatches"));
-      return;
-    }
+    const otherId = match.user1_id === me.id ? match.user2_id : match.user1_id;
 
-    const match = await base44.entities.Match.filter({ id: matchId });
-    if (match.length === 0) {
-      navigate(createPageUrl("MyMatches"));
-      return;
-    }
+    const [otherProfiles, allMessages] = await Promise.all([
+      base44.entities.Profile.filter({ id: otherId }),
+      base44.entities.Message.filter({}),
+    ]);
 
-    const otherId = match[0].user1_id === me.id ? match[0].user2_id : match[0].user1_id;
-    const otherProfiles = await base44.entities.Profile.filter({ id: otherId });
-    
     if (otherProfiles.length === 0) {
       navigate(createPageUrl("MyMatches"));
       return;
@@ -94,14 +92,13 @@ export default function Chat() {
 
     setOtherProfile(otherProfiles[0]);
 
-    const allMessages = await base44.entities.Message.filter({});
-    const chatMessages = allMessages.filter(
-      m =>
+    const chatMessages = allMessages
+      .filter(m =>
         (m.sender_id === me.id && m.receiver_id === otherId) ||
         (m.sender_id === otherId && m.receiver_id === me.id)
-    );
-    
-    chatMessages.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+      )
+      .sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+
     setMessages(chatMessages);
     setLoading(false);
   };
