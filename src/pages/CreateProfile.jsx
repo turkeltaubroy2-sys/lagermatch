@@ -144,7 +144,7 @@ export default function CreateProfile() {
           <div className="w-6" />
         </div>
 
-        <p className="text-center text-white/20 text-xs mb-6">💍 רועי ויעל</p>
+        <p className="text-center text-white/30 text-xs mb-6">🍸 מצא/י את מי שתמצא/י הלילה</p>
 
         {/* Photo upload */}
         <div className="flex justify-center mb-8">
@@ -375,14 +375,14 @@ export default function CreateProfile() {
           </div>
 
           <div>
-            <Label className="text-white/70 text-sm mb-2 block">פרט מצחיק על החתן / הכלה 😂</Label>
+            <Label className="text-white/70 text-sm mb-2 block">משהו מצחיק עליך 😂</Label>
             <Textarea
               value={form.funny_fact}
               onChange={(e) => {
                 setForm({ ...form, funny_fact: e.target.value });
                 checkFunnyFact(e.target.value);
               }}
-              placeholder="ספר/י לנו משהו מצחיק..."
+              placeholder="ספר/י לנו משהו מצחיק עליך..."
               maxLength={200}
               className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 rounded-xl resize-none h-24 text-right"
             />

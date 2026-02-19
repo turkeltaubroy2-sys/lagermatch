@@ -55,28 +55,29 @@ export default function Home() {
     <div className="h-screen flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-10 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-56 h-56 bg-[#D4AF37]/3 rounded-full blur-3xl" />
-        {[...Array(4)].map((_, i) => (
+        <div className="absolute top-20 right-10 w-64 h-64 bg-[#FE3C72]/8 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-72 h-72 bg-[#D4AF37]/6 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#FF6B9D]/4 rounded-full blur-3xl" />
+        {["🍸", "🔥", "✨", "💫", "🎶", "❤️"].map((emoji, i) => (
           <motion.div
             key={i}
-            className="absolute text-[#D4AF37]/20"
+            className="absolute text-2xl"
             style={{
-              top: `${20 + i * 20}%`,
-              left: `${10 + (i % 3) * 35}%`,
+              top: `${10 + i * 14}%`,
+              left: `${5 + (i % 3) * 40}%`,
             }}
             animate={{
-              y: [-10, 10, -10],
-              rotate: [0, 10, -10, 0],
-              opacity: [0.1, 0.3, 0.1],
+              y: [-15, 15, -15],
+              rotate: [0, 15, -15, 0],
+              opacity: [0.15, 0.4, 0.15],
             }}
             transition={{
-              duration: 4 + i,
+              duration: 3 + i * 0.5,
               repeat: Infinity,
-              delay: i * 0.5,
+              delay: i * 0.4,
             }}
           >
-            <Sparkles className="w-5 h-5" />
+            {emoji}
           </motion.div>
         ))}
       </div>
