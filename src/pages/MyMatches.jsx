@@ -169,8 +169,8 @@ export default function MyMatches() {
 
       {/* Header */}
       <div className="flex flex-col items-center mb-8">
-        <h1 className="text-2xl font-bold shimmer-gold mb-1">💕 ההתאמות שלי</h1>
-        <p className="text-xs text-white/20">רועי ויעל 💍</p>
+        <h1 className="text-2xl font-black bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent mb-1">🔥 ההתאמות שלי</h1>
+        <p className="text-xs text-white/30">הלילה הזה שייך לך 😉</p>
       </div>
 
       {matchProfiles.length === 0 ? (

@@ -129,9 +129,15 @@ export default function Home() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <p className="text-sm text-white/60 mb-4">סרוק כדי להצטרף</p>
-            <div className="bg-white p-3 rounded-xl">
-              <QRCode value={window.location.origin} size={150} />
+            <p className="text-sm text-white/50 mb-4 font-medium">📲 שתף עם חברים — סרוק להצטרפות</p>
+            <div className="relative">
+              <div className="absolute -inset-2 bg-gradient-to-r from-[#FE3C72] via-[#D4AF37] to-[#FF6B9D] rounded-2xl blur-md opacity-60 animate-pulse" />
+              <div className="relative bg-white p-4 rounded-xl shadow-2xl">
+                <QRCode value={window.location.origin} size={160} />
+              </div>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white text-xs font-black px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+                🍸 NightMatch
+              </div>
             </div>
           </motion.div>
         )}
