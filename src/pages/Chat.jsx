@@ -236,13 +236,13 @@ export default function Chat() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: isTemp ? 0.6 : 1, y: 0 }}
                   transition={{ duration: 0.15 }}
-                  className={`flex ${isMe ? "justify-start" : "justify-end"}`}
+                  className={`flex ${isMe ? "justify-end" : "justify-start"}`}
                 >
                   <div
                     className={`max-w-[75%] px-4 py-2 rounded-2xl ${
                       isMe
-                        ? "bg-[#1A1A1A] text-white border border-[#333]"
-                        : "bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F]"
+                        ? "bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F]"
+                        : "bg-[#1A1A1A] text-white border border-[#333]"
                     }`}
                   >
                     <p className="text-sm leading-relaxed break-words">{msg.content}</p>
