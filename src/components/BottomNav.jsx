@@ -63,6 +63,16 @@ export default function BottomNav() {
           </div>
           <span className="text-xs font-medium">התאמות</span>
         </Link>
+
+        <Link
+          to={createPageUrl("Menu")}
+          className={`flex flex-col items-center justify-center flex-1 py-2 transition-all ${
+            isActive("Menu") ? "text-[#D4AF37]" : "text-white/40 hover:text-white/60"
+          }`}
+        >
+          <UtensilsCrossed className="w-6 h-6 mb-1" />
+          <span className="text-xs font-medium">תפריט</span>
+        </Link>
       </div>
     </div>
   );
