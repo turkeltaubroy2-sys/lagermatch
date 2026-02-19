@@ -399,7 +399,8 @@ export default function CreateProfile() {
               }}
               placeholder="ספר/י לנו משהו מצחיק עליך..."
               maxLength={200}
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 rounded-xl resize-none h-24 text-right"
+              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 rounded-xl resize-none h-24 text-right text-base"
+              inputMode="text"
             />
             <div className="flex justify-between items-center mt-1">
               {errors.funny_fact ? (
