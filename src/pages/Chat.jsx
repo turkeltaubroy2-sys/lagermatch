@@ -152,9 +152,9 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] flex flex-col max-w-md mx-auto">
+    <div className="h-[100dvh] bg-[#0F0F0F] flex flex-col max-w-md mx-auto">
       {/* Header */}
-      <div className="bg-[#1A1A1A] border-b border-[#333] px-4 py-3 flex items-center gap-3">
+      <div className="bg-[#1A1A1A] border-b border-[#333] px-4 py-3 flex items-center gap-3 flex-shrink-0" style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}>
         <button
           onClick={() => navigate(createPageUrl("MyMatches"))}
           className="p-2 hover:bg-white/5 rounded-full transition-all"
