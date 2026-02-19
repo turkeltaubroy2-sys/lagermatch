@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { motion } from "framer-motion";
-import { Flame } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Flame, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QRCode from "@/components/QRCode";
 
