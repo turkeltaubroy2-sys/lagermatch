@@ -23,15 +23,11 @@ export default function BottomNav() {
     if (myProfiles.length === 0) return;
 
     const myProfile = myProfiles[0];
-    const allMessages = await base44.entities.Message.filter({});
-    const myMessages = allMessages.filter(m => m.receiver_id === myProfile.id);
+    // Only fetch messages received by this user - much smaller query
+    const myMessages = await base44.entities.Message.filter({ receiver_id: myProfile.id });
 
-    const conversationsWithUnread = new Set();
-    myMessages.forEach(msg => {
-      conversationsWithUnread.add(msg.sender_id);
-    });
-
-    setUnreadCount(conversationsWithUnread.size);
+    const senders = new Set(myMessages.map(m => m.sender_id));
+    setUnreadCount(senders.size);
   };
 
   return (
