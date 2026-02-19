@@ -20,6 +20,8 @@ export default function Chat() {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [drinkSent, setDrinkSent] = useState(false);
+  const [pendingDrink, setPendingDrink] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
