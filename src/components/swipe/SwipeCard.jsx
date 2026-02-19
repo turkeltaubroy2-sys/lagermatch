@@ -18,14 +18,18 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
 
   if (!isTop) {
     return (
-      <div className="absolute inset-0 rounded-3xl overflow-hidden bg-[#1A1A1A]">
+      <div
+        className="absolute inset-0 rounded-3xl overflow-hidden bg-[#1A1A1A]"
+        style={{ transform: "scale(0.94) translateY(16px)", zIndex: 0 }}
+      >
         <img
           src={profile.photo_url}
           alt={profile.first_name}
-          className="w-full h-full object-cover opacity-50"
-          loading="lazy"
+          className="w-full h-full object-cover opacity-60"
+          loading="eager"
           decoding="async"
         />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
     );
   }
