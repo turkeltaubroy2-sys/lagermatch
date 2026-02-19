@@ -51,9 +51,9 @@ import Admin from './pages/Admin';
 import Chat from './pages/Chat';
 import CreateProfile from './pages/CreateProfile';
 import Home from './pages/Home';
+import Menu from './pages/Menu';
 import MyMatches from './pages/MyMatches';
 import Swipe from './pages/Swipe';
-import Menu from './pages/Menu';
 import __Layout from './Layout.jsx';
 
 
@@ -62,9 +62,9 @@ export const PAGES = {
     "Chat": Chat,
     "CreateProfile": CreateProfile,
     "Home": Home,
+    "Menu": Menu,
     "MyMatches": MyMatches,
     "Swipe": Swipe,
-    "Menu": Menu,
 }
 
 export const pagesConfig = {
