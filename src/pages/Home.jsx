@@ -96,28 +96,32 @@ export default function Home() {
           🍸
         </motion.div>
 
-        <h1 className="text-5xl font-black mb-2 flex items-center justify-center gap-2">
-          <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent">Night</span>
-          <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">Match</span>
+        <h1 className="font-display text-6xl font-black mb-1 tracking-tight leading-none">
+          <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] bg-clip-text text-transparent drop-shadow-sm">Night</span>
+          <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent drop-shadow-sm">Match</span>
         </h1>
 
+        <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5">
+          Bar · Vibe · Connect
+        </p>
+
         <motion.div
-          className="w-24 h-[2px] bg-gradient-to-r from-[#FE3C72] via-[#D4AF37] to-[#FE3C72] mx-auto mb-5"
-          initial={{ width: 0 }}
-          animate={{ width: 96 }}
+          className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#FE3C72] to-transparent mx-auto mb-6"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         />
 
-        <p className="text-xl font-bold text-white mb-1">
+        <p className="font-hebrew text-lg font-bold text-white/90 mb-1 tracking-wide">
           🔥 הערב הזה לא נשכח
         </p>
-        <p className="text-sm text-white/50 mb-8 leading-relaxed">
+        <p className="font-hebrew text-sm text-white/40 mb-9 leading-relaxed tracking-wide">
           מצא/י את מי שתמצא/י הלילה 😉
         </p>
 
         <Link to={createPageUrl("CreateProfile")}>
           <Button
-            className="w-full py-7 text-xl font-black rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] text-white hover:opacity-90 transition-all duration-300 shadow-2xl shadow-[#FE3C72]/30"
+            className="w-full py-7 text-lg font-black rounded-3xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_8px_40px_rgba(254,60,114,0.45)] tracking-wide border-0"
           >
             🚀 אני פנוי/ה הערב
           </Button>
@@ -125,30 +129,31 @@ export default function Home() {
 
         {showQR && (
           <motion.div
-            className="mt-8 pt-8 border-t border-white/20 flex flex-col items-center"
+            className="mt-8 pt-6 border-t border-white/10 flex flex-col items-center gap-4"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <p className="text-sm text-white/50 mb-4 font-medium">📲 שתף עם חברים — סרוק להצטרפות</p>
+            <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-white/30">
+              שתף עם חברים
+            </p>
             <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-[#FE3C72] via-[#D4AF37] to-[#FF6B9D] rounded-2xl blur-md opacity-60 animate-pulse" />
-              <div className="relative bg-white p-4 rounded-xl shadow-2xl">
+              <div className="absolute -inset-3 bg-gradient-to-r from-[#FE3C72] via-[#D4AF37] to-[#FF6B9D] rounded-3xl blur-xl opacity-40 animate-pulse" />
+              <div className="relative bg-white p-4 rounded-2xl shadow-2xl">
                 <QRCode value={window.location.origin} size={160} />
               </div>
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white text-xs font-black px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
-                🍸 NightMatch
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white text-[10px] font-black px-4 py-1 rounded-full shadow-lg whitespace-nowrap tracking-widest uppercase">
+                NightMatch 🍸
               </div>
             </div>
           </motion.div>
         )}
 
-        <Button
+        <button
           onClick={() => setShowQR(!showQR)}
-          variant="outline"
-          className="mt-6 border-[#FE3C72]/40 text-[#FF6B9D] hover:bg-[#FE3C72]/10 rounded-xl text-sm"
+          className="mt-6 text-[11px] font-semibold tracking-[0.2em] uppercase text-white/25 hover:text-white/50 transition-colors"
         >
           {showQR ? "הסתר QR" : "📱 שתף עם חברים"}
-        </Button>
+        </button>
         </motion.div>
         </div>
         );
