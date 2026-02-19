@@ -33,6 +33,24 @@ body {
   -webkit-overflow-scrolling: touch;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Fix for iOS keyboard pushing content */
+html {
+  height: -webkit-fill-available;
+}
+
+/* Smooth scrolling everywhere */
+* {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent text selection on interactive elements */
+button, a {
+  -webkit-touch-callout: none;
 }
 
 button, a, input, select, textarea {
