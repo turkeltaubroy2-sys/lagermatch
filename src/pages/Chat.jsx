@@ -234,9 +234,11 @@ export default function Chat() {
         <Input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           placeholder="כתוב הודעה..."
           className="flex-1 bg-[#252525] border-[#444] text-white rounded-full px-4 h-11"
+          autoComplete="off"
+          autoCorrect="off"
         />
         <Button
           onClick={handleSend}
