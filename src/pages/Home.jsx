@@ -119,12 +119,7 @@ export default function Home() {
           transition={{ delay: 0.5, duration: 0.8 }}
         />
 
-        <p className="font-hebrew text-lg font-bold text-white/90 mb-1 tracking-wide">
-          🔥 הערב הזה לא נשכח
-        </p>
-        <p className="font-hebrew text-sm text-white/40 mb-9 leading-relaxed tracking-wide">
-          מצא/י את מי שתמצא/י הלילה 😉
-        </p>
+        <div className="mb-9" />
 
         <Link to={createPageUrl("CreateProfile")}>
           <Button
