@@ -255,8 +255,45 @@ export default function Chat() {
         )}
       </div>
 
+      {/* Pending drink notification */}
+      <AnimatePresence>
+        {pendingDrink && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="mx-4 mb-2 bg-gradient-to-r from-[#1A1A1A] to-[#252525] border border-[#D4AF37]/40 rounded-2xl px-4 py-3 flex items-center gap-3"
+          >
+            <span className="text-2xl">🍹</span>
+            <p className="flex-1 text-white text-sm font-medium">
+              {otherProfile?.first_name} שלח/ה לך דרינק!
+            </p>
+            <button
+              onClick={() => handleDrinkResponse(true)}
+              className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold text-xs px-3 py-2 rounded-xl whitespace-nowrap"
+            >
+              יאאלה לבר 🍻
+            </button>
+            <button
+              onClick={() => handleDrinkResponse(false)}
+              className="text-white/40 font-medium text-xs px-2 py-2 whitespace-nowrap"
+            >
+              לא כרגע
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Input */}
       <div className="bg-[#1A1A1A] border-t border-[#333] px-4 py-3 flex items-center gap-2 flex-shrink-0" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+        <button
+          onClick={handleSendDrink}
+          disabled={drinkSent}
+          className={`h-11 w-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${drinkSent ? "bg-[#252525] text-white/30" : "bg-[#252525] text-[#D4AF37] hover:bg-[#333] active:scale-95"}`}
+          title="שלח דרינק"
+        >
+          <Wine className="w-5 h-5" />
+        </button>
         <Input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
