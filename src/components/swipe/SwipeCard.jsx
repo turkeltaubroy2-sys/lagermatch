@@ -53,6 +53,8 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
         alt={profile.first_name}
         className="w-full h-full object-cover"
         draggable={false}
+        loading="eager"
+        decoding="async"
       />
 
       {/* Gradient overlay */}
