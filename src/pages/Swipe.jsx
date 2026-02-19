@@ -263,10 +263,11 @@ export default function Swipe() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="text-5xl"
         >
-          <Heart className="w-12 h-12 text-[#D4AF37]" />
+          🍸
         </motion.div>
       </div>
     );

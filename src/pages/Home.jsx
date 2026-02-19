@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { Heart, Sparkles } from "lucide-react";
+import { Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QRCode from "@/components/QRCode";
 
@@ -45,7 +45,7 @@ export default function Home() {
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
         >
-          <Heart className="w-12 h-12 text-[#D4AF37]" />
+          <Flame className="w-12 h-12 text-[#FE3C72]" />
         </motion.div>
       </div>
     );
