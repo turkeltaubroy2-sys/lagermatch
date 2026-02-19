@@ -35,10 +35,21 @@ export default function CreateProfile() {
 
   const getDeviceId = () => {
     let id = localStorage.getItem("wedding_device_id");
+
+    if (!id) {
+      const match = document.cookie.match(/wedding_device_id=([^;]+)/);
+      if (match) {
+        id = match[1];
+        localStorage.setItem("wedding_device_id", id);
+      }
+    }
+
     if (!id) {
       id = crypto.randomUUID();
       localStorage.setItem("wedding_device_id", id);
     }
+
+    document.cookie = `wedding_device_id=${id}; max-age=31536000; path=/; SameSite=Lax`;
     return id;
   };
 
