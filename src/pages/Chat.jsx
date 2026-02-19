@@ -131,14 +131,40 @@ export default function Chat() {
 
   useEffect(() => {
     if (!myProfile || !otherProfile) return;
-    
-    const markAsRead = async () => {
-      // Just load messages - no need to delete them
-      // Messages are already loaded in loadChat
-    };
-
-    markAsRead();
+    // Subscribe to incoming drink requests
+    const unsub = base44.entities.Drink.subscribe((event) => {
+      if (event.type === "create") {
+        const drink = event.data;
+        if (drink.sender_id === otherProfile.id && drink.receiver_id === myProfile.id) {
+          setPendingDrink(drink);
+        }
+      }
+    });
+    // Check for existing pending drink
+    base44.entities.Drink.filter({ sender_id: otherProfile.id, receiver_id: myProfile.id, status: "pending" })
+      .then(drinks => { if (drinks.length > 0) setPendingDrink(drinks[0]); });
+    return unsub;
   }, [myProfile, otherProfile]);
+
+  const handleSendDrink = async () => {
+    if (!myProfile || !otherProfile || drinkSent) return;
+    setDrinkSent(true);
+    await base44.entities.Drink.create({
+      sender_id: myProfile.id,
+      receiver_id: otherProfile.id,
+      status: "pending",
+    });
+    toast({ title: "🍹 דרינק נשלח!", description: `שלחת דרינק ל${otherProfile.first_name}` });
+  };
+
+  const handleDrinkResponse = async (accepted) => {
+    if (!pendingDrink) return;
+    await base44.entities.Drink.update(pendingDrink.id, { status: accepted ? "accepted" : "declined" });
+    setPendingDrink(null);
+    if (accepted) {
+      toast({ title: "🍹 יאללה לבר!", description: "אישרת את הדרינק!" });
+    }
+  };
 
   if (loading) {
     return (
