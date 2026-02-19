@@ -135,13 +135,67 @@ export default function Home() {
 
         <div className="mb-9" />
 
-        <Link to={createPageUrl("CreateProfile")}>
-          <Button
-            className="w-full py-7 text-lg font-black rounded-3xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_8px_40px_rgba(254,60,114,0.45)] tracking-wide border-0"
-          >
-            🚀 אני פנוי/ה הערב
-          </Button>
-        </Link>
+        <Button
+          onClick={() => setShowWelcome(true)}
+          className="w-full py-7 text-lg font-black rounded-3xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_8px_40px_rgba(254,60,114,0.45)] tracking-wide border-0"
+        >
+          🚀 אני פנוי/ה הערב
+        </Button>
+
+        {/* Welcome Popup */}
+        <AnimatePresence>
+          {showWelcome && (
+            <motion.div
+              className="fixed inset-0 z-[100] flex items-center justify-center px-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowWelcome(false)} />
+              <motion.div
+                className="relative w-full max-w-sm z-10"
+                initial={{ scale: 0.75, opacity: 0, y: 40 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.85, opacity: 0, y: 20 }}
+                transition={{ type: "spring", damping: 18, stiffness: 260 }}
+              >
+                <div className="absolute -inset-1 bg-gradient-to-br from-[#FE3C72]/40 via-[#D4AF37]/30 to-[#FF6B9D]/40 rounded-[2rem] blur-xl opacity-70" />
+                <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#111] border border-white/10 rounded-[1.75rem] p-7 shadow-2xl overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FE3C72] via-[#D4AF37] to-[#FF6B9D] rounded-t-[1.75rem]" />
+                  <button
+                    onClick={() => setShowWelcome(false)}
+                    className="absolute top-4 left-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                  <motion.div
+                    className="text-6xl text-center mb-5 mt-1"
+                    animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.15, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.5 }}
+                  >
+                    🎉
+                  </motion.div>
+                  <h2
+                    className="text-center text-2xl font-black mb-3 bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    היי! איזה כיף שהצטרפתם
+                  </h2>
+                  <p className="text-center text-white/70 text-[15px] leading-relaxed mb-6 font-hebrew">
+                    האפליקציה תהיה פעילה לאורך הערב ואז תמחק לחלוטין —{" "}
+                    <span className="text-[#D4AF37] font-semibold">תנצלו כל רגע!</span>{" "}
+                    😊
+                  </p>
+                  <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>
+                    <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white font-black text-base tracking-wide shadow-[0_6px_30px_rgba(254,60,114,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+                      בואו נתחיל 🚀
+                    </button>
+                  </Link>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {showQR && (
           <motion.div
