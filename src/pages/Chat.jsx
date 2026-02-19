@@ -80,9 +80,11 @@ export default function Chat() {
 
     const otherId = match.user1_id === me.id ? match.user2_id : match.user1_id;
 
-    const [otherProfiles, allMessages] = await Promise.all([
+    // Fetch only the messages between these two users
+    const [otherProfiles, sentMessages, receivedMessages] = await Promise.all([
       base44.entities.Profile.filter({ id: otherId }),
-      base44.entities.Message.filter({}),
+      base44.entities.Message.filter({ sender_id: me.id, receiver_id: otherId }),
+      base44.entities.Message.filter({ sender_id: otherId, receiver_id: me.id }),
     ]);
 
     if (otherProfiles.length === 0) {
@@ -92,11 +94,7 @@ export default function Chat() {
 
     setOtherProfile(otherProfiles[0]);
 
-    const chatMessages = allMessages
-      .filter(m =>
-        (m.sender_id === me.id && m.receiver_id === otherId) ||
-        (m.sender_id === otherId && m.receiver_id === me.id)
-      )
+    const chatMessages = [...sentMessages, ...receivedMessages]
       .sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
 
     setMessages(chatMessages);
