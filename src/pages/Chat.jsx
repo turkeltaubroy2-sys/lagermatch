@@ -109,19 +109,24 @@ export default function Chat() {
     const content = newMessage.trim();
     setNewMessage("");
 
-    try {
-      const newMsg = await base44.entities.Message.create({
-        sender_id: myProfile.id,
-        receiver_id: otherProfile.id,
-        content,
-      });
-      
-      // Update local state to ensure message is displayed immediately
-      setMessages(prev => [...prev, newMsg]);
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      toast({ title: "שליחת ההודעה נכשלה", variant: "destructive", duration: 2000 });
-    }
+    // Optimistic update - show message immediately
+    const tempMsg = {
+      id: `temp_${Date.now()}`,
+      sender_id: myProfile.id,
+      receiver_id: otherProfile.id,
+      content,
+      created_date: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, tempMsg]);
+
+    const saved = await base44.entities.Message.create({
+      sender_id: myProfile.id,
+      receiver_id: otherProfile.id,
+      content,
+    });
+
+    // Replace temp with real message
+    setMessages(prev => prev.map(m => m.id === tempMsg.id ? saved : m));
   };
 
   useEffect(() => {
