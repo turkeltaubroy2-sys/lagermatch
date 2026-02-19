@@ -107,7 +107,13 @@ export default function Swipe() {
       return;
     }
 
-    const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
+    // Fetch my profile + all profiles + my swipes all in parallel
+    const [myProfiles, allProfiles, allSwipes] = await Promise.all([
+      base44.entities.Profile.filter({ device_id: deviceId }),
+      base44.entities.Profile.filter({ is_blocked: false }),
+      base44.entities.Swipe.filter({}),
+    ]);
+
     if (myProfiles.length === 0) {
       navigate(createPageUrl("Home"));
       return;
@@ -122,20 +128,27 @@ export default function Swipe() {
 
     setMyProfile(me);
 
-    const mySwipes = await base44.entities.Swipe.filter({ swiper_id: me.id });
-    const swipedSet = new Set(mySwipes.map(s => s.target_id));
+    const swipedSet = new Set(allSwipes.filter(s => s.swiper_id === me.id).map(s => s.target_id));
     setSwipedIds(swipedSet);
 
-    const allProfiles = await base44.entities.Profile.filter({ is_blocked: false });
     setAllProfilesCache(allProfiles);
     const available = allProfiles.filter(p => p.id !== me.id && !swipedSet.has(p.id));
 
-    // Fisher-Yates shuffle for better randomness
+    // Fisher-Yates shuffle
     const shuffled = [...available];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
+
+    // Pre-load images for first 3 profiles
+    shuffled.slice(0, 3).forEach(p => {
+      if (p.photo_url) {
+        const img = new Image();
+        img.src = p.photo_url;
+      }
+    });
+
     setProfiles(shuffled);
     setLoading(false);
   };
