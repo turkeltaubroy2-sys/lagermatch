@@ -384,7 +384,8 @@ export default function CreateProfile() {
               value={form.favorite_drink}
               onChange={(e) => setForm({ ...form, favorite_drink: e.target.value })}
               placeholder="מה תרצה לשתות?"
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right"
+              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right text-base"
+              inputMode="text"
             />
           </div>
 
