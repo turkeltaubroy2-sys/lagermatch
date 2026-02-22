@@ -174,8 +174,8 @@ export default function MyMatches() {
 
       {/* Header */}
       <div className="flex flex-col items-center mb-8">
-        <h1 className="font-display text-3xl font-black bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent mb-1 tracking-tight">🔥 ההתאמות שלי</h1>
-        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/25">Lets goooo 🔥</p>
+        <h1 className="font-display text-3xl font-black bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent mb-1 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>My Matches 🔥</h1>
+        <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/25">✦ It's a Match ✦</p>
       </div>
 
       {matchProfiles.length === 0 ? (
