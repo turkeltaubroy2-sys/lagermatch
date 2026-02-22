@@ -178,10 +178,10 @@ export default function Home() {
                     className="text-center text-2xl font-black mb-3 bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                   >
-                    היי! איזה כיף שהצטרפתם
+                    ברוכים הבאים! 🔥
                   </h2>
                   <p className="text-center text-white/70 text-[15px] leading-relaxed mb-6 font-hebrew">
-                    האפליקציה תהיה פעילה לאורך הערב ואז תמחק לחלוטין —{" "}
+                    החליקו, התאימו ותתחברו עם אנשים מעניינים הלילה —{" "}
                     <span className="text-[#D4AF37] font-semibold">תנצלו כל רגע!</span>{" "}
                     😊
                   </p>
