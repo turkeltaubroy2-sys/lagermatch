@@ -351,7 +351,7 @@ export default function CreateProfile() {
           </div>
 
           <div>
-            <Label className="text-white/70 text-sm mb-2 block">גיל</Label>
+            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ גיל</Label>
             <Input
               type="number"
               min={18}
