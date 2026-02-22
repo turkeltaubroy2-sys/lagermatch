@@ -221,7 +221,7 @@ export default function CreateProfile() {
                 className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] rounded-t-3xl p-6 z-50"
                 dir="rtl"
               >
-                <h3 className="text-white text-lg font-bold mb-4 text-center">בחר איזור מגורים</h3>
+                <h3 className="text-white text-lg font-bold mb-4 text-center tracking-widest uppercase text-sm">✦ בחר איזור</h3>
                 <div className="space-y-2">
                   {[
                     { value: "tel_aviv", label: "תל אביב" },
