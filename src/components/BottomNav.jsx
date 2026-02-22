@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { Compass, Heart, UtensilsCrossed } from "lucide-react";
+import { Compass, Heart, UserCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function BottomNav() {
