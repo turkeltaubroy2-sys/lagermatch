@@ -308,7 +308,7 @@ export default function Swipe() {
               NightMatch
             </span>
           </h1>
-          <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.25em] uppercase">Bar & Club Dating</p>
+          <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.25em] uppercase">✦ Bar & Club Dating ✦</p>
         </div>
         <div className="flex items-center gap-3">
           <AgeFilter 
