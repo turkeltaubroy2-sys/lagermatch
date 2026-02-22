@@ -325,8 +325,8 @@ export default function Swipe() {
             </SheetTrigger>
             <SheetContent side="bottom" className="bg-[#1A1A1A] border-[#333]">
               <SheetHeader>
-                <SheetTitle className="text-white text-right">הגדרות</SheetTitle>
-                <SheetDescription className="text-white/40 text-right">
+                <SheetTitle className="text-white text-right tracking-widest uppercase text-sm">✦ הגדרות</SheetTitle>
+                <SheetDescription className="text-white/40 text-right text-xs">
                   נהל את הפרופיל שלך
                 </SheetDescription>
               </SheetHeader>
