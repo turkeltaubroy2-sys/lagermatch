@@ -201,12 +201,12 @@ export default function Chat() {
         </button>
         <div className="flex-1">
           <h2 className="text-white font-bold text-lg">{otherProfile?.first_name}</h2>
-          <p className="text-white/40 text-xs">
-            {otherProfile?.age} • {
-              otherProfile?.location === "tel_aviv" ? "תל אביב" :
-              otherProfile?.location === "south" ? "דרום" : "צפון"
-            }
-          </p>
+          <p className="text-white/35 text-[10px] tracking-widest uppercase">
+              {otherProfile?.age} ✦ {
+                otherProfile?.location === "tel_aviv" ? "Tel Aviv" :
+                otherProfile?.location === "south" ? "South" : "North"
+              }
+            </p>
         </div>
       </div>
 
