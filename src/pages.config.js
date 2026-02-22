@@ -54,6 +54,7 @@ import Home from './pages/Home';
 import Menu from './pages/Menu';
 import MyMatches from './pages/MyMatches';
 import Swipe from './pages/Swipe';
+import MyProfile from './pages/MyProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "Menu": Menu,
     "MyMatches": MyMatches,
     "Swipe": Swipe,
+    "MyProfile": MyProfile,
 }
 
 export const pagesConfig = {
