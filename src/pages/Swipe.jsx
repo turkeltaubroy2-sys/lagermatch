@@ -228,29 +228,10 @@ export default function Swipe() {
   const handleRefresh = useCallback(async () => {
     if (refreshing) return;
     setRefreshing(true);
-    const deviceId = getDeviceId();
-    if (!deviceId) { setRefreshing(false); return; }
-    const [myProfiles, allProfiles, allSwipes] = await Promise.all([
-      base44.entities.Profile.filter({ device_id: deviceId }),
-      base44.entities.Profile.filter({ is_blocked: false }),
-      base44.entities.Swipe.filter({}),
-    ]);
-    if (myProfiles.length > 0) {
-      const me = myProfiles[0];
-      const swipedSet = new Set(allSwipes.filter(s => s.swiper_id === me.id).map(s => s.target_id));
-      const available = allProfiles.filter(p => p.id !== me.id && !swipedSet.has(p.id));
-      const shuffled = [...available];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      setProfiles(shuffled);
-      setSwipedIds(swipedSet);
-      setAllProfilesCache(allProfiles);
-    }
+    await loadData();
     setRefreshing(false);
     toast({ title: "🔄 הרשימה עודכנה", duration: 2000 });
-  }, [refreshing, toast]);
+  }, [refreshing, loadData, toast]);
 
   const handleDeleteProfile = useCallback(async () => {
     if (!myProfile) return;
