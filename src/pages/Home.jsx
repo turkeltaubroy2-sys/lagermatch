@@ -107,7 +107,7 @@ export default function Home() {
           animate={{ scale: [1, 1.15, 1], rotate: [-5, 5, -5] }}
           transition={{ duration: 2.5, repeat: Infinity }}
         >
-          🍸
+          🔥
         </motion.div>
 
         {/* Lager & Ale logo-style title */}
@@ -115,15 +115,14 @@ export default function Home() {
           <h1 className="font-display text-5xl font-black tracking-tight leading-none"
             style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.05em" }}
           >
-            <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">LAGER</span>
-            <span className="text-white/80 mx-1 text-4xl">&amp;</span>
-            <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">ALE</span>
+            <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent">Night</span>
+            <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">Match</span>
           </h1>
-          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">EDITION</p>
+          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">🔥 BAR & CLUB EDITION</p>
         </div>
 
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5 mt-2">
-          Bar · Vibe · Connect
+          Swipe · Match · Connect
         </p>
 
         <motion.div
