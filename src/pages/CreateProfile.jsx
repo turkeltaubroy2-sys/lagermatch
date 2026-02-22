@@ -14,11 +14,11 @@ const BAD_WORDS = ["מילהגסה1", "מילהגסה2"]; // Basic filter
 
 export default function CreateProfile() {
   const [form, setForm] = useState({ first_name: "", age: "", location: "", funny_fact: "", favorite_drink: "" });
-  const [photo, setPhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photos, setPhotos] = useState([]); // [{file, preview}]
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [activePhotoSlot, setActivePhotoSlot] = useState(null);
   const [showLocationSheet, setShowLocationSheet] = useState(false);
   const [redirectChecked, setRedirectChecked] = useState(false);
   const { toast } = useToast();
