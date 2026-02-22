@@ -122,7 +122,7 @@ export default function Home() {
         </div>
 
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5 mt-2">
-          Swipe · Match · Connect
+          ✦ Swipe · Match · Connect ✦
         </p>
 
         <motion.div
