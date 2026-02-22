@@ -284,7 +284,10 @@ export default function Swipe() {
   const currentProfile = filteredProfiles[0];
 
   return (
-    <div className="min-h-[100dvh] bg-[#0F0F0F] flex flex-col max-w-md mx-auto pb-20">
+    <div className="min-h-[100dvh] bg-[#0F0F0F] flex flex-col max-w-md mx-auto pb-20 relative overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute top-0 right-0 w-72 h-72 bg-[#FE3C72]/6 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-24 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none" />
       {/* Pull to refresh indicator */}
       {refreshing && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold">
