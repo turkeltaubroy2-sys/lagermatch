@@ -87,7 +87,7 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
           <span className="text-3xl font-normal text-white/80 mr-2">{profile.age}</span>
         </h2>
         <p className="text-white/70 text-sm mb-3 drop-shadow flex items-center gap-2">
-          📍 {profile.location === "tel_aviv" ? "תל אביב" : profile.location === "south" ? "דרום" : "צפון"}
+          📍 {profile.location === "tel_aviv" ? "תל אביב" : profile.location === "south" ? "דרום" : profile.location === "north" ? "צפון" : profile.location || ""}
           {profile.favorite_drink && <span className="text-[#D4AF37]">• 🍸 {profile.favorite_drink}</span>}
         </p>
         <div className="bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl rounded-2xl px-5 py-4 border border-white/10 shadow-xl">

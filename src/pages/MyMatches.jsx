@@ -214,7 +214,9 @@ export default function MyMatches() {
                   <h3 className="text-white font-black text-xl mb-1">{item.profile.first_name}</h3>
                   <p className="text-white/50 text-sm">{item.profile.age} • {
                     item.profile.location === "tel_aviv" ? "תל אביב" :
-                    item.profile.location === "south" ? "דרום" : "צפון"
+                    item.profile.location === "south" ? "דרום" :
+                    item.profile.location === "north" ? "צפון" :
+                    item.profile.location || ""
                   }</p>
                   {item.profile.favorite_drink && (
                     <p className="text-[#D4AF37] text-xs mt-1">🍸 {item.profile.favorite_drink}</p>
