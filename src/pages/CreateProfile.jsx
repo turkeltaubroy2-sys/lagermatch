@@ -406,7 +406,7 @@ export default function CreateProfile() {
           </div>
 
           <div>
-            <Label className="text-white/70 text-sm mb-2 block">משהו מצחיק עליך 😂</Label>
+            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ משהו מצחיק עליך 😂</Label>
             <Textarea
               value={form.funny_fact}
               onChange={(e) => setForm({ ...form, funny_fact: e.target.value })}
