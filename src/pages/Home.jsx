@@ -118,7 +118,7 @@ export default function Home() {
             <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent">Night</span>
             <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">Match</span>
           </h1>
-          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">🔥 BAR & CLUB EDITION</p>
+          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">✦ BAR & CLUB EDITION ✦</p>
         </div>
 
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5 mt-2">
