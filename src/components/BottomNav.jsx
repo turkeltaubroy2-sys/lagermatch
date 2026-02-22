@@ -93,20 +93,20 @@ export default function BottomNav() {
             </motion.div>
           </Link>
 
-          <Link to={createPageUrl("Menu")} className="flex flex-col items-center justify-center flex-1 py-2">
+          <Link to={createPageUrl("MyProfile")} className="flex flex-col items-center justify-center flex-1 py-2">
             <motion.div
               whileTap={{ scale: 0.85 }}
-              className={`flex flex-col items-center transition-colors duration-200 ${isActive("Menu") ? "text-[#D4AF37]" : "text-white/35"}`}
+              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyProfile") ? "text-[#D4AF37]" : "text-white/35"}`}
             >
-              {isActive("Menu") ? (
+              {isActive("MyProfile") ? (
                 <motion.div className="relative">
                   <motion.div className="absolute -inset-2 bg-[#D4AF37]/15 rounded-full blur-sm" />
-                  <UtensilsCrossed className="w-6 h-6 mb-0.5 relative z-10" />
+                  <UserCircle className="w-6 h-6 mb-0.5 relative z-10" />
                 </motion.div>
               ) : (
-                <UtensilsCrossed className="w-6 h-6 mb-0.5" />
+                <UserCircle className="w-6 h-6 mb-0.5" />
               )}
-              <span className="text-[10px] font-semibold tracking-widest uppercase">Menu</span>
+              <span className="text-[10px] font-semibold tracking-widest uppercase">Profile</span>
             </motion.div>
           </Link>
         </div>
