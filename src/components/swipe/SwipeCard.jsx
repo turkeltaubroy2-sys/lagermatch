@@ -93,18 +93,32 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
 
       {/* Like indicator */}
       <motion.div
-        className="absolute top-12 right-8 border-4 border-green-500 rounded-2xl px-6 py-3 rotate-[-20deg] shadow-xl"
-        style={{ opacity: likeOpacity }}
+        className="absolute top-14 right-6 rounded-2xl px-5 py-3 rotate-[-22deg] shadow-2xl"
+        style={{ 
+          opacity: likeOpacity,
+          background: "rgba(16,185,129,0.15)",
+          border: "3px solid #10B981",
+          backdropFilter: "blur(8px)"
+        }}
       >
-        <span className="text-green-500 text-4xl font-black tracking-wide">אהבתי</span>
+        <span className="text-green-400 text-3xl font-black tracking-widest uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif", textShadow: "0 0 20px rgba(16,185,129,0.8)" }}>
+          ❤️ LIKE
+        </span>
       </motion.div>
 
       {/* Nope indicator */}
       <motion.div
-        className="absolute top-12 left-8 border-4 border-red-500 rounded-2xl px-6 py-3 rotate-[20deg] shadow-xl"
-        style={{ opacity: nopeOpacity }}
+        className="absolute top-14 left-6 rounded-2xl px-5 py-3 rotate-[22deg] shadow-2xl"
+        style={{ 
+          opacity: nopeOpacity,
+          background: "rgba(239,68,68,0.15)",
+          border: "3px solid #EF4444",
+          backdropFilter: "blur(8px)"
+        }}
       >
-        <span className="text-red-500 text-4xl font-black tracking-wide">לא</span>
+        <span className="text-red-400 text-3xl font-black tracking-widest uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif", textShadow: "0 0 20px rgba(239,68,68,0.8)" }}>
+          ✕ NOPE
+        </span>
       </motion.div>
 
       {/* Profile info */}
