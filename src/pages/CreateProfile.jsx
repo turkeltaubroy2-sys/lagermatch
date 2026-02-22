@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, ArrowLeft, Sparkles, AlertCircle } from "lucide-react";
+import { Camera, ArrowLeft, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +18,6 @@ export default function CreateProfile() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
-  const [showBrideGroom, setShowBrideGroom] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [showLocationSheet, setShowLocationSheet] = useState(false);
   const { toast } = useToast();
