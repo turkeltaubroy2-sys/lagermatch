@@ -113,14 +113,17 @@ export default function CreateProfile() {
     setSaving(true);
 
     const deviceId = getDeviceId();
-    const { file_url } = await base44.integrations.Core.UploadFile({ file: photo });
+    const uploadedUrls = await Promise.all(
+      photos.map(p => base44.integrations.Core.UploadFile({ file: p.file }).then(r => r.file_url))
+    );
 
     await base44.entities.Profile.create({
       first_name: form.first_name.trim(),
       age: parseInt(form.age),
       location: form.location,
       favorite_drink: form.favorite_drink.trim() || undefined,
-      photo_url: file_url,
+      photo_url: uploadedUrls[0],
+      photo_urls: uploadedUrls,
       funny_fact: form.funny_fact.trim(),
       device_id: deviceId,
       is_blocked: false,
