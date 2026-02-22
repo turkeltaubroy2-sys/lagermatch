@@ -19,13 +19,17 @@ export default function BottomNav() {
     const deviceId = localStorage.getItem("wedding_device_id");
     if (!deviceId) return;
 
-    const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
-    if (myProfiles.length === 0) return;
+    const profileId = sessionStorage.getItem("nightmatch_profile_id");
+    let myProfileId = profileId;
 
-    const myProfile = myProfiles[0];
-    // Only fetch messages received by this user - much smaller query
-    const myMessages = await base44.entities.Message.filter({ receiver_id: myProfile.id });
+    if (!myProfileId) {
+      const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
+      if (myProfiles.length === 0) return;
+      myProfileId = myProfiles[0].id;
+      sessionStorage.setItem("nightmatch_profile_id", myProfileId);
+    }
 
+    const myMessages = await base44.entities.Message.filter({ receiver_id: myProfileId });
     const senders = new Set(myMessages.map(m => m.sender_id));
     setUnreadCount(senders.size);
   };
