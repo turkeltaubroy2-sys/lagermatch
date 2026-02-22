@@ -134,6 +134,16 @@ export default function CreateProfile() {
     navigate(createPageUrl("Swipe"));
   };
 
+  if (!redirectChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
+          <span className="text-4xl">🔥</span>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[100dvh] bg-[#0F0F0F] px-5 py-8 max-w-md mx-auto pb-16">
       <motion.div
