@@ -96,7 +96,7 @@ export default function CreateProfile() {
 
     if (!form.location) newErrors.location = "איזור מגורים הוא שדה חובה";
 
-    if (!photo) newErrors.photo = "תמונה היא שדה חובה";
+    if (photos.length === 0) newErrors.photo = "תמונה היא שדה חובה";
 
     if (!form.funny_fact.trim()) newErrors.funny_fact = "הפרט המצחיק הוא שדה חובה";
     else if (form.funny_fact.length > 200) newErrors.funny_fact = "מקסימום 200 תווים";
