@@ -178,16 +178,16 @@ export default function Home() {
                     className="text-center text-2xl font-black mb-3 bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                   >
-                    ברוכים הבאים! 🔥
+                    הלילה מתחיל כאן 🔥
                   </h2>
                   <p className="text-center text-white/70 text-[15px] leading-relaxed mb-6 font-hebrew">
-                    החליקו, התאימו ותתחברו עם אנשים מעניינים הלילה —{" "}
-                    <span className="text-[#D4AF37] font-semibold">תנצלו כל רגע!</span>{" "}
-                    😊
+                    צרו פרופיל, החליקו ומצאו את מי שתמצאו הלילה —{" "}
+                    <span className="text-[#D4AF37] font-semibold">החיים קצרים, השתו טוב.</span>{" "}
+                    🥂
                   </p>
                   <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>
-                    <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white font-black text-base tracking-wide shadow-[0_6px_30px_rgba(254,60,114,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
-                      בואו נתחיל 🚀
+                    <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white font-black text-base tracking-widest uppercase shadow-[0_6px_30px_rgba(254,60,114,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+                      🚀 Let's Go
                     </button>
                   </Link>
                 </div>
