@@ -437,10 +437,10 @@ export default function CreateProfile() {
                 animate={{ opacity: [1, 0.5, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               >
-                שומר...
+                ✦ יוצר פרופיל...
               </motion.span>
             ) : (
-              "🚀 בואו נתחיל"
+              "🔥 Enter the Night"
             )}
           </Button>
         </div>
