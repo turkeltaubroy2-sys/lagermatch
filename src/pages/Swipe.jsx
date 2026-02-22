@@ -352,9 +352,9 @@ export default function Swipe() {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent className="bg-[#1A1A1A] border-[#333]">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">מחיקת פרופיל</AlertDialogTitle>
+            <AlertDialogTitle className="text-white font-black">מחיקת פרופיל</AlertDialogTitle>
             <AlertDialogDescription className="text-white/50">
-              האם אתה בטוח שברצונך למחוק את הפרופיל? פעולה זו לא ניתנת לביטול.
+              בטוח שאתה רוצה לצאת מהמשחק? הפרופיל יימחק לצמיתות.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
