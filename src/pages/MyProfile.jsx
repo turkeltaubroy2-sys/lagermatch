@@ -2,57 +2,34 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Camera, Check, AlertCircle, ChevronDown, User,
-  Sparkles, Trash2, Plus, Save, Loader2, ImagePlus, ArrowLeft, ArrowRight
+  Camera, Check, AlertCircle, ChevronDown,
+  Trash2, Plus, Save, Loader2, ImagePlus, ArrowLeft, ArrowRight, X
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import BottomNav from "@/components/BottomNav";
 
 const BAD_WORDS = ["מילהגסה1", "מילהגסה2"];
 const LOCATIONS = [
-  { value: "tel_aviv", label: "תל אביב 🌊" },
-  { value: "south", label: "דרום ☀️" },
-  { value: "north", label: "צפון 🌿" },
+  { value: "tel_aviv", label: "תל אביב", flag: "🌊" },
+  { value: "south", label: "דרום", flag: "☀️" },
+  { value: "north", label: "צפון", flag: "🌿" },
 ];
-
-// Reusable field wrapper
-function Field({ label, error, children }) {
-  return (
-    <div>
-      <Label className="text-white/40 text-[10px] mb-2 block tracking-widest uppercase">{label}</Label>
-      {children}
-      <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            className="text-red-400 text-xs mt-1.5 flex items-center gap-1"
-          >
-            <AlertCircle className="w-3 h-3 shrink-0" /> {error}
-          </motion.p>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 export default function MyProfile() {
   const [profile, setProfile] = useState(null);
   const [form, setForm] = useState({ first_name: "", age: "", location: "", funny_fact: "", favorite_drink: "" });
-  const [photos, setPhotos] = useState([]); // [{url, preview?}]
+  const [photos, setPhotos] = useState([]);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showLocationSheet, setShowLocationSheet] = useState(false);
-  const [showPhotoSheet, setShowPhotoSheet] = useState(false); // { slot: null | index }
-  const [uploadingSlot, setUploadingSlot] = useState(null); // which slot is uploading
+  const [photoSheetSlot, setPhotoSheetSlot] = useState(null); // false = closed, null = new, number = replace
+  const [photoSheetOpen, setPhotoSheetOpen] = useState(false);
+  const [uploadingSlot, setUploadingSlot] = useState(null);
   const [saved, setSaved] = useState(false);
-  const [previewIndex, setPreviewIndex] = useState(null); // full-screen photo preview
+  const [previewIndex, setPreviewIndex] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => { loadProfile(); }, []);
@@ -77,20 +54,25 @@ export default function MyProfile() {
     setLoading(false);
   };
 
+  const openPhotoSheet = (slot) => {
+    setPhotoSheetSlot(slot);
+    setPhotoSheetOpen(true);
+  };
+
   const handlePhotoFile = async (file, slot) => {
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
       toast({ title: "התמונה גדולה מדי (מקסימום 10MB)", duration: 2500 });
       return;
     }
-    setShowPhotoSheet(false);
-    setUploadingSlot(slot ?? "new");
+    setPhotoSheetOpen(false);
+    const uploadKey = slot ?? "new";
+    setUploadingSlot(uploadKey);
     const preview = URL.createObjectURL(file);
-    // Optimistic preview
     setPhotos(prev => {
       const updated = [...prev];
       if (slot !== null && slot !== undefined && slot < updated.length) {
-        updated[slot] = { url: updated[slot].url, preview, uploading: true };
+        updated[slot] = { ...updated[slot], preview, uploading: true };
       } else {
         updated.push({ url: "", preview, uploading: true });
       }
@@ -100,16 +82,14 @@ export default function MyProfile() {
     const url = result.file_url;
     setPhotos(prev => {
       const updated = [...prev];
-      const targetSlot = (slot !== null && slot !== undefined && slot < updated.length) ? slot : updated.length - 1;
-      updated[targetSlot] = { url, preview };
+      const targetIdx = (slot !== null && slot !== undefined && slot < updated.length) ? slot : updated.length - 1;
+      updated[targetIdx] = { url, preview };
       return updated;
     });
     setUploadingSlot(null);
   };
 
-  const removePhoto = (index) => {
-    setPhotos(prev => prev.filter((_, i) => i !== index));
-  };
+  const removePhoto = (index) => setPhotos(prev => prev.filter((_, i) => i !== index));
 
   const movePhoto = (index, dir) => {
     const newIndex = index + dir;
@@ -156,12 +136,14 @@ export default function MyProfile() {
     setTimeout(() => setSaved(false), 3000);
   };
 
-  const locationLabel = (val) => LOCATIONS.find(l => l.value === val)?.label || "בחר איזור";
-  const inputCls = "bg-[#181818] border-[#2A2A2A] focus:border-[#D4AF37]/60 text-white placeholder:text-white/20 rounded-2xl text-right text-[15px] transition-colors";
+  const locationLabel = (val) => {
+    const loc = LOCATIONS.find(l => l.value === val);
+    return loc ? `${loc.flag} ${loc.label}` : null;
+  };
 
   if (loading) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-[#0F0F0F]">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-[#080808]">
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
           <Loader2 className="w-8 h-8 text-[#D4AF37]" />
         </motion.div>
@@ -171,469 +153,432 @@ export default function MyProfile() {
 
   if (!profile) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-[#0F0F0F] flex-col gap-4 px-8 text-center">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-[#080808] flex-col gap-4 px-8 text-center">
         <span className="text-6xl">😶</span>
-        <p className="text-white/50 leading-relaxed">לא נמצא פרופיל.<br /><span className="text-white/30 text-sm">צור פרופיל ראשית!</span></p>
+        <p className="text-white/40">לא נמצא פרופיל. צור פרופיל קודם!</p>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-[100dvh] bg-[#0A0A0A] pb-32 max-w-md mx-auto relative overflow-x-hidden">
-      {/* Ambient glows */}
-      <div className="fixed top-0 right-0 w-72 h-72 bg-[#D4AF37]/6 rounded-full blur-3xl pointer-events-none" />
-      <div className="fixed bottom-1/3 left-0 w-56 h-56 bg-[#FE3C72]/5 rounded-full blur-3xl pointer-events-none" />
+  const isBusy = saving || uploadingSlot !== null;
 
-      {/* ─── Header ─── */}
-      <div className="sticky top-0 z-30 bg-[#0A0A0A]/95 backdrop-blur-xl border-b border-white/[0.06]">
-        <div className="px-5 pt-safe-top pt-4 pb-4 flex items-center justify-between" style={{ paddingTop: `calc(1rem + env(safe-area-inset-top))` }}>
-          <div className="flex items-center gap-3">
-            {/* Avatar preview */}
-            <div className="relative w-11 h-11 rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/10 shrink-0">
+  return (
+    <div className="min-h-[100dvh] bg-[#080808] pb-32 max-w-md mx-auto relative">
+      {/* Background glows */}
+      <div className="fixed top-0 right-0 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="fixed bottom-40 left-0 w-64 h-64 bg-[#FE3C72]/5 rounded-full blur-[80px] pointer-events-none" />
+
+      {/* ── HEADER ── */}
+      <div
+        className="sticky top-0 z-30 bg-[#080808]/95 backdrop-blur-2xl border-b border-white/[0.05]"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
+        <div className="px-5 py-4 flex items-center justify-between gap-3">
+          {/* Avatar + title */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-[#1C1C1C] border border-white/[0.08] shrink-0 shadow-[0_0_20px_rgba(212,175,55,0.15)]">
               {photos[0] ? (
                 <img src={photos[0].preview || photos[0].url} className="w-full h-full object-cover" alt="" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white/30" />
-                </div>
+                <div className="w-full h-full flex items-center justify-center text-2xl">🙂</div>
               )}
             </div>
-            <div>
-              <h1 className="text-[17px] font-black text-white leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
-                My Profile
+            <div className="min-w-0">
+              <h1
+                className="text-[18px] font-black text-white truncate leading-tight"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                {form.first_name || "My Profile"}
               </h1>
-              <p className="text-[10px] text-[#D4AF37]/60 tracking-[0.25em] uppercase font-semibold mt-0.5">
-                {form.first_name ? `✦ ${form.first_name}` : "✦ NightMatch"}
+              <p className="text-[10px] text-[#D4AF37]/50 tracking-[0.3em] uppercase mt-0.5">
+                ✦ NightMatch
               </p>
             </div>
           </div>
 
-          {/* Save CTA */}
+          {/* Save button */}
           <motion.button
             onClick={handleSave}
-            disabled={saving || uploadingSlot !== null}
+            disabled={isBusy}
             whileTap={{ scale: 0.93 }}
-            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-2xl font-black text-[13px] transition-all duration-300 ${
+            className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-2xl font-black text-[13px] transition-all ${
               saved
-                ? "bg-green-500/15 text-green-400 border border-green-500/25"
-                : uploadingSlot !== null
-                ? "bg-white/5 text-white/30 border border-white/10"
-                : "bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-[#0A0A0A] shadow-[0_4px_20px_rgba(212,175,55,0.4)]"
+                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
+                : isBusy
+                ? "bg-white/5 text-white/30 border border-white/[0.06]"
+                : "bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] shadow-[0_4px_24px_rgba(212,175,55,0.4)]"
             }`}
           >
-            {saving ? (
-              <><Loader2 className="w-3.5 h-3.5 animate-spin" /> שומר...</>
-            ) : saved ? (
-              <><Check className="w-3.5 h-3.5" /> נשמר!</>
-            ) : uploadingSlot !== null ? (
-              <><Loader2 className="w-3.5 h-3.5 animate-spin" /> מעלה...</>
-            ) : (
-              <><Save className="w-3.5 h-3.5" /> שמור</>
-            )}
+            {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> שומר...</>
+              : saved ? <><Check className="w-3.5 h-3.5" /> נשמר!</>
+              : uploadingSlot !== null ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> מעלה...</>
+              : <><Save className="w-3.5 h-3.5" /> שמור</>}
           </motion.button>
         </div>
       </div>
 
-      <div className="px-5 pt-7 space-y-9">
+      <div className="px-4 pt-6 space-y-8">
 
-        {/* ─── Photos Section ─── */}
-        <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-              <span className="text-[11px] text-white/50 tracking-widest uppercase font-black">תמונות</span>
-            </div>
-            <span className="text-[10px] text-white/25 font-semibold">{photos.length} / 6</span>
+        {/* ── PHOTOS ── */}
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[11px] font-black text-white/40 tracking-[0.25em] uppercase">✦ תמונות</p>
+            <p className="text-[11px] text-white/20 font-semibold">{photos.length}/6</p>
           </div>
 
-          {/* Main photo large card */}
+          {/* Hero photo */}
           <div
-            className="relative w-full rounded-3xl overflow-hidden mb-3 bg-[#1A1A1A] border border-white/[0.07] shadow-[0_12px_50px_rgba(0,0,0,0.7)]"
+            className="relative w-full rounded-[28px] overflow-hidden bg-[#141414] border border-white/[0.06] shadow-[0_20px_60px_rgba(0,0,0,0.8)]"
             style={{ aspectRatio: "3/4" }}
           >
             {photos[0] ? (
               <>
                 <img
                   src={photos[0].preview || photos[0].url}
-                  className="w-full h-full object-cover"
-                  alt="תמונה ראשית"
+                  className="w-full h-full object-cover cursor-pointer"
+                  alt=""
                   onClick={() => setPreviewIndex(0)}
                 />
                 {photos[0].uploading && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
+                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                    <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none" />
+
                 {/* Badge */}
-                <div className="absolute top-3 right-3 bg-[#D4AF37] text-[#0A0A0A] text-[8px] font-black px-2.5 py-1 rounded-full tracking-[0.2em] uppercase shadow-md">
-                  ✦ ראשית
+                <div className="absolute top-4 right-4">
+                  <div className="bg-[#D4AF37] text-[#080808] text-[9px] font-black px-3 py-1 rounded-full tracking-[0.2em] uppercase shadow-[0_2px_12px_rgba(212,175,55,0.5)]">
+                    ✦ ראשית
+                  </div>
                 </div>
-                {/* Bottom actions */}
-                <div className="absolute bottom-3 inset-x-3 flex justify-between">
+
+                {/* Bottom action bar */}
+                <div className="absolute bottom-4 inset-x-4 flex items-center justify-between">
                   <motion.button
                     whileTap={{ scale: 0.88 }}
                     onClick={() => removePhoto(0)}
-                    className="w-10 h-10 rounded-2xl bg-[#FE3C72]/85 backdrop-blur-sm flex items-center justify-center shadow-lg"
+                    className="w-11 h-11 rounded-2xl bg-[#FE3C72]/90 backdrop-blur-sm flex items-center justify-center shadow-[0_4px_16px_rgba(254,60,114,0.4)]"
                   >
                     <Trash2 className="w-4 h-4 text-white" />
                   </motion.button>
-                  <motion.button
-                    whileTap={{ scale: 0.88 }}
-                    onClick={() => setShowPhotoSheet({ slot: 0 })}
-                    className="w-10 h-10 rounded-2xl bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-lg"
-                  >
-                    <Camera className="w-4 h-4 text-white" />
-                  </motion.button>
+
+                  <div className="flex items-center gap-2">
+                    {photos.length > 1 && (
+                      <motion.button
+                        whileTap={{ scale: 0.88 }}
+                        onClick={() => movePhoto(0, 1)}
+                        className="w-9 h-9 rounded-xl bg-black/60 backdrop-blur-sm border border-white/15 flex items-center justify-center"
+                      >
+                        <ArrowLeft className="w-4 h-4 text-white/80" />
+                      </motion.button>
+                    )}
+                    <motion.button
+                      whileTap={{ scale: 0.88 }}
+                      onClick={() => openPhotoSheet(0)}
+                      className="w-11 h-11 rounded-2xl bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center"
+                    >
+                      <Camera className="w-5 h-5 text-white" />
+                    </motion.button>
+                  </div>
                 </div>
               </>
             ) : (
               <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={() => setShowPhotoSheet({ slot: null })}
-                className="w-full h-full flex flex-col items-center justify-center gap-3 text-white/25 hover:text-white/40 transition-colors"
+                whileTap={{ scale: 0.98 }}
+                onClick={() => openPhotoSheet(null)}
+                className="w-full h-full flex flex-col items-center justify-center gap-4"
               >
-                <div className="w-16 h-16 rounded-3xl border-2 border-dashed border-[#D4AF37]/30 flex items-center justify-center mb-1">
-                  <ImagePlus className="w-7 h-7 text-[#D4AF37]/50" />
+                <div className="w-20 h-20 rounded-3xl border-2 border-dashed border-[#D4AF37]/25 flex items-center justify-center">
+                  <ImagePlus className="w-8 h-8 text-[#D4AF37]/40" />
                 </div>
-                <p className="text-[12px] font-semibold tracking-widest uppercase text-white/30">הוסף תמונה ראשית</p>
-                <p className="text-[10px] text-white/15">התמונה הראשית שנראית בכרטיס</p>
+                <div className="text-center">
+                  <p className="text-white/40 font-bold text-[14px]">הוסף תמונה ראשית</p>
+                  <p className="text-white/15 text-[12px] mt-1">התמונה הראשונה שיראו</p>
+                </div>
               </motion.button>
             )}
           </div>
 
-          {/* Secondary photos grid */}
-          <div className="grid grid-cols-3 gap-2">
-            {photos.slice(1).map((p, i) => {
-              const idx = i + 1;
-              return (
-                <motion.div
-                  key={`${p.url}-${idx}`}
-                  layout
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="relative aspect-square rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/[0.07]"
-                >
-                  <img
-                    src={p.preview || p.url}
-                    className="w-full h-full object-cover"
-                    alt=""
-                    onClick={() => setPreviewIndex(idx)}
-                  />
-                  {p.uploading && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <Loader2 className="w-5 h-5 text-[#D4AF37] animate-spin" />
-                    </div>
-                  )}
-                  {/* Always-visible action bar at bottom */}
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent pb-1.5 pt-5 flex items-center justify-center gap-1.5">
-                    {idx > 1 && (
-                      <motion.button whileTap={{ scale: 0.82 }} onClick={() => movePhoto(idx, -1)}
-                        className="w-6 h-6 rounded-lg bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                        <ArrowRight className="w-3 h-3 text-white/80" />
-                      </motion.button>
-                    )}
-                    <motion.button whileTap={{ scale: 0.82 }} onClick={() => removePhoto(idx)}
-                      className="w-6 h-6 rounded-lg bg-[#FE3C72]/80 flex items-center justify-center">
-                      <Trash2 className="w-3 h-3 text-white" />
-                    </motion.button>
-                    {idx < photos.length - 1 && (
-                      <motion.button whileTap={{ scale: 0.82 }} onClick={() => movePhoto(idx, 1)}
-                        className="w-6 h-6 rounded-lg bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                        <ArrowLeft className="w-3 h-3 text-white/80" />
-                      </motion.button>
-                    )}
-                  </div>
-                  {/* Replace button */}
-                  <motion.button
-                    whileTap={{ scale: 0.88 }}
-                    onClick={() => setShowPhotoSheet({ slot: idx })}
-                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-lg bg-black/60 backdrop-blur-sm flex items-center justify-center border border-white/10"
+          {/* Secondary grid */}
+          {(photos.length > 1 || photos.length < 6) && (
+            <div className="grid grid-cols-3 gap-2 mt-2.5">
+              {photos.slice(1).map((p, i) => {
+                const idx = i + 1;
+                return (
+                  <motion.div
+                    key={`${p.url}-${idx}`}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="relative bg-[#141414] border border-white/[0.06] rounded-2xl overflow-hidden"
+                    style={{ aspectRatio: "1" }}
                   >
-                    <Camera className="w-3 h-3 text-white/80" />
-                  </motion.button>
-                </motion.div>
-              );
-            })}
+                    <img
+                      src={p.preview || p.url}
+                      className="w-full h-full object-cover cursor-pointer"
+                      alt=""
+                      onClick={() => setPreviewIndex(idx)}
+                    />
+                    {p.uploading && (
+                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 text-[#D4AF37] animate-spin" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
 
-            {/* Add slot */}
-            {photos.length < 6 && (
-              <motion.button
-                whileTap={{ scale: 0.93 }}
-                onClick={() => setShowPhotoSheet({ slot: null })}
-                className={`aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-1 transition-all ${
-                  errors.photo
-                    ? "border-red-500/60 bg-red-500/5"
-                    : "border-[#D4AF37]/25 bg-[#181818] active:border-[#D4AF37]/60"
-                }`}
-              >
-                {uploadingSlot === "new" ? (
-                  <Loader2 className="w-5 h-5 text-[#D4AF37] animate-spin" />
-                ) : (
-                  <>
-                    <Plus className="w-5 h-5 text-[#D4AF37]/50" />
-                    <span className="text-[8px] text-white/25 tracking-widest uppercase">הוסף</span>
-                  </>
-                )}
-              </motion.button>
-            )}
-          </div>
+                    {/* Bottom controls */}
+                    <div className="absolute bottom-1.5 inset-x-1.5 flex items-center justify-between gap-1">
+                      <motion.button whileTap={{ scale: 0.82 }} onClick={() => removePhoto(idx)}
+                        className="w-7 h-7 rounded-xl bg-[#FE3C72]/80 flex items-center justify-center shrink-0">
+                        <Trash2 className="w-3 h-3 text-white" />
+                      </motion.button>
+                      <div className="flex gap-1">
+                        {idx > 1 && (
+                          <motion.button whileTap={{ scale: 0.82 }} onClick={() => movePhoto(idx, -1)}
+                            className="w-7 h-7 rounded-xl bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                            <ArrowRight className="w-3 h-3 text-white/80" />
+                          </motion.button>
+                        )}
+                        {idx < photos.length - 1 && (
+                          <motion.button whileTap={{ scale: 0.82 }} onClick={() => movePhoto(idx, 1)}
+                            className="w-7 h-7 rounded-xl bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                            <ArrowLeft className="w-3 h-3 text-white/80" />
+                          </motion.button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Replace */}
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      onClick={() => openPhotoSheet(idx)}
+                      className="absolute top-1.5 left-1.5 w-7 h-7 rounded-xl bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center"
+                    >
+                      <Camera className="w-3 h-3 text-white/80" />
+                    </motion.button>
+                  </motion.div>
+                );
+              })}
+
+              {/* Add slot */}
+              {photos.length < 6 && (
+                <motion.button
+                  whileTap={{ scale: 0.93 }}
+                  onClick={() => openPhotoSheet(null)}
+                  style={{ aspectRatio: "1" }}
+                  className={`rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-1.5 transition-all ${
+                    errors.photo
+                      ? "border-red-500/50 bg-red-500/5"
+                      : "border-[#D4AF37]/20 bg-[#141414] active:border-[#D4AF37]/50"
+                  }`}
+                >
+                  {uploadingSlot === "new"
+                    ? <Loader2 className="w-5 h-5 text-[#D4AF37] animate-spin" />
+                    : <>
+                      <Plus className="w-5 h-5 text-[#D4AF37]/40" />
+                      <span className="text-[9px] text-white/20 tracking-widest uppercase">הוסף</span>
+                    </>}
+                </motion.button>
+              )}
+            </div>
+          )}
 
           <AnimatePresence>
             {errors.photo && (
               <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                className="text-red-400 text-xs mt-2.5 flex items-center gap-1.5">
-                <AlertCircle className="w-3 h-3" /> {errors.photo}
+                className="text-red-400 text-xs mt-2 flex items-center gap-1.5">
+                <AlertCircle className="w-3 h-3 shrink-0" /> {errors.photo}
               </motion.p>
             )}
           </AnimatePresence>
+        </section>
 
-          <p className="text-[9px] text-white/15 mt-2.5 text-center tracking-wider">
-            ✦ לחץ על מצלמה להחלפה · חצים לשינוי סדר · אשפה להסרה ✦
-          </p>
-        </motion.section>
+        {/* ── DIVIDER ── */}
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
 
-        {/* ─── Divider ─── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        {/* ── FORM FIELDS ── */}
+        <section className="space-y-4 pb-2">
+          <p className="text-[11px] font-black text-white/40 tracking-[0.25em] uppercase">✦ פרטים אישיים</p>
 
-        {/* ─── Personal Info ─── */}
-        <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className="space-y-5">
-          <div className="flex items-center gap-2 mb-1">
-            <User className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span className="text-[11px] text-white/40 tracking-widest uppercase font-black">פרטים אישיים</span>
-          </div>
-
-          <Field label="✦ שם פרטי" error={errors.first_name}>
+          {/* Name */}
+          <FormField label="שם פרטי" error={errors.first_name}>
             <Input
               value={form.first_name}
-              onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+              onChange={(e) => setForm(f => ({ ...f, first_name: e.target.value }))}
               placeholder="איך קוראים לך?"
-              className={`${inputCls} h-[52px]`}
+              className="bg-[#141414] border-[#252525] focus:border-[#D4AF37]/40 text-white placeholder:text-white/20 rounded-2xl text-right text-[15px] h-[52px] transition-colors"
               autoCapitalize="words"
             />
-          </Field>
+          </FormField>
 
-          <Field label="✦ גיל" error={errors.age}>
+          {/* Age */}
+          <FormField label="גיל" error={errors.age}>
             <Input
-              type="number"
-              min={18} max={60}
+              type="number" min={18} max={60}
               value={form.age}
-              onChange={(e) => setForm({ ...form, age: e.target.value })}
-              placeholder="מה הגיל שלך?"
-              className={`${inputCls} h-[52px]`}
+              onChange={(e) => setForm(f => ({ ...f, age: e.target.value }))}
+              placeholder="בין 18 ל-60"
+              className="bg-[#141414] border-[#252525] focus:border-[#D4AF37]/40 text-white placeholder:text-white/20 rounded-2xl text-right text-[15px] h-[52px] transition-colors"
               inputMode="numeric"
             />
-          </Field>
+          </FormField>
 
-          <Field label="✦ איזור" error={errors.location}>
+          {/* Location */}
+          <FormField label="איזור" error={errors.location}>
             <motion.button
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => setShowLocationSheet(true)}
-              className={`w-full h-[52px] px-4 rounded-2xl bg-[#181818] border text-right flex items-center justify-between transition-colors ${
-                errors.location ? "border-red-500/60" : "border-[#2A2A2A] active:border-[#D4AF37]/40"
+              className={`w-full h-[52px] px-4 rounded-2xl bg-[#141414] border text-right flex items-center justify-between transition-colors ${
+                errors.location ? "border-red-500/50" : "border-[#252525]"
               }`}
             >
-              <ChevronDown className="w-4 h-4 text-white/25" />
+              <ChevronDown className="w-4 h-4 text-white/25 shrink-0" />
               <span className={`text-[15px] ${form.location ? "text-white font-semibold" : "text-white/25"}`}>
-                {locationLabel(form.location)}
+                {locationLabel(form.location) ?? "בחר איזור"}
               </span>
             </motion.button>
-          </Field>
+          </FormField>
 
-          <Field label="✦ משקה אהוב 🍸 (אופציונלי)">
+          {/* Drink */}
+          <FormField label="משקה אהוב 🍸  (אופציונלי)">
             <Input
               value={form.favorite_drink}
-              onChange={(e) => setForm({ ...form, favorite_drink: e.target.value })}
+              onChange={(e) => setForm(f => ({ ...f, favorite_drink: e.target.value }))}
               placeholder="מה אתה שותה הלילה?"
-              className={`${inputCls} h-[52px]`}
+              className="bg-[#141414] border-[#252525] focus:border-[#D4AF37]/40 text-white placeholder:text-white/20 rounded-2xl text-right text-[15px] h-[52px] transition-colors"
             />
-          </Field>
+          </FormField>
 
-          <Field label="✦ משהו מצחיק עליך 😂" error={errors.funny_fact}>
+          {/* Funny fact */}
+          <FormField label="משהו מצחיק עליך 😂" error={errors.funny_fact}>
             <Textarea
               value={form.funny_fact}
-              onChange={(e) => setForm({ ...form, funny_fact: e.target.value })}
+              onChange={(e) => setForm(f => ({ ...f, funny_fact: e.target.value }))}
               placeholder="משהו מצחיק, מפתיע, שמייחד אותך..."
               maxLength={200}
-              className={`${inputCls} resize-none h-[112px] py-3`}
+              className="bg-[#141414] border-[#252525] focus:border-[#D4AF37]/40 text-white placeholder:text-white/20 rounded-2xl text-right text-[15px] resize-none h-[110px] py-3.5 transition-colors"
             />
-            <div className="flex justify-end mt-1">
-              <span className={`text-xs font-semibold ${form.funny_fact.length > 180 ? "text-[#D4AF37]" : "text-white/20"}`}>
+            <div className="flex justify-end mt-1.5">
+              <span className={`text-[11px] font-semibold ${form.funny_fact.length > 180 ? "text-[#D4AF37]" : "text-white/20"}`}>
                 {form.funny_fact.length}/200
               </span>
             </div>
-          </Field>
-        </motion.section>
+          </FormField>
+        </section>
 
-        {/* ─── Save Button ─── */}
-        <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}>
-          <motion.button
-            onClick={handleSave}
-            disabled={saving || uploadingSlot !== null}
-            whileTap={{ scale: 0.97 }}
-            className={`w-full h-[56px] rounded-3xl font-black text-[15px] tracking-widest uppercase transition-all duration-300 shadow-[0_8px_40px_rgba(212,175,55,0.3)] ${
-              saved
-                ? "bg-green-500/20 text-green-400 border border-green-500/30 shadow-none"
-                : saving || uploadingSlot !== null
-                ? "bg-[#1A1A1A] text-white/30 border border-white/10 shadow-none"
-                : "bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] text-[#0A0A0A]"
-            }`}
-          >
-            {saving ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" /> שומר שינויים...
-              </span>
-            ) : saved ? (
-              <span className="flex items-center justify-center gap-2">
-                <Check className="w-5 h-5" /> נשמר בהצלחה! 🎉
-              </span>
-            ) : uploadingSlot !== null ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" /> ממתין לסיום העלאה...
-              </span>
-            ) : (
-              "✦ Save Changes"
-            )}
-          </motion.button>
-        </motion.div>
+        {/* ── BIG SAVE BUTTON ── */}
+        <motion.button
+          onClick={handleSave}
+          disabled={isBusy}
+          whileTap={{ scale: 0.97 }}
+          className={`w-full h-[58px] rounded-3xl font-black text-[15px] tracking-[0.15em] uppercase transition-all duration-300 mb-4 ${
+            saved
+              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
+              : isBusy
+              ? "bg-[#1A1A1A] text-white/25 border border-white/[0.06]"
+              : "bg-gradient-to-r from-[#D4AF37] via-[#F0D060] to-[#D4AF37] text-[#080808] shadow-[0_8px_40px_rgba(212,175,55,0.35)]"
+          }`}
+        >
+          {saving
+            ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> שומר שינויים...</span>
+            : saved
+            ? <span className="flex items-center justify-center gap-2"><Check className="w-5 h-5" /> נשמר בהצלחה! 🎉</span>
+            : uploadingSlot !== null
+            ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> ממתין לסיום העלאה...</span>
+            : "✦ Save Changes"}
+        </motion.button>
       </div>
 
-      {/* ─── Location Sheet ─── */}
-      <AnimatePresence>
-        {showLocationSheet && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/75 backdrop-blur-sm z-40"
-              onClick={() => setShowLocationSheet(false)}
-            />
-            <motion.div
-              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 32 }}
-              className="fixed bottom-0 inset-x-0 bg-[#141414] border-t border-white/10 rounded-t-[2rem] z-50 max-w-md mx-auto"
-              style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
+      {/* ── LOCATION SHEET ── */}
+      <BottomSheet open={showLocationSheet} onClose={() => setShowLocationSheet(false)} title="✦ בחר איזור">
+        <div className="space-y-2 px-5">
+          {LOCATIONS.map(opt => (
+            <motion.button
+              key={opt.value}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => { setForm(f => ({ ...f, location: opt.value })); setShowLocationSheet(false); }}
+              className={`w-full py-4 px-5 rounded-2xl text-right font-bold text-[15px] flex items-center justify-between transition-all ${
+                form.location === opt.value
+                  ? "bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] shadow-[0_4px_20px_rgba(212,175,55,0.3)]"
+                  : "bg-[#1C1C1C] text-white/80 border border-white/[0.05]"
+              }`}
             >
-              <div className="w-10 h-1 bg-white/15 rounded-full mx-auto mt-4 mb-5" />
-              <h3 className="text-white text-center font-black mb-4 tracking-widest uppercase text-[13px]">✦ בחר איזור</h3>
-              <div className="space-y-2 px-5">
-                {LOCATIONS.map(opt => (
-                  <motion.button
-                    key={opt.value}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => { setForm(f => ({ ...f, location: opt.value })); setShowLocationSheet(false); }}
-                    className={`w-full py-4 px-5 rounded-2xl text-right font-bold text-[15px] transition-all ${
-                      form.location === opt.value
-                        ? "bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-[#0A0A0A] shadow-[0_4px_20px_rgba(212,175,55,0.3)]"
-                        : "bg-[#1E1E1E] text-white/80 border border-white/[0.06]"
-                    }`}
-                  >
-                    {opt.label}
-                  </motion.button>
-                ))}
-              </div>
-              <button onClick={() => setShowLocationSheet(false)} className="w-full mt-3 py-3 text-white/30 text-sm">ביטול</button>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              <span className="text-xl">{opt.flag}</span>
+              <span>{opt.label}</span>
+            </motion.button>
+          ))}
+        </div>
+        <button onClick={() => setShowLocationSheet(false)} className="w-full mt-3 py-3 text-white/25 text-sm">ביטול</button>
+      </BottomSheet>
 
-      {/* ─── Photo Options Sheet ─── */}
-      <AnimatePresence>
-        {showPhotoSheet && (
-          <>
+      {/* ── PHOTO OPTIONS SHEET ── */}
+      <BottomSheet open={photoSheetOpen} onClose={() => setPhotoSheetOpen(false)} title="✦ הוסף תמונה">
+        <div className="space-y-3 px-5">
+          <label className="block cursor-pointer">
+            <input type="file" accept="image/*" capture="environment" className="hidden"
+              onChange={(e) => { handlePhotoFile(e.target.files[0], photoSheetSlot); e.target.value = ""; }} />
             <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/75 backdrop-blur-sm z-40"
-              onClick={() => setShowPhotoSheet(false)}
-            />
-            <motion.div
-              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 32 }}
-              className="fixed bottom-0 inset-x-0 bg-[#141414] border-t border-white/10 rounded-t-[2rem] z-50 max-w-md mx-auto"
-              style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full py-5 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] font-black text-[15px] flex items-center justify-center gap-2.5 shadow-[0_4px_24px_rgba(212,175,55,0.3)] cursor-pointer"
+              onClick={(e) => e.currentTarget.previousElementSibling.click()}
             >
-              <div className="w-10 h-1 bg-white/15 rounded-full mx-auto mt-4 mb-5" />
-              <h3 className="text-white text-center font-black mb-5 tracking-widest uppercase text-[13px]">✦ הוסף תמונה</h3>
-              <div className="space-y-3 px-5">
-                <label className="block cursor-pointer">
-                  <input
-                    type="file" accept="image/*" capture="environment" className="hidden"
-                    onChange={(e) => { handlePhotoFile(e.target.files[0], showPhotoSheet.slot); e.target.value = ""; }}
-                  />
-                  <motion.div
-                    whileTap={{ scale: 0.97 }}
-                    className="w-full py-5 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-[#0A0A0A] font-black text-[15px] flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.3)]"
-                    onClick={(e) => e.currentTarget.previousElementSibling.click()}
-                  >
-                    <Camera className="w-5 h-5" /> צלם תמונה
-                  </motion.div>
-                </label>
-                <label className="block cursor-pointer">
-                  <input
-                    type="file" accept="image/*" className="hidden"
-                    onChange={(e) => { handlePhotoFile(e.target.files[0], showPhotoSheet.slot); e.target.value = ""; }}
-                  />
-                  <motion.div
-                    whileTap={{ scale: 0.97 }}
-                    className="w-full py-5 rounded-2xl bg-[#1E1E1E] text-white font-bold text-[15px] flex items-center justify-center gap-2 border border-white/[0.07]"
-                    onClick={(e) => e.currentTarget.previousElementSibling.click()}
-                  >
-                    📁 בחר מהגלריה
-                  </motion.div>
-                </label>
-                <button onClick={() => setShowPhotoSheet(false)} className="w-full py-3 text-white/30 text-sm">ביטול</button>
-              </div>
+              <Camera className="w-5 h-5" /> 📸 צלם תמונה
             </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+          </label>
+          <label className="block cursor-pointer">
+            <input type="file" accept="image/*" className="hidden"
+              onChange={(e) => { handlePhotoFile(e.target.files[0], photoSheetSlot); e.target.value = ""; }} />
+            <motion.div
+              whileTap={{ scale: 0.97 }}
+              className="w-full py-5 rounded-2xl bg-[#1C1C1C] text-white font-bold text-[15px] flex items-center justify-center gap-2.5 border border-white/[0.07] cursor-pointer"
+              onClick={(e) => e.currentTarget.previousElementSibling.click()}
+            >
+              📁 בחר מהגלריה
+            </motion.div>
+          </label>
+          <button onClick={() => setPhotoSheetOpen(false)} className="w-full py-3 text-white/25 text-sm">ביטול</button>
+        </div>
+      </BottomSheet>
 
-      {/* ─── Full-screen Photo Preview ─── */}
+      {/* ── FULLSCREEN PHOTO PREVIEW ── */}
       <AnimatePresence>
         {previewIndex !== null && photos[previewIndex] && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black flex items-center justify-center"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
             onClick={() => setPreviewIndex(null)}
           >
             <motion.img
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
+              initial={{ scale: 0.92 }} animate={{ scale: 1 }}
               src={photos[previewIndex].preview || photos[previewIndex].url}
-              className="max-w-full max-h-full object-contain"
+              className="max-w-full max-h-[85dvh] object-contain rounded-2xl shadow-2xl"
               alt=""
             />
-            {/* Nav arrows */}
+            {/* Nav */}
             {previewIndex > 0 && (
-              <button
-                onClick={(e) => { e.stopPropagation(); setPreviewIndex(previewIndex - 1); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 rounded-full flex items-center justify-center"
-              >
+              <button onClick={(e) => { e.stopPropagation(); setPreviewIndex(i => i - 1); }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-white/15 flex items-center justify-center">
                 <ArrowRight className="w-5 h-5 text-white" />
               </button>
             )}
             {previewIndex < photos.length - 1 && (
-              <button
-                onClick={(e) => { e.stopPropagation(); setPreviewIndex(previewIndex + 1); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 rounded-full flex items-center justify-center"
-              >
+              <button onClick={(e) => { e.stopPropagation(); setPreviewIndex(i => i + 1); }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-white/15 flex items-center justify-center">
                 <ArrowLeft className="w-5 h-5 text-white" />
               </button>
             )}
-            {/* Close */}
-            <button
-              onClick={() => setPreviewIndex(null)}
-              className="absolute top-4 left-4 w-9 h-9 bg-black/60 rounded-full flex items-center justify-center text-white/70 text-xl font-bold"
-              style={{ top: `calc(1rem + env(safe-area-inset-top))` }}
-            >
-              ×
+            <button onClick={() => setPreviewIndex(null)}
+              className="absolute top-5 left-5 w-10 h-10 rounded-full bg-black/60 border border-white/15 flex items-center justify-center"
+              style={{ top: `calc(1.25rem + env(safe-area-inset-top))` }}>
+              <X className="w-4 h-4 text-white" />
             </button>
-            <div className="absolute bottom-6 inset-x-0 flex justify-center gap-1.5">
+            {/* Dots */}
+            <div className="absolute bottom-8 inset-x-0 flex justify-center gap-1.5">
               {photos.map((_, i) => (
-                <div key={i} className={`rounded-full transition-all ${i === previewIndex ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/30"}`} />
+                <div key={i} className={`rounded-full transition-all duration-200 ${i === previewIndex ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/25"}`} />
               ))}
             </div>
           </motion.div>
@@ -641,6 +586,53 @@ export default function MyProfile() {
       </AnimatePresence>
 
       <BottomNav />
+    </div>
+  );
+}
+
+// ── Reusable Bottom Sheet ──
+function BottomSheet({ open, onClose, title, children }) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 340, damping: 34 }}
+            className="fixed bottom-0 inset-x-0 bg-[#111111] border-t border-white/[0.07] rounded-t-[2rem] z-50 max-w-md mx-auto overflow-hidden"
+            style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}
+          >
+            <div className="w-10 h-1 bg-white/10 rounded-full mx-auto mt-3.5 mb-4" />
+            {title && <p className="text-white text-center font-black text-[13px] tracking-[0.2em] uppercase mb-4 px-5">{title}</p>}
+            {children}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ── Form Field ──
+function FormField({ label, error, children }) {
+  return (
+    <div>
+      <p className="text-[10px] font-black text-white/30 tracking-[0.2em] uppercase mb-2">{label}</p>
+      {children}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+            className="text-red-400 text-xs mt-1.5 flex items-center gap-1.5"
+          >
+            <AlertCircle className="w-3 h-3 shrink-0" /> {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
