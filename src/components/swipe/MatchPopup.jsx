@@ -104,15 +104,15 @@ export default function MatchPopup({ show, matchProfile, myProfile, onClose, onS
               className="w-full py-6 text-lg font-bold rounded-2xl bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] hover:opacity-90 transition-all duration-300 mb-3"
             >
               <Wine className="w-5 h-5 ml-2" />
-              🍸 שלח משקה
+              🍸 Send a Drink
             </Button>
 
             <Button
               variant="ghost"
               onClick={onClose}
-              className="w-full py-4 text-white/50 hover:text-white hover:bg-white/5"
+              className="w-full py-4 text-white/40 hover:text-white hover:bg-white/5 tracking-widest uppercase text-xs"
             >
-              המשך להחליק
+              Keep Swiping ✦
             </Button>
           </motion.div>
         </motion.div>
