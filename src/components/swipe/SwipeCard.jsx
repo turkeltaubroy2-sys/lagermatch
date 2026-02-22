@@ -1,18 +1,31 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Heart, X } from "lucide-react";
 
 const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const likeOpacity = useTransform(x, [0, 100], [0, 1]);
   const nopeOpacity = useTransform(x, [-100, 0], [1, 0]);
+  const [photoIndex, setPhotoIndex] = useState(0);
+
+  const photos = profile.photo_urls?.length > 0 ? profile.photo_urls : [profile.photo_url];
 
   const handleDragEnd = (_, info) => {
     if (info.offset.x > 80) {
       onSwipe(true);
     } else if (info.offset.x < -80) {
       onSwipe(false);
+    }
+  };
+
+  const handleTap = (e) => {
+    if (photos.length <= 1) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const tapX = e.clientX - rect.left;
+    if (tapX > rect.width / 2) {
+      setPhotoIndex(i => Math.min(i + 1, photos.length - 1));
+    } else {
+      setPhotoIndex(i => Math.max(i - 1, 0));
     }
   };
 
@@ -23,7 +36,7 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
         style={{ transform: "scale(0.94) translateY(16px)", zIndex: 0 }}
       >
         <img
-          src={profile.photo_url}
+          src={photos[0]}
           alt={profile.first_name}
           className="w-full h-full object-cover opacity-60"
           loading="eager"
@@ -42,6 +55,7 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
       dragElastic={0.5}
       dragMomentum={false}
       onDragEnd={handleDragEnd}
+      onClick={handleTap}
       style={{ x, rotate, willChange: "transform", zIndex: 1 }}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -53,13 +67,26 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
     >
       {/* Photo */}
       <img
-        src={profile.photo_url}
+        src={photos[photoIndex]}
         alt={profile.first_name}
         className="w-full h-full object-cover"
         draggable={false}
         loading="eager"
         decoding="async"
       />
+
+      {/* Photo dots */}
+      {photos.length > 1 && (
+        <div className="absolute top-3 left-0 right-0 flex justify-center gap-1.5 px-4">
+          {photos.map((_, i) => (
+            <div
+              key={i}
+              className="flex-1 h-[3px] rounded-full transition-all duration-200"
+              style={{ background: i === photoIndex ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.3)" }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
