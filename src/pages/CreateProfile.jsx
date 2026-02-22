@@ -148,7 +148,7 @@ export default function CreateProfile() {
           <button onClick={() => window.history.back()} className="text-white/50 hover:text-white">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-black bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] bg-clip-text text-transparent">הצג את עצמך 🔥</h1>
+          <h1 className="text-2xl font-black bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] bg-clip-text text-transparent">יצירת פרופיל 🔥</h1>
           <div className="w-6" />
         </div>
 
@@ -409,21 +409,7 @@ export default function CreateProfile() {
             </div>
           </div>
 
-          <AnimatePresence>
-            {showBrideGroom && (
-              <motion.div
-                initial={{ opacity: 0, y: -10, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: "auto" }}
-                exit={{ opacity: 0, y: -10, height: 0 }}
-                className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-xl p-4 text-center"
-              >
-                <p className="text-[#D4AF37] text-sm">
-                  <Sparkles className="w-4 h-4 inline mr-1" />
-                  אתה כנראה מכיר אותנו טוב מדי 😉
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+
 
           <Button
             onClick={handleSubmit}
