@@ -222,7 +222,7 @@ export default function Chat() {
               💬
             </motion.div>
             <p className="text-white/40 text-sm text-center">
-              התחילו שיחה עם {otherProfile?.first_name}!
+              הגיע הזמן לשבור את הקרח ✦
             </p>
           </div>
         ) : (
