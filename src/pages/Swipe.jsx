@@ -115,6 +115,7 @@ export default function Swipe() {
     }
 
     setMyProfile(me);
+    sessionStorage.setItem("nightmatch_profile_id", me.id);
 
     const swipedSet = new Set(allSwipes.filter(s => s.swiper_id === me.id).map(s => s.target_id));
     setSwipedIds(swipedSet);
