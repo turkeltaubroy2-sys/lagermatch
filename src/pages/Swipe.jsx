@@ -395,9 +395,9 @@ export default function Swipe() {
             >
               🥂
             </motion.div>
-            <h2 className="text-xl font-bold text-white/80 mb-2">אין עוד פרופילים</h2>
+            <h2 className="text-xl font-bold text-white/80 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>הכרטיסים נגמרו ✦</h2>
             <p className="text-white/40 text-sm text-center">
-              צא/י לרחבה ותהנה מהערב!
+              צא/י לרחבה — הלילה עוד ארוך 🥂
             </p>
           </div>
         )}
