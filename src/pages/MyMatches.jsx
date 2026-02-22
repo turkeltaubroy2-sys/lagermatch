@@ -187,9 +187,9 @@ export default function MyMatches() {
           >
             💔
           </motion.div>
-          <h2 className="text-xl font-bold text-white/80 mb-2">עדיין אין התאמות</h2>
+          <h2 className="text-xl font-bold text-white/80 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>עדיין אין התאמות ✦</h2>
           <p className="text-white/40 text-sm text-center mb-6">
-          המשיכו להחליק, ההתאמה הבאה מחכה לכם!
+            המשיכו להחליק — הלילה ארוך 🥂
           </p>
           </div>
       ) : (
