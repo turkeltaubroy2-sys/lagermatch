@@ -53,8 +53,8 @@ import CreateProfile from './pages/CreateProfile';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
 import MyMatches from './pages/MyMatches';
-import Swipe from './pages/Swipe';
 import MyProfile from './pages/MyProfile';
+import Swipe from './pages/Swipe';
 import __Layout from './Layout.jsx';
 
 
@@ -65,8 +65,8 @@ export const PAGES = {
     "Home": Home,
     "Menu": Menu,
     "MyMatches": MyMatches,
-    "Swipe": Swipe,
     "MyProfile": MyProfile,
+    "Swipe": Swipe,
 }
 
 export const pagesConfig = {

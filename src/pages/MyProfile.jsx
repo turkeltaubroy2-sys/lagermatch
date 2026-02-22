@@ -196,24 +196,7 @@ export default function MyProfile() {
             </div>
           </div>
 
-          {/* Save button */}
-          <motion.button
-            onClick={handleSave}
-            disabled={isBusy}
-            whileTap={{ scale: 0.93 }}
-            className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-2xl font-black text-[13px] transition-all ${
-              saved
-                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
-                : isBusy
-                ? "bg-white/5 text-white/30 border border-white/[0.06]"
-                : "bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] shadow-[0_4px_24px_rgba(212,175,55,0.4)]"
-            }`}
-          >
-            {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> שומר...</>
-              : saved ? <><Check className="w-3.5 h-3.5" /> נשמר!</>
-              : uploadingSlot !== null ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> מעלה...</>
-              : <><Save className="w-3.5 h-3.5" /> שמור</>}
-          </motion.button>
+
         </div>
       </div>
 
