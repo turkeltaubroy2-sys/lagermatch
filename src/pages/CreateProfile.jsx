@@ -158,7 +158,7 @@ export default function CreateProfile() {
           <div className="w-6" />
         </div>
 
-        <p className="text-center text-white/30 text-xs mb-6">🍸 הצג את עצמך ותמצא/י את מי שתמצא/י הלילה</p>
+        <p className="text-center text-white/30 text-xs mb-6 tracking-widest uppercase">✦ הצג את עצמך · תמצא/י מישהו ✦</p>
 
         {/* Photo upload */}
         <div className="mb-6">
