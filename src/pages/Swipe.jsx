@@ -267,6 +267,7 @@ export default function Swipe() {
     if (!myProfile) return;
     await base44.entities.Profile.delete(myProfile.id);
     localStorage.removeItem("wedding_device_id");
+    document.cookie = "wedding_device_id=; max-age=0; path=/";
     toast({ title: "הפרופיל נמחק בהצלחה", duration: 2000 });
     navigate(createPageUrl("Home"));
   }, [myProfile, navigate, toast]);
