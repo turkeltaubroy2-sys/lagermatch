@@ -389,10 +389,7 @@ export default function CreateProfile() {
             <Label className="text-white/70 text-sm mb-2 block">משהו מצחיק עליך 😂</Label>
             <Textarea
               value={form.funny_fact}
-              onChange={(e) => {
-                setForm({ ...form, funny_fact: e.target.value });
-                checkFunnyFact(e.target.value);
-              }}
+              onChange={(e) => setForm({ ...form, funny_fact: e.target.value })}
               placeholder="ספר/י לנו משהו מצחיק עליך..."
               maxLength={200}
               className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 rounded-xl resize-none h-24 text-right text-base"
