@@ -36,45 +36,81 @@ export default function BottomNav() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A]/95 backdrop-blur-md border-t border-[#333] z-40" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <div className="max-w-md mx-auto flex justify-around items-center h-16 px-4">
-        <Link
-          to={createPageUrl("Swipe")}
-          className={`flex flex-col items-center justify-center flex-1 py-2 transition-all ${
-            isActive("Swipe") ? "text-[#D4AF37]" : "text-white/40 hover:text-white/60"
-          }`}
-        >
-          <Compass className="w-6 h-6 mb-1" />
-          <span className="text-xs font-medium">גלה</span>
-        </Link>
+    <motion.div
+      className="fixed bottom-0 left-0 right-0 z-40"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      initial={{ y: 80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.3 }}
+    >
+      <div className="bg-[#111]/90 backdrop-blur-xl border-t border-white/8 shadow-[0_-4px_30px_rgba(0,0,0,0.4)]">
+        <div className="max-w-md mx-auto flex justify-around items-center h-16 px-4">
+          <Link to={createPageUrl("Swipe")} className="flex flex-col items-center justify-center flex-1 py-2">
+            <motion.div
+              whileTap={{ scale: 0.85 }}
+              className={`flex flex-col items-center transition-colors duration-200 ${isActive("Swipe") ? "text-[#D4AF37]" : "text-white/35"}`}
+            >
+              {isActive("Swipe") ? (
+                <motion.div layoutId="nav-indicator" className="relative">
+                  <motion.div className="absolute -inset-2 bg-[#D4AF37]/15 rounded-full blur-sm" />
+                  <Compass className="w-6 h-6 mb-0.5 relative z-10" />
+                </motion.div>
+              ) : (
+                <Compass className="w-6 h-6 mb-0.5" />
+              )}
+              <span className="text-[10px] font-semibold tracking-widest uppercase">Discover</span>
+            </motion.div>
+          </Link>
 
-        <Link
-          to={createPageUrl("MyMatches")}
-          className={`flex flex-col items-center justify-center flex-1 py-2 transition-all ${
-            isActive("MyMatches") ? "text-[#D4AF37]" : "text-white/40 hover:text-white/60"
-          }`}
-        >
-          <div className="relative">
-            <Heart className="w-6 h-6 mb-1" />
-            {unreadCount > 0 && (
-              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                {unreadCount > 9 ? "9+" : unreadCount}
+          <Link to={createPageUrl("MyMatches")} className="flex flex-col items-center justify-center flex-1 py-2">
+            <motion.div
+              whileTap={{ scale: 0.85 }}
+              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyMatches") ? "text-[#FE3C72]" : "text-white/35"}`}
+            >
+              <div className="relative">
+                {isActive("MyMatches") ? (
+                  <motion.div
+                    animate={{ scale: [1, 1.18, 1] }}
+                    transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <motion.div className="absolute -inset-2 bg-[#FE3C72]/15 rounded-full blur-sm" />
+                    <Heart className="w-6 h-6 mb-0.5 relative z-10" fill="currentColor" />
+                  </motion.div>
+                ) : (
+                  <Heart className="w-6 h-6 mb-0.5" />
+                )}
+                {unreadCount > 0 && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1.5 -right-1.5 bg-[#FE3C72] text-white text-[9px] font-black rounded-full w-4 h-4 flex items-center justify-center shadow-[0_0_8px_rgba(254,60,114,0.7)]"
+                  >
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </motion.div>
+                )}
               </div>
-            )}
-          </div>
-          <span className="text-xs font-medium">התאמות</span>
-        </Link>
+              <span className="text-[10px] font-semibold tracking-widest uppercase mt-0.5">Matches</span>
+            </motion.div>
+          </Link>
 
-        <Link
-          to={createPageUrl("Menu")}
-          className={`flex flex-col items-center justify-center flex-1 py-2 transition-all ${
-            isActive("Menu") ? "text-[#D4AF37]" : "text-white/40 hover:text-white/60"
-          }`}
-        >
-          <UtensilsCrossed className="w-6 h-6 mb-1" />
-          <span className="text-xs font-medium">תפריט</span>
-        </Link>
+          <Link to={createPageUrl("Menu")} className="flex flex-col items-center justify-center flex-1 py-2">
+            <motion.div
+              whileTap={{ scale: 0.85 }}
+              className={`flex flex-col items-center transition-colors duration-200 ${isActive("Menu") ? "text-[#D4AF37]" : "text-white/35"}`}
+            >
+              {isActive("Menu") ? (
+                <motion.div className="relative">
+                  <motion.div className="absolute -inset-2 bg-[#D4AF37]/15 rounded-full blur-sm" />
+                  <UtensilsCrossed className="w-6 h-6 mb-0.5 relative z-10" />
+                </motion.div>
+              ) : (
+                <UtensilsCrossed className="w-6 h-6 mb-0.5" />
+              )}
+              <span className="text-[10px] font-semibold tracking-widest uppercase">Menu</span>
+            </motion.div>
+          </Link>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
