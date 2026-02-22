@@ -55,32 +55,34 @@ export default function CreateProfile() {
     return id;
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setErrors(prev => ({ ...prev, photo: "התמונה גדולה מדי (מקסימום 5MB)" }));
-        return;
-      }
-      setPhoto(file);
-      setPhotoPreview(URL.createObjectURL(file));
-      setErrors(prev => ({ ...prev, photo: null }));
-      setShowPhotoOptions(false);
+  const handlePhotoFile = (file) => {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setErrors(prev => ({ ...prev, photo: "התמונה גדולה מדי (מקסימום 5MB)" }));
+      return;
     }
+    const preview = URL.createObjectURL(file);
+    setPhotos(prev => {
+      const updated = [...prev];
+      if (activePhotoSlot !== null && activePhotoSlot < updated.length) {
+        updated[activePhotoSlot] = { file, preview };
+      } else {
+        updated.push({ file, preview });
+      }
+      return updated;
+    });
+    setErrors(prev => ({ ...prev, photo: null }));
+    setShowPhotoOptions(false);
+    setActivePhotoSlot(null);
   };
 
-  const handleCameraCapture = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setErrors(prev => ({ ...prev, photo: "התמונה גדולה מדי (מקסימום 5MB)" }));
-        return;
-      }
-      setPhoto(file);
-      setPhotoPreview(URL.createObjectURL(file));
-      setErrors(prev => ({ ...prev, photo: null }));
-      setShowPhotoOptions(false);
-    }
+  const removePhoto = (index) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const openPhotoOptions = (slot = null) => {
+    setActivePhotoSlot(slot);
+    setShowPhotoOptions(true);
   };
 
   const validate = () => {
