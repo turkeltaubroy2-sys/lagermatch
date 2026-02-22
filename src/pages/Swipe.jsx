@@ -237,11 +237,12 @@ export default function Swipe() {
   }, []);
 
   const handleRefresh = useCallback(async () => {
+    if (refreshing) return;
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
     toast({ title: "🔄 הרשימה עודכנה", duration: 2000 });
-  }, [loadData, toast]);
+  }, [refreshing, toast]);
 
   const handleDeleteProfile = useCallback(async () => {
     if (!myProfile) return;

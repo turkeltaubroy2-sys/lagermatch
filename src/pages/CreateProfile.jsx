@@ -80,10 +80,6 @@ export default function CreateProfile() {
     }
   };
 
-  const checkFunnyFact = (_text) => {
-    setShowBrideGroom(false);
-  };
-
   const validate = () => {
     const newErrors = {};
     if (!form.first_name.trim()) newErrors.first_name = "שם הוא שדה חובה";
