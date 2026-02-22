@@ -69,10 +69,10 @@ export default function Home() {
     <div className="h-[100dvh] flex flex-col items-center justify-center px-6 bg-[#0F0F0F] relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-10 w-64 h-64 bg-[#FE3C72]/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-72 h-72 bg-[#D4AF37]/6 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#FF6B9D]/4 rounded-full blur-3xl" />
-        {["🍸", "🔥", "✨", "💫", "🎶", "❤️"].map((emoji, i) => (
+        <div className="absolute top-20 right-10 w-64 h-64 bg-[#FE3C72]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-72 h-72 bg-[#D4AF37]/8 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#FF6B9D]/6 rounded-full blur-3xl" />
+        {["🔥", "💫", "✨", "❤️", "🎶", "🍸"].map((emoji, i) => (
           <motion.div
             key={i}
             className="absolute text-2xl"
