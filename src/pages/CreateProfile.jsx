@@ -162,7 +162,7 @@ export default function CreateProfile() {
 
         {/* Photo upload */}
         <div className="mb-6">
-          <p className="text-white/50 text-xs text-center mb-3">תמונה ראשית + עד 5 תמונות נוספות</p>
+          <p className="text-white/40 text-[10px] text-center mb-3 tracking-widest uppercase">✦ Photos — ראשית + עד 5 נוספות ✦</p>
           <div className="grid grid-cols-3 gap-2">
             {/* Existing photos */}
             {photos.map((p, i) => (
