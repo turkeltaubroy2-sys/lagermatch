@@ -283,7 +283,7 @@ export default function CreateProfile() {
                       accept="image/*"
                       capture="environment"
                       className="hidden"
-                      onChange={handleCameraCapture}
+                      onChange={(e) => handlePhotoFile(e.target.files[0])}
                     />
                     <Button
                       type="button"
@@ -300,7 +300,7 @@ export default function CreateProfile() {
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={handlePhotoChange}
+                      onChange={(e) => handlePhotoFile(e.target.files[0])}
                     />
                     <Button
                       type="button"
