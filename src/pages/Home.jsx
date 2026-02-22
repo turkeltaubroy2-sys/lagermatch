@@ -136,9 +136,9 @@ export default function Home() {
 
         <Button
           onClick={() => setShowWelcome(true)}
-          className="w-full py-7 text-lg font-black rounded-3xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_8px_40px_rgba(254,60,114,0.45)] tracking-wide border-0"
+          className="w-full py-7 text-lg font-black rounded-3xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_8px_40px_rgba(254,60,114,0.45)] tracking-widest border-0 uppercase"
         >
-          🚀 אני פנוי/ה הערב
+          🔥 Join the Night
         </Button>
 
         {/* Welcome Popup */}
