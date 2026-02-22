@@ -81,11 +81,8 @@ export default function CreateProfile() {
     }
   };
 
-  const checkFunnyFact = (text) => {
-    const lowerText = text.toLowerCase();
-    // Check for specific names
-    const hasRoeiYael = lowerText.includes("רועיקי") || lowerText.includes("יעלי");
-    setShowBrideGroom(hasRoeiYael);
+  const checkFunnyFact = (_text) => {
+    setShowBrideGroom(false);
   };
 
   const validate = () => {
@@ -155,7 +152,7 @@ export default function CreateProfile() {
           <div className="w-6" />
         </div>
 
-        <p className="text-center text-white/30 text-xs mb-6">🍸 מצא/י את מי שתמצא/י הלילה</p>
+        <p className="text-center text-white/30 text-xs mb-6">🍸 הצג את עצמך ותמצא/י את מי שתמצא/י הלילה</p>
 
         {/* Photo upload */}
         <div className="flex justify-center mb-8">

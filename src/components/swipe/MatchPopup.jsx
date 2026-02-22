@@ -49,10 +49,9 @@ export default function MatchPopup({ show, matchProfile, myProfile, onClose, onS
             <h2 className="text-4xl font-black shimmer-gold mb-2">
               יש התאמה!
             </h2>
-            <p className="text-white/50 text-sm mb-2">
-              לכו למצוא אחד את השנייה על הרחבה 💃🕺
+            <p className="text-white/50 text-sm mb-6">
+              תמצאו אחד את השנייה ותהנו! 🎉
             </p>
-            <p className="text-white/20 text-xs mb-6">💍 רועי ויעל</p>
 
             {/* Both profiles */}
             <div className="flex items-center justify-center gap-4 mb-8">
