@@ -334,7 +334,7 @@ export default function CreateProfile() {
         {/* Form */}
         <div className="space-y-5">
           <div>
-            <Label className="text-white/70 text-sm mb-2 block">שם פרטי</Label>
+            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ שם פרטי</Label>
             <Input
               value={form.first_name}
               onChange={(e) => setForm({ ...form, first_name: e.target.value })}
