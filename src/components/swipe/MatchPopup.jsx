@@ -46,11 +46,11 @@ export default function MatchPopup({ show, matchProfile, myProfile, onClose, onS
               🔥
             </motion.div>
 
-            <h2 className="text-4xl font-black shimmer-gold mb-2">
-              יש התאמה!
+            <h2 className="text-4xl font-black shimmer-gold mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+              It's a Match ✦
             </h2>
-            <p className="text-white/50 text-sm mb-6">
-              תמצאו אחד את השנייה ותהנו! 🎉
+            <p className="text-white/50 text-sm mb-6 tracking-wide">
+              גורל, מזל, או סתם הלילה הנכון — תנצלו את זה 🥂
             </p>
 
             {/* Both profiles */}
