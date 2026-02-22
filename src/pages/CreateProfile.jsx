@@ -20,6 +20,7 @@ export default function CreateProfile() {
   const [saving, setSaving] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [showLocationSheet, setShowLocationSheet] = useState(false);
+  const [redirectChecked, setRedirectChecked] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -28,6 +29,8 @@ export default function CreateProfile() {
     base44.entities.Profile.filter({ device_id: deviceId }).then(profiles => {
       if (profiles.length > 0) {
         navigate(createPageUrl("Swipe"));
+      } else {
+        setRedirectChecked(true);
       }
     });
   }, [navigate]);
