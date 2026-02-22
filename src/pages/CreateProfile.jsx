@@ -161,31 +161,44 @@ export default function CreateProfile() {
         <p className="text-center text-white/30 text-xs mb-6">🍸 הצג את עצמך ותמצא/י את מי שתמצא/י הלילה</p>
 
         {/* Photo upload */}
-        <div className="flex justify-center mb-8">
-          <div className="cursor-pointer relative group">
-            <motion.div
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowPhotoOptions(true)}
-              className={`w-36 h-36 rounded-full border-2 border-dashed ${
-                errors.photo ? "border-red-500" : "border-[#D4AF37]/50"
-              } flex items-center justify-center overflow-hidden bg-[#1A1A1A] transition-all group-hover:border-[#D4AF37]`}
-            >
-              {photoPreview ? (
-                <img src={photoPreview} alt="profile" className="w-full h-full object-cover" />
-              ) : (
-                <div className="text-center">
-                  <Camera className="w-8 h-8 text-[#D4AF37]/60 mx-auto mb-2" />
-                  <span className="text-xs text-white/40">העלה תמונה</span>
-                </div>
-              )}
-            </motion.div>
-            {photoPreview && (
-              <div 
-                onClick={() => setShowPhotoOptions(true)}
-                className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center"
-              >
-                <Camera className="w-4 h-4 text-[#0F0F0F]" />
+        <div className="mb-6">
+          <p className="text-white/50 text-xs text-center mb-3">תמונה ראשית + עד 5 תמונות נוספות</p>
+          <div className="grid grid-cols-3 gap-2">
+            {/* Existing photos */}
+            {photos.map((p, i) => (
+              <div key={i} className="relative aspect-square">
+                <img src={p.preview} alt="" className="w-full h-full object-cover rounded-2xl" />
+                {i === 0 && (
+                  <div className="absolute top-1 right-1 bg-[#D4AF37] text-[#0F0F0F] text-[9px] font-black px-1.5 py-0.5 rounded-full">
+                    ראשית
+                  </div>
+                )}
+                <button
+                  onClick={() => removePhoto(i)}
+                  className="absolute top-1 left-1 w-6 h-6 bg-black/70 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                >
+                  ×
+                </button>
+                <button
+                  onClick={() => openPhotoOptions(i)}
+                  className="absolute inset-0 rounded-2xl opacity-0 hover:opacity-100 bg-black/30 flex items-center justify-center transition-opacity"
+                >
+                  <Camera className="w-5 h-5 text-white" />
+                </button>
               </div>
+            ))}
+            {/* Add photo slot */}
+            {photos.length < 6 && (
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => openPhotoOptions(null)}
+                className={`aspect-square rounded-2xl border-2 border-dashed ${
+                  errors.photo ? "border-red-500" : "border-[#D4AF37]/40"
+                } flex flex-col items-center justify-center bg-[#1A1A1A] hover:border-[#D4AF37] transition-all`}
+              >
+                <Camera className="w-6 h-6 text-[#D4AF37]/60 mb-1" />
+                <span className="text-[10px] text-white/30">הוסף</span>
+              </motion.button>
             )}
           </div>
         </div>
