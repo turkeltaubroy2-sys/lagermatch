@@ -405,24 +405,53 @@ export default function Swipe() {
 
       {/* Action buttons */}
       {currentProfile && (
-        <div className="flex justify-center items-center gap-6 pb-8 px-5">
+        <div className="flex justify-center items-center gap-8 pb-8 px-5">
+          {/* X Button */}
           <motion.button
-            whileTap={{ scale: 0.85 }}
-            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.78, rotate: -15 }}
+            whileHover={{ scale: 1.1, rotate: -5 }}
             onClick={() => handleSwipe(false)}
-            className="relative w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_10px_40px_rgba(239,68,68,0.3)] transition-all duration-300 group"
+            className="relative w-[72px] h-[72px] rounded-full flex items-center justify-center"
+            style={{ willChange: "transform" }}
           >
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white to-gray-100" />
-            <X className="w-7 h-7 text-[#EF4444] relative z-10 group-hover:scale-110 transition-transform" strokeWidth={3} />
+            {/* Outer glow ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full border-2 border-[#EF4444]/40"
+              animate={{ scale: [1, 1.18, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white to-gray-100 shadow-[0_8px_30px_rgba(239,68,68,0.25)]" />
+            <X className="w-7 h-7 text-[#EF4444] relative z-10" strokeWidth={3} />
           </motion.button>
 
+          {/* Heart Button */}
           <motion.button
-            whileTap={{ scale: 0.85 }}
-            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.78, rotate: 15 }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
             onClick={() => handleSwipe(true)}
-            className="relative w-[70px] h-[70px] rounded-full bg-gradient-to-br from-[#FF6B9D] to-[#FE3C72] flex items-center justify-center shadow-[0_8px_30px_rgba(254,60,114,0.4)] hover:shadow-[0_10px_40px_rgba(254,60,114,0.6)] transition-all duration-300 group"
+            className="relative w-[80px] h-[80px] rounded-full flex items-center justify-center"
+            style={{ willChange: "transform" }}
           >
-            <Heart className="w-7 h-7 text-white relative z-10 group-hover:scale-110 transition-transform" fill="white" strokeWidth={0} />
+            {/* Pulse ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full bg-[#FE3C72]/30"
+              animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0, 0.6] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Second pulse ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full bg-[#FE3C72]/20"
+              animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0, 0.4] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+            />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FF6B9D] via-[#FE3C72] to-[#E91E8C] shadow-[0_8px_35px_rgba(254,60,114,0.55)]" />
+            <motion.div
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              className="relative z-10"
+            >
+              <Heart className="w-8 h-8 text-white" fill="white" strokeWidth={0} />
+            </motion.div>
           </motion.button>
         </div>
       )}
