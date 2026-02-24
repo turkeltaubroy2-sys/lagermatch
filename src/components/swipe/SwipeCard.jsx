@@ -3,14 +3,20 @@ import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-25, 25]);
-  const likeOpacity = useTransform(x, [0, 100], [0, 1]);
-  const nopeOpacity = useTransform(x, [-100, 0], [1, 0]);
+  const rotate = useTransform(x, [-200, 200], [-18, 18]);
+  const likeOpacity = useTransform(x, [0, 80], [0, 1]);
+  const nopeOpacity = useTransform(x, [-80, 0], [1, 0]);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const isDragging = React.useRef(false);
 
   const photos = profile.photo_urls?.length > 0 ? profile.photo_urls : [profile.photo_url];
 
+  const handleDragStart = () => {
+    isDragging.current = true;
+  };
+
   const handleDragEnd = (_, info) => {
+    isDragging.current = false;
     if (info.offset.x > 80) {
       onSwipe(true);
     } else if (info.offset.x < -80) {
@@ -19,6 +25,7 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
   };
 
   const handleTap = (e) => {
+    if (isDragging.current) return;
     if (photos.length <= 1) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const tapX = e.clientX - rect.left;
