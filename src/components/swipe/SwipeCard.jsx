@@ -151,11 +151,10 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
             >
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: "rgba(255,255,255,0.95)" }}
                 initial={{ scaleX: i < photoIndex ? 1 : i === photoIndex ? 1 : 0 }}
                 animate={{ scaleX: i === photoIndex ? 1 : i < photoIndex ? 1 : 0 }}
                 transition={{ duration: 0.25 }}
-                style={{ transformOrigin: "left" }}
+                style={{ background: "rgba(255,255,255,0.95)", transformOrigin: "left" }}
               />
             </div>
           ))}

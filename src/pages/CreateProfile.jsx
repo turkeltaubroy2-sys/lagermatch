@@ -143,7 +143,9 @@ export default function CreateProfile() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#0F0F0F] px-5 py-8 max-w-md mx-auto pb-16">
+    <div className="min-h-[100dvh] bg-[#0F0F0F] px-5 py-8 max-w-md mx-auto pb-16"
+      style={{ paddingTop: "max(2rem, env(safe-area-inset-top))", paddingBottom: "max(4rem, env(safe-area-inset-bottom))" }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
