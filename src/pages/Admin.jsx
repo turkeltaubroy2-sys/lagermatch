@@ -156,7 +156,7 @@ export default function Admin() {
 
   if (!passwordVerified) {
     const handlePasswordSubmit = () => {
-      if (password === "Admin2024!") {
+      if (password === "Roy998!") {
         setPasswordVerified(true);
         toast({ title: "סיסמה נכונה!", duration: 1500 });
       } else {
