@@ -33,6 +33,14 @@ export default function BottomNav() {
     const myMessages = await base44.entities.Message.filter({ receiver_id: myProfileId });
     const senders = new Set(myMessages.map(m => m.sender_id));
     setUnreadCount(senders.size);
+
+    // Real-time subscription for new messages
+    const unsub = base44.entities.Message.subscribe((event) => {
+      if (event.type === "create" && event.data.receiver_id === myProfileId) {
+        setUnreadCount(prev => prev + 1);
+      }
+    });
+    return unsub;
   };
 
   return (
