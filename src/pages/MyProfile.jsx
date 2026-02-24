@@ -191,7 +191,7 @@ export default function MyProfile() {
                 {form.first_name || "My Profile"}
               </h1>
               <p className="text-[10px] text-[#D4AF37]/50 tracking-[0.3em] uppercase mt-0.5">
-                ✦ NightMatch
+                ✦ Soko77
               </p>
             </div>
           </div>
