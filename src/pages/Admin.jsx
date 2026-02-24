@@ -120,18 +120,19 @@ export default function Admin() {
     ]);
 
     const myProfile = allProfiles.find(p => p.device_id === myDeviceId);
-    const othersProfiles = allProfiles.filter(p => p.device_id !== myDeviceId);
+
+    const profilesToDelete = allProfiles.filter(p => p.device_id !== myDeviceId);
 
     await Promise.all([
-      ...othersProfiles.map(p => base44.entities.Profile.delete(p.id)),
+      ...profilesToDelete.map(p => base44.entities.Profile.delete(p.id)),
       ...allMatches.map(m => base44.entities.Match.delete(m.id)),
       ...allDrinks.map(d => base44.entities.Drink.delete(d.id)),
       ...allSwipes.map(s => base44.entities.Swipe.delete(s.id)),
     ]);
 
     toast({ 
-      title: "אופס! רק הפרופיל שלך נשמר", 
-      description: `${othersProfiles.length} פרופילים נמחקו, הפרופיל שלך נשמר` 
+      title: "אפס הצליח! הפרופיל שלך נשמר 🎉",
+      description: `נמחקו ${profilesToDelete.length} פרופילים + כל ה-swipes, matches ומשקאות`
     });
     loadData();
   };
@@ -263,6 +264,37 @@ export default function Admin() {
                 className="bg-orange-600 hover:bg-orange-700"
               >
                 מחק את כל המאצ׳ים
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 h-14"
+            >
+              <Shield className="w-5 h-5 ml-2" />
+              אפס — שמור רק אותי
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-[#1A1A1A] border-[#333]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">איפוס — שמור את הפרופיל שלי</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/50">
+                ⚡ פעולה זו תמחק את כל הפרופילים חוץ מהפרופיל שלך, וגם את כל ה-swipes, matches ומשקאות. האם להמשיך?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-[#252525] border-[#444] text-white hover:bg-[#333]">
+                ביטול
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={resetKeepMyProfile}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                אפס ושמור אותי
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
