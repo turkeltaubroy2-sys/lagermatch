@@ -110,15 +110,15 @@ export default function Home() {
           🔥
         </motion.div>
 
-        {/* Lager & Ale logo-style title */}
+        {/* Soko logo-style title */}
         <div className="mb-1">
           <h1 className="font-display text-5xl font-black tracking-tight leading-none"
             style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.05em" }}
           >
-            <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent">Night</span>
-            <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">Match</span>
+            <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent">Soko</span>
+            <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">77</span>
           </h1>
-          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">✦ BAR & CLUB EDITION ✦</p>
+          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">✦ רמת השרון · סוקולוב 77 ✦</p>
         </div>
 
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5 mt-2">
@@ -178,12 +178,12 @@ export default function Home() {
                     className="text-center text-2xl font-black mb-3 bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                   >
-                    הלילה מתחיל כאן 🔥
+                    ברוכים הבאים לסוקו 77 🔥
                   </h2>
                   <p className="text-center text-white/70 text-[15px] leading-relaxed mb-6 font-hebrew">
-                    צרו פרופיל, החליקו ומצאו את מי שתמצאו הלילה —{" "}
-                    <span className="text-[#D4AF37] font-semibold">החיים קצרים, השתו טוב.</span>{" "}
-                    🥂
+                    בר-מסעדה ברמת השרון כבר 13 שנה —{" "}
+                    <span className="text-[#D4AF37] font-semibold">צרו פרופיל, החליקו ומצאו מישהו מיוחד הלילה.</span>{" "}
+                    🍺
                   </p>
                   <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>
                     <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF4D6D] to-[#FF8A5B] text-white font-black text-base tracking-widest uppercase shadow-[0_6px_30px_rgba(254,60,114,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
@@ -211,7 +211,7 @@ export default function Home() {
                 <QRCode value={window.location.origin} size={160} />
               </div>
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white text-[10px] font-black px-4 py-1 rounded-full shadow-lg whitespace-nowrap tracking-widest uppercase">
-                NightMatch 🍸
+                Soko77 🍸
               </div>
             </div>
           </motion.div>
