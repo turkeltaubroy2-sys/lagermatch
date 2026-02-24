@@ -130,12 +130,15 @@ export default function Swipe() {
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
-    // Pre-load images for first 3 profiles
-    shuffled.slice(0, 3).forEach(p => {
-      if (p.photo_url) {
-        const img = new Image();
-        img.src = p.photo_url;
-      }
+    // Pre-load all images for first 5 profiles
+    shuffled.slice(0, 5).forEach(p => {
+      const urls = p.photo_urls?.length > 0 ? p.photo_urls : [p.photo_url];
+      urls.forEach(url => {
+        if (url) {
+          const img = new Image();
+          img.src = url;
+        }
+      });
     });
 
     setProfiles(shuffled);

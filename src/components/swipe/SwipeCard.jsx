@@ -1,4 +1,4 @@
-import React, { memo, useState, useRef } from "react";
+import React, { memo, useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useTransform, useSpring, animate } from "framer-motion";
 
 const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
