@@ -59,11 +59,12 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
       className="absolute inset-0 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing card-swipe"
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.5}
+      dragElastic={0.15}
       dragMomentum={false}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={handleTap}
-      style={{ x, rotate, willChange: "transform", zIndex: 1 }}
+      style={{ x, rotate, willChange: "transform", zIndex: 1, touchAction: "pan-x" }}
       initial={{ scale: 0.92, opacity: 0, y: 20 }}
       animate={{ scale: 1, opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 22 } }}
       exit={{ 
