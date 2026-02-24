@@ -120,18 +120,19 @@ export default function Admin() {
     ]);
 
     const myProfile = allProfiles.find(p => p.device_id === myDeviceId);
-    const othersProfiles = allProfiles.filter(p => p.device_id !== myDeviceId);
+
+    const profilesToDelete = allProfiles.filter(p => p.device_id !== myDeviceId);
 
     await Promise.all([
-      ...othersProfiles.map(p => base44.entities.Profile.delete(p.id)),
+      ...profilesToDelete.map(p => base44.entities.Profile.delete(p.id)),
       ...allMatches.map(m => base44.entities.Match.delete(m.id)),
       ...allDrinks.map(d => base44.entities.Drink.delete(d.id)),
       ...allSwipes.map(s => base44.entities.Swipe.delete(s.id)),
     ]);
 
     toast({ 
-      title: "אופס! רק הפרופיל שלך נשמר", 
-      description: `${othersProfiles.length} פרופילים נמחקו, הפרופיל שלך נשמר` 
+      title: "אפס הצליח! הפרופיל שלך נשמר 🎉",
+      description: `נמחקו ${profilesToDelete.length} פרופילים + כל ה-swipes, matches ומשקאות`
     });
     loadData();
   };
@@ -236,7 +237,7 @@ export default function Admin() {
       </div>
 
       {/* Reset Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
