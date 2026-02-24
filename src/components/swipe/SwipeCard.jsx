@@ -64,7 +64,7 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={handleTap}
-      style={{ x, rotate, willChange: "transform", zIndex: 1, touchAction: "pan-x" }}
+      style={{ x, rotate, willChange: "transform", zIndex: 1, touchAction: "none" }}
       initial={{ scale: 0.92, opacity: 0, y: 20 }}
       animate={{ scale: 1, opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 22 } }}
       exit={{ 
