@@ -10,6 +10,16 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
 
   const photos = profile.photo_urls?.length > 0 ? profile.photo_urls : [profile.photo_url];
 
+  // Preload all photos of this profile
+  useEffect(() => {
+    photos.forEach(url => {
+      if (url) {
+        const img = new Image();
+        img.src = url;
+      }
+    });
+  }, [profile.id]);
+
   // Smooth spring for rotation
   const rotateRaw = useTransform(x, [-280, 280], [-22, 22]);
   const rotate = useSpring(rotateRaw, { stiffness: 180, damping: 28 });
@@ -121,14 +131,18 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
       }}
     >
       {/* Photo */}
-      <img
-        src={photos[photoIndex]}
-        alt={profile.first_name}
-        className="w-full h-full object-cover select-none"
-        draggable={false}
-        loading="eager"
-        decoding="async"
-      />
+      {photos.map((url, i) => (
+        <img
+          key={i}
+          src={url}
+          alt={profile.first_name}
+          className="w-full h-full object-cover select-none absolute inset-0"
+          draggable={false}
+          loading="eager"
+          decoding="async"
+          style={{ opacity: i === photoIndex ? 1 : 0, transition: "opacity 0.15s ease" }}
+        />
+      ))}
 
       {/* Dynamic color overlay based on swipe direction */}
       <motion.div
