@@ -244,23 +244,22 @@ export default function Swipe() {
 
   useEffect(() => {
     let startY = 0;
+    let triggered = false;
     const handleTouchStart = (e) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-      }
+      startY = e.touches[0].clientY;
+      triggered = false;
     };
-
     const handleTouchMove = (e) => {
-      if (window.scrollY === 0 && !refreshing) {
+      if (!triggered && !refreshing) {
         const currentY = e.touches[0].clientY;
         if (currentY - startY > 80) {
+          triggered = true;
           handleRefresh();
         }
       }
     };
-
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     return () => {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);

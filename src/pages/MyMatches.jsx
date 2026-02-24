@@ -126,23 +126,22 @@ export default function MyMatches() {
 
   useEffect(() => {
     let startY = 0;
+    let triggered = false;
     const handleTouchStart = (e) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-      }
+      startY = e.touches[0].clientY;
+      triggered = false;
     };
-
     const handleTouchMove = (e) => {
-      if (window.scrollY === 0 && !refreshing) {
+      if (!triggered && !refreshing) {
         const currentY = e.touches[0].clientY;
         if (currentY - startY > 80) {
+          triggered = true;
           handleRefresh();
         }
       }
     };
-
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     return () => {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
@@ -175,7 +174,7 @@ export default function MyMatches() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col items-center mb-8">
+      <div className="flex flex-col items-center mb-8 pt-6">
         <h1 className="font-display text-3xl font-black bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent mb-1 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>My Matches 🔥</h1>
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/25">✦ It's a Match ✦</p>
       </div>
