@@ -366,7 +366,7 @@ export default function Swipe() {
             </motion.span>
             <span style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.04em" }}
               className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent font-black">
-              Soko77
+              Buckaroo
             </span>
           </h1>
           <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.25em] uppercase">✦ Bar & Club Dating ✦</p>
