@@ -558,6 +558,7 @@ export default function Swipe() {
           onClose={() => setSelectedProfile(null)}
           onSendDrink={handleSendDrink}
           canChat={isMatch(selectedProfile.id)}
+          onGoToChat={(profileId) => navigate(createPageUrl(`Chat?partnerId=${profileId}`))}
         />
       )}
 
