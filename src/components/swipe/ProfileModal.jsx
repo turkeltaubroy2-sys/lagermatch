@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, MessageCircle, Wine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function ProfileModal({ profile, myProfile, onClose, onSendDrink, canChat }) {
+export default function ProfileModal({ profile, myProfile, onClose, onSendDrink, canChat, onGoToChat }) {
   const [photoIndex, setPhotoIndex] = useState(0);
   const photos = profile?.photo_urls?.length > 0 ? profile.photo_urls : [profile?.photo_url];
 
@@ -162,7 +162,7 @@ export default function ProfileModal({ profile, myProfile, onClose, onSendDrink,
                 <Button
                   onClick={() => {
                     onClose();
-                    // Navigation will be handled by parent
+                    if (onGoToChat) onGoToChat(profile.id);
                   }}
                   className="flex-1 py-6 text-lg font-black rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] text-[#0F0F0F] hover:opacity-90 transition-all shadow-lg"
                 >
