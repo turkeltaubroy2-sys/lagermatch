@@ -60,6 +60,18 @@ export default function Swipe() {
     loadData();
   }, []);
 
+  // Check for pending drinks on load (in case user was offline when drink was sent)
+  useEffect(() => {
+    if (!myProfile || allProfilesCache.length === 0) return;
+    const checkPendingDrinks = async () => {
+      const pendingDrinks = await base44.entities.Drink.filter({ receiver_id: myProfile.id, status: "pending" });
+      if (pendingDrinks.length > 0) {
+        loadSenderForDrink(pendingDrinks[0]);
+      }
+    };
+    checkPendingDrinks();
+  }, [myProfile, allProfilesCache]);
+
   useEffect(() => {
     if (!myProfile) return;
     const unsubDrink = base44.entities.Drink.subscribe((event) => {
