@@ -94,8 +94,9 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
           alt={profile.first_name}
           className="w-full h-full object-cover"
           style={{ opacity: 0.55 }}
-          loading="eager"
+          loading="lazy"
           decoding="async"
+          fetchpriority="low"
           draggable={false}
         />
         <div className="absolute inset-0 bg-black/50" />
@@ -138,9 +139,14 @@ const SwipeCard = memo(({ profile, onSwipe, isTop }) => {
           alt={profile.first_name}
           className="w-full h-full object-cover select-none absolute inset-0"
           draggable={false}
-          loading="eager"
+          loading={i === 0 ? "eager" : "lazy"}
           decoding="async"
-          style={{ opacity: i === photoIndex ? 1 : 0, transition: "opacity 0.15s ease" }}
+          fetchpriority={i === photoIndex ? "high" : "low"}
+          style={{ 
+            opacity: i === photoIndex ? 1 : 0, 
+            transition: "opacity 0.2s ease",
+            willChange: i === photoIndex ? "opacity" : "auto"
+          }}
         />
       ))}
 

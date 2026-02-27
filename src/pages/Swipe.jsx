@@ -48,7 +48,11 @@ export default function Swipe() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const getDeviceId = () => localStorage.getItem("wedding_device_id");
+  const getDeviceId = () => {
+    return sessionStorage.getItem("wedding_device_id") || 
+           localStorage.getItem("wedding_device_id") ||
+           document.cookie.match(/wedding_device_id=([^;]+)/)?.[1];
+  };
 
   useEffect(() => {
     loadData();

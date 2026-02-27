@@ -31,23 +31,39 @@ export default function Home() {
   };
 
   const getDeviceId = () => {
-    let id = localStorage.getItem("wedding_device_id");
+    // Check sessionStorage first (fastest)
+    let id = sessionStorage.getItem("wedding_device_id");
+    
+    // Then check localStorage
+    if (!id) {
+      id = localStorage.getItem("wedding_device_id");
+      if (id) sessionStorage.setItem("wedding_device_id", id);
+    }
 
+    // Then check cookies
     if (!id) {
       const match = document.cookie.match(/wedding_device_id=([^;]+)/);
       if (match) {
         id = match[1];
         localStorage.setItem("wedding_device_id", id);
+        sessionStorage.setItem("wedding_device_id", id);
       }
     }
 
+    // Create new if none exists
     if (!id) {
       id = crypto.randomUUID();
       localStorage.setItem("wedding_device_id", id);
+      sessionStorage.setItem("wedding_device_id", id);
     }
 
-    // Always keep cookie in sync (1 year expiry)
-    document.cookie = `wedding_device_id=${id}; max-age=31536000; path=/; SameSite=Lax`;
+    // Always sync to all storage types (3 year expiry)
+    const isSecure = window.location.protocol === 'https:';
+    const secureFlag = isSecure ? '; Secure' : '';
+    document.cookie = `wedding_device_id=${id}; max-age=94608000; path=/; SameSite=Lax${secureFlag}`;
+    localStorage.setItem("wedding_device_id", id);
+    sessionStorage.setItem("wedding_device_id", id);
+    
     return id;
   };
 
