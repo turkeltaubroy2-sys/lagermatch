@@ -30,6 +30,7 @@ import MatchPopup from "@/components/swipe/MatchPopup";
 import AgeFilter from "@/components/swipe/AgeFilter";
 import DrinkNotification from "@/components/swipe/DrinkNotification";
 import BottomNav from "@/components/BottomNav";
+import FloatingBubbles from "@/components/swipe/FloatingBubbles";
 
 export default function Swipe() {
   const [myProfile, setMyProfile] = useState(null);
