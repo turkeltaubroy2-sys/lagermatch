@@ -432,45 +432,86 @@ export default function Swipe() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Bubbles Grid */}
+      {/* Floating Bubbles */}
       <div className="flex-1 px-4 pb-4 overflow-y-auto">
         {filteredProfiles.length > 0 ? (
           <div className="grid grid-cols-3 gap-3 pb-4">
-            {filteredProfiles.map((profile, index) => (
-              <motion.button
-                key={profile.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.03, duration: 0.3 }}
-                whileTap={{ scale: 0.92 }}
-                onClick={() => setSelectedProfile(profile)}
-                className="relative aspect-square rounded-full overflow-hidden bg-[#1A1A1A] border-2 border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all shadow-lg"
-              >
-                <img
-                  src={profile.photo_url}
-                  alt={profile.first_name}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                
-                {/* Name badge */}
-                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                  <p className="text-white text-[10px] font-bold whitespace-nowrap">
-                    {profile.first_name}
-                  </p>
-                </div>
+            {filteredProfiles.map((profile, index) => {
+              const compatibility = calculateCompatibility(profile);
+              return (
+                <motion.div
+                  key={profile.id}
+                  className="relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: [0, -8, 0],
+                    x: [0, index % 2 === 0 ? 3 : -3, 0]
+                  }}
+                  transition={{ 
+                    opacity: { delay: index * 0.04 },
+                    y: { 
+                      duration: 3 + (index % 3), 
+                      repeat: Infinity, 
+                      ease: "easeInOut",
+                      delay: index * 0.3
+                    },
+                    x: { 
+                      duration: 4 + (index % 2), 
+                      repeat: Infinity, 
+                      ease: "easeInOut",
+                      delay: index * 0.4
+                    }
+                  }}
+                >
+                  {/* Compatibility badge */}
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: index * 0.04 + 0.3, type: "spring" }}
+                    className="absolute -top-2 left-1/2 -translate-x-1/2 z-20 bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] text-[#0F0F0F] px-2 py-0.5 rounded-full text-[10px] font-black shadow-lg"
+                  >
+                    {compatibility}% ✨
+                  </motion.div>
 
-                {/* Match indicator */}
-                {isMatch(profile.id) && (
-                  <div className="absolute top-1 right-1 w-6 h-6 rounded-full bg-gradient-to-br from-[#FE3C72] to-[#D4AF37] flex items-center justify-center">
-                    <span className="text-xs">❤️</span>
-                  </div>
-                )}
-              </motion.button>
-            ))}
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => setSelectedProfile(profile)}
+                    className="relative aspect-square rounded-full overflow-hidden bg-[#1A1A1A] border-2 border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all shadow-lg w-full"
+                  >
+                    <img
+                      src={profile.photo_url}
+                      alt={profile.first_name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    
+                    {/* Name badge */}
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                      <p className="text-white text-[10px] font-bold whitespace-nowrap">
+                        {profile.first_name}
+                      </p>
+                    </div>
+
+                    {/* Match indicator */}
+                    {isMatch(profile.id) && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", delay: 0.2 }}
+                        className="absolute top-1 right-1 w-6 h-6 rounded-full bg-gradient-to-br from-[#FE3C72] to-[#D4AF37] flex items-center justify-center shadow-lg"
+                      >
+                        <span className="text-xs">❤️</span>
+                      </motion.div>
+                    )}
+                  </motion.button>
+                </motion.div>
+              );
+            })}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-[60vh]">
