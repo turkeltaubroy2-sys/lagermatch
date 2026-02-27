@@ -136,7 +136,7 @@ export default function Home() {
             <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent">Night</span>
             <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">Match</span>
           </h1>
-          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">✦ SOKO 77 · רמת השרון ✦</p>
+          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">✦ BUCKAROO · רמת השרון ✦</p>
         </div>
 
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5 mt-2">
@@ -196,7 +196,7 @@ export default function Home() {
                     className="text-center text-2xl font-black mb-3 bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                   >
-                    ברוכים הבאים לסוקו 77 🔥
+                    ברוכים הבאים ל-Buckaroo 🔥
                   </h2>
                   <p className="text-center text-white/70 text-[15px] leading-relaxed mb-6 font-hebrew">
                     בר-מסעדה ברמת השרון כבר 13 שנה —{" "}
@@ -229,7 +229,7 @@ export default function Home() {
                 <QRCode value={window.location.origin} size={160} />
               </div>
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white text-[10px] font-black px-4 py-1 rounded-full shadow-lg whitespace-nowrap tracking-widest uppercase">
-                Soko77 🍸
+                Buckaroo 🍸
               </div>
             </div>
           </motion.div>
