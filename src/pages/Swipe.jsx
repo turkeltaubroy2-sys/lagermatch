@@ -213,17 +213,36 @@ export default function Swipe() {
   }, [myProfile, toast]);
 
   const handleDrinkResponse = useCallback(async (accepted) => {
-    if (drinkNotif) {
-      setDrinkNotif(null);
-      toast({
-        title: accepted ? "🎉 המשקה בדרך!" : "אולי בפעם הבאה",
-        duration: 2000,
-      });
-      await base44.entities.Drink.update(drinkNotif.drink.id, {
-        status: accepted ? "accepted" : "declined",
-      });
+    if (!drinkNotif || !myProfile) return;
+    
+    setDrinkNotif(null);
+    toast({
+      title: accepted ? "🎉 המשקה בדרך!" : "אולי בפעם הבאה",
+      duration: 2000,
+    });
+    
+    await base44.entities.Drink.update(drinkNotif.drink.id, {
+      status: accepted ? "accepted" : "declined",
+    });
+
+    // Create match if accepted
+    if (accepted) {
+      const senderId = drinkNotif.drink.sender_id;
+      const existingMatch = await base44.entities.Match.filter({});
+      const hasMatch = existingMatch.some(m => 
+        (m.user1_id === myProfile.id && m.user2_id === senderId) ||
+        (m.user2_id === myProfile.id && m.user1_id === senderId)
+      );
+      
+      if (!hasMatch) {
+        await base44.entities.Match.create({
+          user1_id: myProfile.id,
+          user2_id: senderId,
+        });
+        setMatches(prev => [...prev, { user1_id: myProfile.id, user2_id: senderId }]);
+      }
     }
-  }, [drinkNotif, toast]);
+  }, [drinkNotif, myProfile, toast]);
 
   const handleAgeRangeChange = useCallback((min, max) => {
     setAgeRange({ min, max });
@@ -381,23 +400,48 @@ export default function Swipe() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Card area */}
-      <div className="flex-1 px-5 pb-4 relative">
-        {currentProfile ? (
-          <div className="relative w-full" style={{ height: "calc(100dvh - 200px)" }}>
-            <AnimatePresence mode="sync">
-              {filteredProfiles.slice(0, 3).reverse().map((profile) => (
-                <SwipeCard
-                  key={profile.id}
-                  profile={profile}
-                  isTop={profile.id === currentProfile.id}
-                  onSwipe={handleSwipe}
+      {/* Bubbles Grid */}
+      <div className="flex-1 px-4 pb-4 overflow-y-auto">
+        {filteredProfiles.length > 0 ? (
+          <div className="grid grid-cols-3 gap-3 pb-4">
+            {filteredProfiles.map((profile, index) => (
+              <motion.button
+                key={profile.id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.03, duration: 0.3 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={() => setSelectedProfile(profile)}
+                className="relative aspect-square rounded-full overflow-hidden bg-[#1A1A1A] border-2 border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all shadow-lg"
+              >
+                <img
+                  src={profile.photo_url}
+                  alt={profile.first_name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
                 />
-              ))}
-            </AnimatePresence>
+                
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                
+                {/* Name badge */}
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                  <p className="text-white text-[10px] font-bold whitespace-nowrap">
+                    {profile.first_name}
+                  </p>
+                </div>
+
+                {/* Match indicator */}
+                {isMatch(profile.id) && (
+                  <div className="absolute top-1 right-1 w-6 h-6 rounded-full bg-gradient-to-br from-[#FE3C72] to-[#D4AF37] flex items-center justify-center">
+                    <span className="text-xs">❤️</span>
+                  </div>
+                )}
+              </motion.button>
+            ))}
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center h-[60vh]">
+          <div className="flex flex-col items-center justify-center h-[60vh]">
             <motion.div
               className="text-6xl mb-4"
               animate={{ y: [0, -10, 0] }}
@@ -405,65 +449,23 @@ export default function Swipe() {
             >
               🥂
             </motion.div>
-            <h2 className="text-xl font-bold text-white/80 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>הכרטיסים נגמרו ✦</h2>
+            <h2 className="text-xl font-bold text-white/80 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>אין תוצאות ✦</h2>
             <p className="text-white/40 text-sm text-center">
-              צא/י לרחבה — הלילה עוד ארוך 🥂
+              נסה/י לשנות את הפילטרים 🔍
             </p>
           </div>
         )}
       </div>
 
-      {/* Action buttons */}
-      {currentProfile && (
-        <div className="flex justify-center items-center gap-8 pb-8 px-5">
-          {/* X Button */}
-          <motion.button
-            whileTap={{ scale: 0.78, rotate: -15 }}
-            whileHover={{ scale: 1.1, rotate: -5 }}
-            onClick={() => handleSwipe(false)}
-            className="relative w-[72px] h-[72px] rounded-full flex items-center justify-center"
-            style={{ willChange: "transform" }}
-          >
-            {/* Outer glow ring */}
-            <motion.div
-              className="absolute inset-0 rounded-full border-2 border-[#EF4444]/40"
-              animate={{ scale: [1, 1.18, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white to-gray-100 shadow-[0_8px_30px_rgba(239,68,68,0.25)]" />
-            <X className="w-7 h-7 text-[#EF4444] relative z-10" strokeWidth={3} />
-          </motion.button>
-
-          {/* Heart Button */}
-          <motion.button
-            whileTap={{ scale: 0.78, rotate: 15 }}
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            onClick={() => handleSwipe(true)}
-            className="relative w-[80px] h-[80px] rounded-full flex items-center justify-center"
-            style={{ willChange: "transform" }}
-          >
-            {/* Pulse ring */}
-            <motion.div
-              className="absolute inset-0 rounded-full bg-[#FE3C72]/30"
-              animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0, 0.6] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            />
-            {/* Second pulse ring */}
-            <motion.div
-              className="absolute inset-0 rounded-full bg-[#FE3C72]/20"
-              animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0, 0.4] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-            />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FF6B9D] via-[#FE3C72] to-[#E91E8C] shadow-[0_8px_35px_rgba(254,60,114,0.55)]" />
-            <motion.div
-              animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-              className="relative z-10"
-            >
-              <Heart className="w-8 h-8 text-white" fill="white" strokeWidth={0} />
-            </motion.div>
-          </motion.button>
-        </div>
+      {/* Profile Modal */}
+      {selectedProfile && (
+        <ProfileModal
+          profile={selectedProfile}
+          myProfile={myProfile}
+          onClose={() => setSelectedProfile(null)}
+          onSendDrink={handleSendDrink}
+          canChat={isMatch(selectedProfile.id)}
+        />
       )}
 
       {/* Match popup */}
