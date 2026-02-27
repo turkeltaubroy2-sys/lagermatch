@@ -60,7 +60,7 @@ export default function ProfileModal({ profile, myProfile, onClose, onSendDrink,
           </button>
 
           {/* Photo viewer */}
-          <div className="relative w-full aspect-square bg-[#0F0F0F]">
+          <div className="relative w-full bg-[#0F0F0F]" style={{ height: "45vh", maxHeight: 280 }}>
             {/* Photos */}
             {photos.map((url, i) => (
               <img
