@@ -89,7 +89,7 @@ export default function Swipe() {
   const loadSenderForDrink = useCallback((drink) => {
     const sender = allProfilesCache.find(p => p.id === drink.sender_id);
     if (sender) {
-      setDrinkNotif({ drink, senderName: sender.first_name });
+      setDrinkNotif({ drink, sender });
     }
   }, [allProfilesCache]);
 
@@ -164,6 +164,38 @@ export default function Swipe() {
       (m.user2_id === myProfile.id && m.user1_id === profileId)
     );
   }, [matches, myProfile]);
+
+  const calculateCompatibility = useCallback((profile) => {
+    if (!myProfile) return 75;
+    
+    let score = 70;
+    
+    // Location match (up to 10%)
+    if (profile.location === myProfile.location) {
+      score += 10;
+    } else if (profile.location && myProfile.location) {
+      score += 3;
+    }
+    
+    // Favorite drink similarity (up to 10%)
+    if (profile.favorite_drink && myProfile.favorite_drink) {
+      if (profile.favorite_drink.toLowerCase() === myProfile.favorite_drink.toLowerCase()) {
+        score += 10;
+      } else {
+        score += 4;
+      }
+    }
+    
+    // Funny fact length similarity (up to 8%)
+    if (profile.funny_fact && myProfile.funny_fact) {
+      const diff = Math.abs(profile.funny_fact.length - myProfile.funny_fact.length);
+      if (diff < 20) score += 8;
+      else if (diff < 50) score += 5;
+      else score += 2;
+    }
+    
+    return Math.min(98, Math.max(70, score));
+  }, [myProfile]);
 
   const handleSendDrink = useCallback(async (targetProfile) => {
     if (!myProfile) return;
@@ -480,7 +512,7 @@ export default function Swipe() {
       {/* Drink notification */}
       <DrinkNotification
         show={!!drinkNotif}
-        senderName={drinkNotif?.senderName}
+        sender={drinkNotif?.sender}
         onAccept={() => handleDrinkResponse(true)}
         onDecline={() => handleDrinkResponse(false)}
         onClose={() => setDrinkNotif(null)}
