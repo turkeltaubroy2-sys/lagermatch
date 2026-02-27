@@ -136,11 +136,21 @@ export default function Swipe() {
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
-    // Pre-load first images for first 12 profiles
-    shuffled.slice(0, 12).forEach(p => {
+    // Pre-load ALL images aggressively
+    shuffled.forEach(p => {
       if (p.photo_url) {
         const img = new Image();
+        img.fetchPriority = "high";
         img.src = p.photo_url;
+      }
+      // Also preload extra photos
+      if (p.photo_urls?.length > 0) {
+        p.photo_urls.forEach(url => {
+          if (url && url !== p.photo_url) {
+            const img = new Image();
+            img.src = url;
+          }
+        });
       }
     });
 
@@ -442,25 +452,34 @@ export default function Swipe() {
                 <motion.div
                   key={profile.id}
                   className="relative"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, scale: 0.6 }}
                   animate={{ 
-                    opacity: 1, 
-                    y: [0, -8, 0],
-                    x: [0, index % 2 === 0 ? 3 : -3, 0]
+                    opacity: 1,
+                    scale: 1,
+                    y: [0, -(8 + (index % 4) * 3), 0],
+                    x: [0, index % 2 === 0 ? 4 : -4, 0],
+                    rotate: [0, index % 2 === 0 ? 4 : -4, 0],
                   }}
                   transition={{ 
-                    opacity: { delay: index * 0.04 },
+                    opacity: { delay: index * 0.03, duration: 0.3 },
+                    scale: { delay: index * 0.03, duration: 0.3 },
                     y: { 
-                      duration: 3 + (index % 3), 
+                      duration: 3 + (index % 3) * 0.8, 
+                      repeat: Infinity, 
+                      ease: "easeInOut",
+                      delay: index * 0.25
+                    },
+                    x: { 
+                      duration: 4 + (index % 3) * 0.6, 
                       repeat: Infinity, 
                       ease: "easeInOut",
                       delay: index * 0.3
                     },
-                    x: { 
-                      duration: 4 + (index % 2), 
+                    rotate: { 
+                      duration: 5 + (index % 4) * 0.7, 
                       repeat: Infinity, 
                       ease: "easeInOut",
-                      delay: index * 0.4
+                      delay: index * 0.2
                     }
                   }}
                 >
@@ -484,7 +503,8 @@ export default function Swipe() {
                       src={profile.photo_url}
                       alt={profile.first_name}
                       className="w-full h-full object-cover"
-                      loading="lazy"
+                      loading={index < 9 ? "eager" : "lazy"}
+                      decoding="async"
                     />
                     
                     {/* Gradient overlay */}
