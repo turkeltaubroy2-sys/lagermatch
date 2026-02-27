@@ -136,7 +136,7 @@ export default function Home() {
             <span className="bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent">Night</span>
             <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent">Match</span>
           </h1>
-          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">✦ BUCKAROO · רמת השרון ✦</p>
+          <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/30 mt-1">✦ BUCKAROO · זרחין 13 ✦</p>
         </div>
 
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/30 mb-5 mt-2">
@@ -199,7 +199,7 @@ export default function Home() {
                     ברוכים הבאים ל-Buckaroo 🔥
                   </h2>
                   <p className="text-center text-white/70 text-[15px] leading-relaxed mb-6 font-hebrew">
-                    בר-מסעדה ברמת השרון כבר 13 שנה —{" "}
+                    בר-מסעדה בזרחין 13 כבר 13 שנה —{" "}
                     <span className="text-[#D4AF37] font-semibold">צרו פרופיל, החליקו ומצאו מישהו מיוחד הלילה.</span>{" "}
                     🍺
                   </p>
