@@ -99,8 +99,12 @@ export default function Swipe() {
     };
   }, [myProfile, allProfilesCache, toast]);
 
-  const loadSenderForDrink = useCallback((drink) => {
-    const sender = allProfilesCache.find(p => p.id === drink.sender_id);
+  const loadSenderForDrink = useCallback(async (drink) => {
+    let sender = allProfilesCache.find(p => p.id === drink.sender_id);
+    if (!sender) {
+      const profiles = await base44.entities.Profile.filter({ id: drink.sender_id });
+      sender = profiles[0];
+    }
     if (sender) {
       setDrinkNotif({ drink, sender });
     }
