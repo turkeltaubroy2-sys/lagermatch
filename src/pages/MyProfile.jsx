@@ -191,7 +191,7 @@ export default function MyProfile() {
                 {form.first_name || "My Profile"}
               </h1>
               <p className="text-[10px] text-[#D4AF37]/50 tracking-[0.3em] uppercase mt-0.5">
-                ✦ Soko77
+                ✦ NightMatches
               </p>
             </div>
           </div>
@@ -351,11 +351,10 @@ export default function MyProfile() {
                   whileTap={{ scale: 0.93 }}
                   onClick={() => openPhotoSheet(null)}
                   style={{ aspectRatio: "1" }}
-                  className={`rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-1.5 transition-all ${
-                    errors.photo
+                  className={`rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-1.5 transition-all ${errors.photo
                       ? "border-red-500/50 bg-red-500/5"
                       : "border-[#D4AF37]/20 bg-[#141414] active:border-[#D4AF37]/50"
-                  }`}
+                    }`}
                 >
                   {uploadingSlot === "new"
                     ? <Loader2 className="w-5 h-5 text-[#D4AF37] animate-spin" />
@@ -414,9 +413,8 @@ export default function MyProfile() {
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => setShowLocationSheet(true)}
-              className={`w-full h-[52px] px-4 rounded-2xl bg-[#141414] border text-right flex items-center justify-between transition-colors ${
-                errors.location ? "border-red-500/50" : "border-[#252525]"
-              }`}
+              className={`w-full h-[52px] px-4 rounded-2xl bg-[#141414] border text-right flex items-center justify-between transition-colors ${errors.location ? "border-red-500/50" : "border-[#252525]"
+                }`}
             >
               <ChevronDown className="w-4 h-4 text-white/25 shrink-0" />
               <span className={`text-[15px] ${form.location ? "text-white font-semibold" : "text-white/25"}`}>
@@ -457,21 +455,20 @@ export default function MyProfile() {
           onClick={handleSave}
           disabled={isBusy}
           whileTap={{ scale: 0.97 }}
-          className={`w-full h-[58px] rounded-3xl font-black text-[15px] tracking-[0.15em] uppercase transition-all duration-300 mb-4 ${
-            saved
+          className={`w-full h-[58px] rounded-3xl font-black text-[15px] tracking-[0.15em] uppercase transition-all duration-300 mb-4 ${saved
               ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
               : isBusy
-              ? "bg-[#1A1A1A] text-white/25 border border-white/[0.06]"
-              : "bg-gradient-to-r from-[#D4AF37] via-[#F0D060] to-[#D4AF37] text-[#080808] shadow-[0_8px_40px_rgba(212,175,55,0.35)]"
-          }`}
+                ? "bg-[#1A1A1A] text-white/25 border border-white/[0.06]"
+                : "bg-gradient-to-r from-[#D4AF37] via-[#F0D060] to-[#D4AF37] text-[#080808] shadow-[0_8px_40px_rgba(212,175,55,0.35)]"
+            }`}
         >
           {saving
             ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> שומר שינויים...</span>
             : saved
-            ? <span className="flex items-center justify-center gap-2"><Check className="w-5 h-5" /> נשמר בהצלחה! 🎉</span>
-            : uploadingSlot !== null
-            ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> ממתין לסיום העלאה...</span>
-            : "✦ Save Changes"}
+              ? <span className="flex items-center justify-center gap-2"><Check className="w-5 h-5" /> נשמר בהצלחה! 🎉</span>
+              : uploadingSlot !== null
+                ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> ממתין לסיום העלאה...</span>
+                : "✦ Save Changes"}
         </motion.button>
       </div>
 
@@ -483,11 +480,10 @@ export default function MyProfile() {
               key={opt.value}
               whileTap={{ scale: 0.97 }}
               onClick={() => { setForm(f => ({ ...f, location: opt.value })); setShowLocationSheet(false); }}
-              className={`w-full py-4 px-5 rounded-2xl text-right font-bold text-[15px] flex items-center justify-between transition-all ${
-                form.location === opt.value
+              className={`w-full py-4 px-5 rounded-2xl text-right font-bold text-[15px] flex items-center justify-between transition-all ${form.location === opt.value
                   ? "bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] shadow-[0_4px_20px_rgba(212,175,55,0.3)]"
                   : "bg-[#1C1C1C] text-white/80 border border-white/[0.05]"
-              }`}
+                }`}
             >
               <span className="text-xl">{opt.flag}</span>
               <span>{opt.label}</span>

@@ -47,6 +47,8 @@ export default function Swipe() {
   const [showSettings, setShowSettings] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [returnNotifs, setReturnNotifs] = useState([]); // drinks received since last visit
+  const [showReturnPanel, setShowReturnPanel] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -58,6 +60,15 @@ export default function Swipe() {
 
   useEffect(() => {
     loadData();
+    // Save last visit on unmount / tab hide
+    const saveLastVisit = () => localStorage.setItem("nm_last_visit", Date.now().toString());
+    window.addEventListener("visibilitychange", saveLastVisit);
+    window.addEventListener("pagehide", saveLastVisit);
+    return () => {
+      saveLastVisit();
+      window.removeEventListener("visibilitychange", saveLastVisit);
+      window.removeEventListener("pagehide", saveLastVisit);
+    };
   }, []);
 
   // Check for pending drinks on load (in case user was offline when drink was sent)
@@ -172,6 +183,28 @@ export default function Swipe() {
     });
 
     setProfiles(shuffled);
+
+    // ── Return notification: show drinks received since last visit ──
+    const lastVisit = parseInt(localStorage.getItem("nm_last_visit") || "0");
+    if (lastVisit > 0 && me) {
+      const [pendingDrinks, acceptedDrinks] = await Promise.all([
+        base44.entities.Drink.filter({ receiver_id: me.id, status: "pending" }),
+        base44.entities.Drink.filter({ sender_id: me.id, status: "accepted" }),
+      ]);
+
+      const enriched = [];
+      for (const drink of [...pendingDrinks, ...acceptedDrinks]) {
+        const otherId = drink.receiver_id === me.id ? drink.sender_id : drink.receiver_id;
+        const other = allProfiles.find(p => p.id === otherId);
+        if (other) enriched.push({ drink, other, type: drink.receiver_id === me.id ? "received" : "accepted" });
+      }
+
+      if (enriched.length > 0) {
+        setReturnNotifs(enriched);
+        setShowReturnPanel(true);
+      }
+    }
+
     setLoading(false);
   };
 
@@ -528,6 +561,123 @@ export default function Swipe() {
         onDecline={() => handleDrinkResponse(false)}
         onClose={() => setDrinkNotif(null)}
       />
+
+      {/* Return Notification Panel */}
+      <AnimatePresence>
+        {showReturnPanel && returnNotifs.length > 0 && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-end justify-center"
+            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={() => setShowReturnPanel(false)}
+            />
+            <motion.div
+              className="relative w-full max-w-md z-10 px-3 pb-3"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 360 }}
+            >
+              <div
+                className="rounded-[2rem] overflow-hidden"
+                style={{
+                  background: "linear-gradient(165deg, rgba(18,10,18,0.99), rgba(8,5,14,0.99))",
+                  border: "1px solid rgba(212,175,55,0.15)",
+                  boxShadow: "0 -20px 60px rgba(212,175,55,0.08)",
+                }}
+              >
+                <div className="h-[2px]" style={{ background: "linear-gradient(90deg, #D4AF37, #FE3C72, #D4AF37)" }} />
+                <div className="px-5 pt-5 pb-2 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-white font-bold text-lg">ברוך השב! 🔥</h2>
+                    <p className="text-white/40 text-xs mt-0.5">קרה המון בזמן שלא היית</p>
+                  </div>
+                  <button
+                    onClick={() => setShowReturnPanel(false)}
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ background: "rgba(255,255,255,0.06)" }}
+                  >
+                    <X className="w-4 h-4 text-white/50" />
+                  </button>
+                </div>
+
+                <div className="px-3 pb-4 space-y-2 max-h-72 overflow-y-auto">
+                  {returnNotifs.map(({ drink, other, type }, i) => (
+                    <motion.div
+                      key={drink.id || i}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                      className="flex items-center gap-3 rounded-2xl p-3"
+                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+                    >
+                      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-[#D4AF37]/30">
+                        <img src={other.photo_url} alt={other.first_name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-semibold text-sm">{other.first_name}</p>
+                        <p className="text-white/40 text-xs">
+                          {type === "received" ? "🍸 שלח/ה לך משקה!" : "💚 קיבלת מאצ׳!"}
+                        </p>
+                      </div>
+                      {type === "received" ? (
+                        <div className="flex gap-1.5 flex-shrink-0">
+                          <button
+                            onClick={async () => {
+                              await base44.entities.Drink.update(drink.id, { status: "accepted" });
+                              await base44.entities.Match.create({ user1_id: myProfile.id, user2_id: other.id });
+                              setMatches(prev => [...prev, { user1_id: myProfile.id, user2_id: other.id }]);
+                              setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
+                              toast({ title: `💚 מאצ׳ עם ${other.first_name}!`, duration: 2000 });
+                            }}
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#0A0A0A]"
+                            style={{ background: "linear-gradient(135deg, #D4AF37, #F5E6A3)" }}
+                          >
+                            אשר
+                          </button>
+                          <button
+                            onClick={async () => {
+                              await base44.entities.Drink.update(drink.id, { status: "declined" });
+                              setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
+                            }}
+                            className="px-3 py-1.5 rounded-xl text-xs font-semibold text-white/50"
+                            style={{ background: "rgba(255,255,255,0.06)" }}
+                          >
+                            דחה
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => { setShowReturnPanel(false); navigate(createPageUrl(`Chat?partnerId=${other.id}`)); }}
+                          className="px-3 py-1.5 rounded-xl text-xs font-bold text-white flex-shrink-0"
+                          style={{ background: "linear-gradient(135deg, #FE3C72, #FF8A5B)" }}
+                        >
+                          צ׳אט 💬
+                        </button>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="px-5 pb-5">
+                  <button
+                    onClick={() => setShowReturnPanel(false)}
+                    className="w-full py-3 rounded-2xl text-white/40 text-sm font-semibold"
+                    style={{ background: "rgba(255,255,255,0.04)" }}
+                  >
+                    סגור
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Bottom Navigation */}
       <BottomNav />

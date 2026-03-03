@@ -230,7 +230,42 @@ function ProfileSheet({ profile, compatibility, isMatch, onClose, onSendDrink, o
   );
 }
 
-// ─── Main Component ──────────────────────────────────────────────────────────
+// ─── Per-bubble Photo Cycler ─────────────────────────────────────────────────
+function usePhotoCycler(profiles) {
+  const [photoIndexes, setPhotoIndexes] = useState({});
+
+  useEffect(() => {
+    if (!profiles.length) return;
+    // Initialize all to 0
+    const init = {};
+    profiles.forEach(p => { init[p.id] = 0; });
+    setPhotoIndexes(init);
+
+    const interval = setInterval(() => {
+      setPhotoIndexes(prev => {
+        const next = { ...prev };
+        profiles.forEach(p => {
+          const photos = p.photo_urls?.length > 1 ? p.photo_urls : null;
+          if (photos) {
+            next[p.id] = (prev[p.id] + 1) % photos.length;
+          }
+        });
+        return next;
+      });
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [profiles]);
+
+  const getPhoto = (profile) => {
+    const photos = profile.photo_urls?.length ? profile.photo_urls : (profile.photo_url ? [profile.photo_url] : []);
+    const idx = photoIndexes[profile.id] ?? 0;
+    return { current: photos[idx] || profile.photo_url, all: photos };
+  };
+
+  return getPhoto;
+}
+
 export default function FloatingBubbles({ profiles, calculateCompatibility, isMatch, onSelect, onSendDrink, onGoToChat }) {
   const containerRef = useRef(null);
   const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
@@ -249,6 +284,7 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
 
   const BUBBLE_SIZE = containerSize.w > 0 ? Math.min(Math.floor(containerSize.w / 3.8), 110) : 90;
   const positions = useBubblePhysics(profiles.length, containerSize.w, containerSize.h, BUBBLE_SIZE);
+  const getPhoto = usePhotoCycler(profiles);
 
   const handleBubbleClick = useCallback((profile) => {
     // Trigger pop animation, then open sheet
@@ -279,6 +315,7 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
           const pos = positions[index] || { x: 0, y: 0 };
           const compatibility = calculateCompatibility(profile);
           const isPopping = poppingId === profile.id;
+          const { current: photoSrc, all: allPhotos } = getPhoto(profile);
 
           return (
             <motion.div
@@ -327,13 +364,36 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                   background: "#1A1A1A",
                 }}
               >
-                <img
-                  src={profile.photo_url}
+                <motion.img
+                  key={photoSrc}
+                  src={photoSrc}
                   alt={profile.first_name}
-                  className="w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover"
                   loading={index < 6 ? "eager" : "lazy"}
                   decoding="async"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
                 />
+
+                {/* Multi-photo dots */}
+                {allPhotos.length > 1 && (
+                  <div className="absolute top-1 left-0 right-0 flex justify-center gap-0.5 z-10">
+                    {allPhotos.map((_, i) => (
+                      <div
+                        key={i}
+                        className="rounded-full transition-all"
+                        style={{
+                          width: photoSrc === allPhotos[i] ? 6 : 3,
+                          height: 3,
+                          background: photoSrc === allPhotos[i]
+                            ? "rgba(212,175,55,0.95)"
+                            : "rgba(255,255,255,0.35)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
 
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
