@@ -277,9 +277,8 @@ export default function Chat() {
         <button
           onClick={handleSendDrink}
           disabled={drinkSent}
-          className={`h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all active:scale-90 ${
-            drinkSent ? "bg-[#252525] text-white/20" : "bg-[#D4AF37]/15 text-[#D4AF37] hover:bg-[#D4AF37]/25"
-          }`}
+          className={`h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all active:scale-90 ${drinkSent ? "bg-[#252525] text-white/20" : "bg-[#D4AF37]/15 text-[#D4AF37] hover:bg-[#D4AF37]/25"
+            }`}
         >
           <Wine className="w-4 h-4" />
         </button>
@@ -303,7 +302,7 @@ export default function Chat() {
             <p className="text-white/50 font-semibold text-base mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
               {otherProfile?.first_name} מחכה לך ✦
             </p>
-            <p className="text-white/25 text-sm text-center">שבר את הקרח — הלילה ארוך 🥂</p>
+            <p className="text-white/25 text-sm text-center">שברו את הקרח עם משהו מצחיק 🥂</p>
           </div>
         ) : (
           <>
@@ -330,24 +329,23 @@ export default function Chat() {
                     className={`flex mb-1 ${isMe ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[78%] px-4 py-2.5 ${
-                        isMe
+                      className={`max-w-[78%] px-4 py-2.5 ${isMe
                           ? "rounded-[20px] rounded-tr-[6px]"
                           : "rounded-[20px] rounded-tl-[6px]"
-                      }`}
+                        }`}
                       style={
                         isMe
                           ? {
-                              background: "linear-gradient(135deg, #B8941F, #D4AF37)",
-                              color: "#0F0F0F",
-                              boxShadow: "0 2px 12px rgba(212,175,55,0.25)",
-                            }
+                            background: "linear-gradient(135deg, #B8941F, #D4AF37)",
+                            color: "#0F0F0F",
+                            boxShadow: "0 2px 12px rgba(212,175,55,0.25)",
+                          }
                           : {
-                              background: "#1E1E1E",
-                              border: "1px solid rgba(255,255,255,0.08)",
-                              color: "white",
-                              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                            }
+                            background: "#1E1E1E",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                            color: "white",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                          }
                       }
                     >
                       <p className="text-sm leading-relaxed break-words">{msg.content}</p>

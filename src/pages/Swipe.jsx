@@ -184,9 +184,11 @@ export default function Swipe() {
 
     setProfiles(shuffled);
 
-    // ── Return notification: show drinks received since last visit ──
+    // ── Return notification: show NEW drinks since last visit (each drink shown only once) ──
     const lastVisit = parseInt(localStorage.getItem("nm_last_visit") || "0");
-    if (lastVisit > 0 && me) {
+    const seenDrinks = new Set(JSON.parse(localStorage.getItem("nm_seen_drinks") || "[]"));
+
+    if (me) {
       const [pendingDrinks, acceptedDrinks] = await Promise.all([
         base44.entities.Drink.filter({ receiver_id: me.id, status: "pending" }),
         base44.entities.Drink.filter({ sender_id: me.id, status: "accepted" }),
@@ -194,12 +196,16 @@ export default function Swipe() {
 
       const enriched = [];
       for (const drink of [...pendingDrinks, ...acceptedDrinks]) {
+        if (seenDrinks.has(drink.id)) continue; // already shown
         const otherId = drink.receiver_id === me.id ? drink.sender_id : drink.receiver_id;
         const other = allProfiles.find(p => p.id === otherId);
         if (other) enriched.push({ drink, other, type: drink.receiver_id === me.id ? "received" : "accepted" });
       }
 
       if (enriched.length > 0) {
+        // Mark all as seen immediately
+        const newSeen = [...seenDrinks, ...enriched.map(e => e.drink.id)];
+        localStorage.setItem("nm_seen_drinks", JSON.stringify(newSeen));
         setReturnNotifs(enriched);
         setShowReturnPanel(true);
       }
@@ -506,14 +512,27 @@ export default function Swipe() {
       </AlertDialog>
 
       {/* Floating Bubbles - Free floating in space */}
-      <div className="flex-1 relative overflow-hidden">
+      {/* When many users: make container taller and scrollable so all bubbles are reachable */}
+      <div
+        className={`relative ${filteredProfiles.length > 20 ? "overflow-y-auto" : "overflow-hidden flex-1"}`}
+        style={filteredProfiles.length > 20 ? {
+          minHeight: `${Math.max(100, Math.ceil(filteredProfiles.length / 4) * 120)}vh`,
+          flex: "1",
+        } : {}}
+      >
         {filteredProfiles.length > 0 ? (
           <FloatingBubbles
             profiles={filteredProfiles}
             calculateCompatibility={calculateCompatibility}
             isMatch={isMatch}
             onSendDrink={handleSendDrink}
-            onGoToChat={(profileId) => navigate(createPageUrl(`Chat?partnerId=${profileId}`))}
+            onGoToChat={(profileId) => {
+              const match = matches.find(m =>
+                (m.user1_id === myProfile?.id && m.user2_id === profileId) ||
+                (m.user2_id === myProfile?.id && m.user1_id === profileId)
+              );
+              if (match) navigate(createPageUrl("Chat") + `?matchId=${match.id}`);
+            }}
           />
         ) : (
           <div className="flex flex-col items-center justify-center h-[60vh]">

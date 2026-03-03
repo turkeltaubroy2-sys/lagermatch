@@ -87,9 +87,16 @@ function useBubblePhysics(count, containerW, containerH, bubbleSize) {
 function ProfileSheet({ profile, compatibility, isMatch, onClose, onSendDrink, onGoToChat }) {
   const photos = profile.photo_urls?.length ? profile.photo_urls : (profile.photo_url ? [profile.photo_url] : []);
   const [photoIdx, setPhotoIdx] = useState(0);
+  const dragStartX = useRef(0);
 
-  const prevPhoto = (e) => { e.stopPropagation(); setPhotoIdx(i => Math.max(0, i - 1)); };
-  const nextPhoto = (e) => { e.stopPropagation(); setPhotoIdx(i => Math.min(photos.length - 1, i + 1)); };
+  const prevPhoto = () => setPhotoIdx(i => Math.max(0, i - 1));
+  const nextPhoto = () => setPhotoIdx(i => Math.min(photos.length - 1, i + 1));
+
+  const handleDragEnd = (_, info) => {
+    const swipePower = Math.abs(info.offset.x) * info.velocity.x;
+    if (swipePower < -200 || info.offset.x < -60) nextPhoto();
+    else if (swipePower > 200 || info.offset.x > 60) prevPhoto();
+  };
 
   return (
     <motion.div
@@ -126,36 +133,44 @@ function ProfileSheet({ profile, compatibility, isMatch, onClose, onSendDrink, o
           {/* Top gradient line */}
           <div className="h-[2px]" style={{ background: "linear-gradient(90deg, #FE3C72, #D4AF37, #FF8A5B)" }} />
 
-          {/* Photo carousel */}
-          <div className="relative h-52 overflow-hidden">
+          {/* Photo carousel with gesture swipe */}
+          <div className="relative h-52 overflow-hidden select-none">
             <AnimatePresence mode="wait">
               <motion.img
                 key={photos[photoIdx]}
                 src={photos[photoIdx] || profile.photo_url}
                 alt={profile.first_name}
                 className="absolute inset-0 w-full h-full object-cover"
+                drag={photos.length > 1 ? "x" : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.15}
+                onDragEnd={handleDragEnd}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.35 }}
+                transition={{ duration: 0.3 }}
+                style={{ touchAction: "pan-y" }}
               />
             </AnimatePresence>
 
-            {/* Tap left/right to navigate */}
-            {photoIdx > 0 && (
-              <button onClick={prevPhoto} className="absolute inset-y-0 left-0 w-1/3 z-10" />
-            )}
-            {photoIdx < photos.length - 1 && (
-              <button onClick={nextPhoto} className="absolute inset-y-0 right-0 w-1/3 z-10" />
+            {/* Hint arrows (visible only when multiple photos) */}
+            {photos.length > 1 && (
+              <>
+                {photoIdx > 0 && (
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 z-20 text-white/50 text-lg pointer-events-none">‹</div>
+                )}
+                {photoIdx < photos.length - 1 && (
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 z-20 text-white/50 text-lg pointer-events-none">›</div>
+                )}
+              </>
             )}
 
             {/* Dot indicators */}
             {photos.length > 1 && (
-              <div className="absolute top-2 left-0 right-0 flex justify-center gap-1 z-20">
+              <div className="absolute top-2 left-0 right-0 flex justify-center gap-1 z-20 pointer-events-none">
                 {photos.map((_, i) => (
-                  <button
+                  <div
                     key={i}
-                    onClick={(e) => { e.stopPropagation(); setPhotoIdx(i); }}
                     className="rounded-full transition-all"
                     style={{
                       width: i === photoIdx ? 18 : 6,
@@ -322,7 +337,8 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
     return () => ro.disconnect();
   }, []);
 
-  const BUBBLE_SIZE = containerSize.w > 0 ? Math.min(Math.floor(containerSize.w / 3.8), 110) : 90;
+  // Smaller bubbles: /5.5 capped at 78px so ~60 users can be displayed
+  const BUBBLE_SIZE = containerSize.w > 0 ? Math.min(Math.floor(containerSize.w / 5.5), 78) : 72;
   const positions = useBubblePhysics(profiles.length, containerSize.w, containerSize.h, BUBBLE_SIZE);
   const getPhoto = usePhotoCycler(profiles);
 
