@@ -85,6 +85,12 @@ function useBubblePhysics(count, containerW, containerH, bubbleSize) {
 
 // ─── Profile Preview Sheet ───────────────────────────────────────────────────
 function ProfileSheet({ profile, compatibility, isMatch, onClose, onSendDrink, onGoToChat }) {
+  const photos = profile.photo_urls?.length ? profile.photo_urls : (profile.photo_url ? [profile.photo_url] : []);
+  const [photoIdx, setPhotoIdx] = useState(0);
+
+  const prevPhoto = (e) => { e.stopPropagation(); setPhotoIdx(i => Math.max(0, i - 1)); };
+  const nextPhoto = (e) => { e.stopPropagation(); setPhotoIdx(i => Math.min(photos.length - 1, i + 1)); };
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-end justify-center"
@@ -120,15 +126,49 @@ function ProfileSheet({ profile, compatibility, isMatch, onClose, onSendDrink, o
           {/* Top gradient line */}
           <div className="h-[2px]" style={{ background: "linear-gradient(90deg, #FE3C72, #D4AF37, #FF8A5B)" }} />
 
-          {/* Photo */}
+          {/* Photo carousel */}
           <div className="relative h-52 overflow-hidden">
-            <img
-              src={profile.photo_url}
-              alt={profile.first_name}
-              className="w-full h-full object-cover"
-            />
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={photos[photoIdx]}
+                src={photos[photoIdx] || profile.photo_url}
+                alt={profile.first_name}
+                className="absolute inset-0 w-full h-full object-cover"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35 }}
+              />
+            </AnimatePresence>
+
+            {/* Tap left/right to navigate */}
+            {photoIdx > 0 && (
+              <button onClick={prevPhoto} className="absolute inset-y-0 left-0 w-1/3 z-10" />
+            )}
+            {photoIdx < photos.length - 1 && (
+              <button onClick={nextPhoto} className="absolute inset-y-0 right-0 w-1/3 z-10" />
+            )}
+
+            {/* Dot indicators */}
+            {photos.length > 1 && (
+              <div className="absolute top-2 left-0 right-0 flex justify-center gap-1 z-20">
+                {photos.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={(e) => { e.stopPropagation(); setPhotoIdx(i); }}
+                    className="rounded-full transition-all"
+                    style={{
+                      width: i === photoIdx ? 18 : 6,
+                      height: 4,
+                      background: i === photoIdx ? "#D4AF37" : "rgba(255,255,255,0.4)",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
             {/* Photo gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent pointer-events-none" />
 
             {/* Close button */}
             <button
@@ -252,7 +292,7 @@ function usePhotoCycler(profiles) {
         });
         return next;
       });
-    }, 2500);
+    }, 6000); // 6 second interval – slow and natural
 
     return () => clearInterval(interval);
   }, [profiles]);

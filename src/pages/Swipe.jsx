@@ -653,7 +653,19 @@ export default function Swipe() {
                         </div>
                       ) : (
                         <button
-                          onClick={() => { setShowReturnPanel(false); navigate(createPageUrl(`Chat?partnerId=${other.id}`)); }}
+                          onClick={() => {
+                            // Find the actual Match record to get its ID
+                            const match = matches.find(m =>
+                              (m.user1_id === myProfile?.id && m.user2_id === other.id) ||
+                              (m.user2_id === myProfile?.id && m.user1_id === other.id)
+                            );
+                            setShowReturnPanel(false);
+                            if (match) {
+                              navigate(createPageUrl("Chat") + `?matchId=${match.id}`);
+                            } else {
+                              toast({ title: "לא נמצא מאצ׳", duration: 2000 });
+                            }
+                          }}
                           className="px-3 py-1.5 rounded-xl text-xs font-bold text-white flex-shrink-0"
                           style={{ background: "linear-gradient(135deg, #FE3C72, #FF8A5B)" }}
                         >
