@@ -274,7 +274,7 @@ export default function Home() {
               initial={{ opacity: 0, height: 0, marginTop: 0 }}
               animate={{ opacity: 1, height: "auto", marginTop: 24 }}
               exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              className="flex flex-col items-center gap-3 overflow-hidden"
+              className="flex flex-col items-center gap-3"
             >
               <div className="relative">
                 <div className="absolute -inset-3 rounded-2xl blur-xl opacity-40"
@@ -282,10 +282,11 @@ export default function Home() {
                 <div className="relative bg-white p-4 rounded-2xl shadow-2xl">
                   <QRCode value={window.location.origin} size={140} />
                 </div>
-                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[9px] font-bold px-3 py-1 rounded-full tracking-widest uppercase whitespace-nowrap text-[#0A0A0A]"
-                  style={{ background: "linear-gradient(135deg, #D4AF37, #F5E6A3)" }}>
-                  NightMatches
-                </div>
+              </div>
+              {/* Label below QR so it's never clipped */}
+              <div className="text-[9px] font-bold px-3 py-1 rounded-full tracking-widest uppercase whitespace-nowrap text-[#0A0A0A] mt-1"
+                style={{ background: "linear-gradient(135deg, #D4AF37, #F5E6A3)" }}>
+                ✦ NightMatches ✦
               </div>
             </motion.div>
           )}
@@ -368,6 +369,19 @@ export default function Home() {
                     צרו פרופיל, החליקו ומצאו מישהו מיוחד הלילה.{" "}
                     <span className="text-[#D4AF37]">הלילה ארוך — תנצלו אותו.</span> 🍸
                   </p>
+
+                  {/* Auto-delete notice */}
+                  <div
+                    className="mb-6 px-4 py-3 rounded-2xl text-center text-[12px] font-semibold leading-snug"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(0,210,200,0.12), rgba(0,180,220,0.08))",
+                      border: "1px solid rgba(0,210,200,0.25)",
+                      color: "#00D4C8",
+                      textShadow: "0 0 12px rgba(0,212,200,0.4)",
+                    }}
+                  >
+                    ⚡ כל המשתמשים יימחקו אוטומטית בסוף האירוע
+                  </div>
 
                   <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>
                     <motion.button
