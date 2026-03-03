@@ -175,8 +175,23 @@ export default function MyMatches() {
 
       {/* Header */}
       <div className="flex flex-col items-center mb-8 pt-6">
-        <h1 className="font-display text-3xl font-black bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#D4AF37] bg-clip-text text-transparent mb-1 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>My Matches 🔥</h1>
-        <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/25">✦ It's a Match ✦</p>
+        <h1
+          className="mb-1"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "2.2rem",
+            fontWeight: 400,
+            letterSpacing: "0.04em",
+            background: "linear-gradient(135deg, #FE3C72, #FF6B9D 40%, #D4AF37)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          My Matches 🔥
+        </h1>
+        <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/25"
+          style={{ fontFamily: "var(--font-body)" }}>✦ It's a Match ✦</p>
       </div>
 
       {matchProfiles.length === 0 ? (
@@ -192,7 +207,7 @@ export default function MyMatches() {
           <p className="text-white/40 text-sm text-center mb-6">
             המשיכו להחליק — הלילה ארוך 🥂
           </p>
-          </div>
+        </div>
       ) : (
         <div className="space-y-3">
           {matchProfiles.map((item, i) => (
@@ -212,12 +227,12 @@ export default function MyMatches() {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-black text-xl mb-1">{item.profile.first_name}</h3>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem", fontWeight: 400, letterSpacing: "0.02em" }} className="text-white mb-1">{item.profile.first_name}</h3>
                   <p className="text-white/50 text-sm">{item.profile.age} • {
                     item.profile.location === "tel_aviv" ? "תל אביב" :
-                    item.profile.location === "south" ? "דרום" :
-                    item.profile.location === "north" ? "צפון" :
-                    item.profile.location || ""
+                      item.profile.location === "south" ? "דרום" :
+                        item.profile.location === "north" ? "צפון" :
+                          item.profile.location || ""
                   }</p>
                   {item.profile.favorite_drink && (
                     <p className="text-[#D4AF37] text-xs mt-1">🍸 {item.profile.favorite_drink}</p>

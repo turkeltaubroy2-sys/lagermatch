@@ -36,19 +36,9 @@ export default function Admin() {
   }, []);
 
   const checkAdmin = async () => {
-    const isAuth = await base44.auth.isAuthenticated();
-    if (!isAuth) {
-      base44.auth.redirectToLogin();
-      return;
-    }
-    const user = await base44.auth.me();
-    if (user.role !== "admin") {
-      setIsAdmin(false);
-      setLoading(false);
-      return;
-    }
+    // No base44 auth — admin area is password-gated below
     setIsAdmin(true);
-    loadData();
+    setLoading(false);
   };
 
   const loadData = async () => {
@@ -81,9 +71,9 @@ export default function Admin() {
   const resetAllMatches = async () => {
     const allMatches = await base44.entities.Match.filter({});
     await Promise.all(allMatches.map(m => base44.entities.Match.delete(m.id)));
-    toast({ 
-      title: "כל המאצ'ים נמחקו", 
-      description: `${allMatches.length} התאמות נמחקו בהצלחה` 
+    toast({
+      title: "כל המאצ'ים נמחקו",
+      description: `${allMatches.length} התאמות נמחקו בהצלחה`
     });
     loadData();
   };
@@ -103,9 +93,9 @@ export default function Admin() {
       ...allSwipes.map(s => base44.entities.Swipe.delete(s.id)),
     ]);
 
-    toast({ 
-      title: "האפליקציה אופסה במלואה", 
-      description: "כל הנתונים נמחקו בהצלחה" 
+    toast({
+      title: "האפליקציה אופסה במלואה",
+      description: "כל הנתונים נמחקו בהצלחה"
     });
     loadData();
   };
@@ -129,9 +119,9 @@ export default function Admin() {
       ...allSwipes.map(s => base44.entities.Swipe.delete(s.id)),
     ]);
 
-    toast({ 
-      title: "אופס! רק הפרופיל שלך נשמר", 
-      description: `${othersProfiles.length} פרופילים נמחקו, הפרופיל שלך נשמר` 
+    toast({
+      title: "אופס! רק הפרופיל שלך נשמר",
+      description: `${othersProfiles.length} פרופילים נמחקו, הפרופיל שלך נשמר`
     });
     loadData();
   };
@@ -437,8 +427,8 @@ export default function Admin() {
                 </span>
                 <Badge className={
                   drink.status === "accepted" ? "bg-green-500/20 text-green-400" :
-                  drink.status === "declined" ? "bg-red-500/20 text-red-400" :
-                  "bg-yellow-500/20 text-yellow-400"
+                    drink.status === "declined" ? "bg-red-500/20 text-red-400" :
+                      "bg-yellow-500/20 text-yellow-400"
                 }>
                   {drink.status === "accepted" ? "התקבל" : drink.status === "declined" ? "נדחה" : "ממתין"}
                 </Badge>

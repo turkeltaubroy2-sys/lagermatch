@@ -25,20 +25,26 @@ export default function CreateProfile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const deviceId = getDeviceId();
-    base44.entities.Profile.filter({ device_id: deviceId }).then(profiles => {
-      if (profiles.length > 0) {
-        navigate(createPageUrl("Swipe"));
-      } else {
-        setRedirectChecked(true);
+    const check = async () => {
+      try {
+        const id = getDeviceId();
+        const existing = await base44.entities.Profile.filter({ device_id: id });
+        if (existing.length > 0) {
+          navigate(createPageUrl('Swipe'), { replace: true });
+          return;
+        }
+      } catch (e) {
+        console.error('Profile redirect check failed:', e);
       }
-    });
+      setRedirectChecked(true);
+    };
+    check();
   }, [navigate]);
 
   const getDeviceId = () => {
     // Check sessionStorage first (fastest)
     let id = sessionStorage.getItem("wedding_device_id");
-    
+
     // Then check localStorage
     if (!id) {
       id = localStorage.getItem("wedding_device_id");
@@ -68,7 +74,7 @@ export default function CreateProfile() {
     document.cookie = `wedding_device_id=${id}; max-age=94608000; path=/; SameSite=Lax${secureFlag}`;
     localStorage.setItem("wedding_device_id", id);
     sessionStorage.setItem("wedding_device_id", id);
-    
+
     return id;
   };
 
@@ -129,24 +135,37 @@ export default function CreateProfile() {
     if (!validate()) return;
     setSaving(true);
 
-    const deviceId = getDeviceId();
-    const uploadedUrls = await Promise.all(
-      photos.map(p => base44.integrations.Core.UploadFile({ file: p.file }).then(r => r.file_url))
-    );
+    try {
+      const deviceId = getDeviceId();
 
-    await base44.entities.Profile.create({
-      first_name: form.first_name.trim(),
-      age: parseInt(form.age),
-      location: form.location,
-      favorite_drink: form.favorite_drink.trim() || undefined,
-      photo_url: uploadedUrls[0],
-      photo_urls: uploadedUrls,
-      funny_fact: form.funny_fact.trim(),
-      device_id: deviceId,
-      is_blocked: false,
-    });
+      // Upload photos first
+      const uploadedUrls = await Promise.all(
+        photos.map(p => base44.integrations.Core.UploadFile({ file: p.file }).then(r => r.file_url))
+      );
 
-    navigate(createPageUrl("Swipe"));
+      await base44.entities.Profile.create({
+        first_name: form.first_name.trim(),
+        age: parseInt(form.age),
+        location: form.location,
+        favorite_drink: form.favorite_drink.trim() || null,
+        photo_url: uploadedUrls[0] || null,
+        photo_urls: uploadedUrls,
+        funny_fact: form.funny_fact.trim(),
+        device_id: deviceId,
+        is_blocked: false,
+      });
+
+      navigate(createPageUrl("Swipe"));
+    } catch (err) {
+      console.error('Profile creation error:', err);
+      toast({
+        title: "שגיאה ביצירת הפרופיל",
+        description: err?.message || "נסה שוב",
+        variant: "destructive",
+        duration: 4000,
+      });
+      setSaving(false);
+    }
   };
 
   if (!redirectChecked) {
@@ -173,11 +192,25 @@ export default function CreateProfile() {
           <button onClick={() => window.history.back()} className="text-white/50 hover:text-white">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-black bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] bg-clip-text text-transparent" style={{ fontFamily: "'Playfair Display', serif" }}>Soko77 ✦</h1>
+          <h1
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.7rem",
+              fontWeight: 400,
+              letterSpacing: "0.04em",
+              background: "linear-gradient(135deg, #FE3C72, #D4AF37)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            NightMatches ✦
+          </h1>
           <div className="w-6" />
         </div>
 
-        <p className="text-center text-white/30 text-xs mb-6 tracking-widest uppercase">✦ הצג את עצמך · תמצא/י מישהו ✦</p>
+        <p className="text-center text-white/30 text-xs mb-6 tracking-widest uppercase"
+          style={{ fontFamily: "var(--font-body)" }}>✦ הצג את עצמך · תמצא/י מישהו ✦</p>
 
         {/* Photo upload */}
         <div className="mb-6">
@@ -211,9 +244,8 @@ export default function CreateProfile() {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => openPhotoOptions(null)}
-                className={`aspect-square rounded-2xl border-2 border-dashed ${
-                  errors.photo ? "border-red-500" : "border-[#D4AF37]/40"
-                } flex flex-col items-center justify-center bg-[#1A1A1A] hover:border-[#D4AF37] transition-all`}
+                className={`aspect-square rounded-2xl border-2 border-dashed ${errors.photo ? "border-red-500" : "border-[#D4AF37]/40"
+                  } flex flex-col items-center justify-center bg-[#1A1A1A] hover:border-[#D4AF37] transition-all`}
               >
                 <Camera className="w-6 h-6 text-[#D4AF37]/60 mb-1" />
                 <span className="text-[10px] text-white/30">הוסף</span>
@@ -253,11 +285,10 @@ export default function CreateProfile() {
                         setForm({ ...form, location: option.value });
                         setShowLocationSheet(false);
                       }}
-                      className={`w-full py-4 px-6 rounded-xl text-right transition-all ${
-                        form.location === option.value
-                          ? "bg-[#D4AF37] text-[#0F0F0F] font-bold"
-                          : "bg-[#252525] text-white hover:bg-[#333]"
-                      }`}
+                      className={`w-full py-4 px-6 rounded-xl text-right transition-all ${form.location === option.value
+                        ? "bg-[#D4AF37] text-[#0F0F0F] font-bold"
+                        : "bg-[#252525] text-white hover:bg-[#333]"
+                        }`}
                     >
                       {option.label}
                     </button>
@@ -313,7 +344,7 @@ export default function CreateProfile() {
                       צלם תמונה
                     </Button>
                   </label>
-                  
+
                   <label className="block">
                     <input
                       type="file"
@@ -393,17 +424,15 @@ export default function CreateProfile() {
             <button
               type="button"
               onClick={() => setShowLocationSheet(true)}
-              className={`w-full h-12 px-4 rounded-xl bg-[#1A1A1A] border ${
-                errors.location ? "border-red-500" : "border-[#333]"
-              } text-right flex items-center justify-between ${
-                form.location ? "text-white" : "text-white/30"
-              }`}
+              className={`w-full h-12 px-4 rounded-xl bg-[#1A1A1A] border ${errors.location ? "border-red-500" : "border-[#333]"
+                } text-right flex items-center justify-between ${form.location ? "text-white" : "text-white/30"
+                }`}
             >
               <span>
-                {form.location === "tel_aviv" ? "תל אביב" : 
-                 form.location === "south" ? "דרום" : 
-                 form.location === "north" ? "צפון" : 
-                 "איפה את/ה גר/ה?"}
+                {form.location === "tel_aviv" ? "תל אביב" :
+                  form.location === "south" ? "דרום" :
+                    form.location === "north" ? "צפון" :
+                      "איפה את/ה גר/ה?"}
               </span>
             </button>
             {errors.location && (

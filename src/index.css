@@ -2,6 +2,129 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Premium Font Variables ────────────────────────────────── */
+:root {
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'DM Mono', 'Fira Code', monospace;
+
+  /* Brand colors */
+  --pink: #FE3C72;
+  --gold: #D4AF37;
+  --gold-light: #F5E6A3;
+  --dark: #0A0A0A;
+  --dark-2: #111111;
+  --dark-3: #1A1A1A;
+}
+
+/* ── Custom Animations ─────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes aurora {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+
+  33% {
+    opacity: 0.6;
+    transform: scale(1.1) rotate(120deg);
+  }
+
+  66% {
+    opacity: 0.4;
+    transform: scale(0.95) rotate(240deg);
+  }
+}
+
+@keyframes float-up {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-12px) rotate(3deg);
+  }
+
+  66% {
+    transform: translateY(-6px) rotate(-2deg);
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(254, 60, 114, 0.3), 0 0 60px rgba(254, 60, 114, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(254, 60, 114, 0.6), 0 0 80px rgba(254, 60, 114, 0.2);
+  }
+}
+
+@keyframes gold-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), 0 0 60px rgba(212, 175, 55, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.5), 0 0 80px rgba(212, 175, 55, 0.2);
+  }
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes breathe {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -75,14 +198,96 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Remove blue tap flash on iOS/Android */
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+
+  #root {
+    height: 100%;
+    min-height: 100dvh;
   }
 
   body {
-    @apply bg-background text-foreground;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+
+  /* Momentum scrolling for any scrollable container */
+  .overflow-y-auto,
+  .overflow-y-scroll,
+  .overflow-auto,
+  .overflow-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Prevent accidental text selection on interactive elements */
+  button,
+  a,
+  [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    /* Ensure minimum tap target size */
+    min-height: 44px;
+  }
+
+  /* Allow text selection in inputs and textareas */
+  input,
+  textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* Hide scrollbars on mobile (still scrollable) */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* ── Safe area utility classes ─────────────────────────── */
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .px-safe {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .h-screen-safe {
+    height: 100dvh;
   }
 }

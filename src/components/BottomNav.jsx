@@ -52,8 +52,12 @@ export default function BottomNav() {
       transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.3 }}
     >
       <div className="bg-[#111]/90 backdrop-blur-xl border-t border-white/8 shadow-[0_-4px_30px_rgba(0,0,0,0.4)]">
-        <div className="max-w-md mx-auto flex justify-around items-center h-16 px-4">
-          <Link to={createPageUrl("Swipe")} className="flex flex-col items-center justify-center flex-1 py-2">
+        <div className="max-w-md mx-auto flex justify-around items-center px-4" style={{ height: '56px' }}>
+          <Link
+            to={createPageUrl("Swipe")}
+            className="flex flex-col items-center justify-center flex-1 h-full"
+            style={{ touchAction: 'manipulation' }}
+          >
             <motion.div
               whileTap={{ scale: 0.85 }}
               className={`flex flex-col items-center transition-colors duration-200 ${isActive("Swipe") ? "text-[#D4AF37]" : "text-white/35"}`}
@@ -70,7 +74,11 @@ export default function BottomNav() {
             </motion.div>
           </Link>
 
-          <Link to={createPageUrl("MyMatches")} className="flex flex-col items-center justify-center flex-1 py-2">
+          <Link
+            to={createPageUrl("MyMatches")}
+            className="flex flex-col items-center justify-center flex-1 h-full"
+            style={{ touchAction: 'manipulation' }}
+          >
             <motion.div
               whileTap={{ scale: 0.85 }}
               className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyMatches") ? "text-[#FE3C72]" : "text-white/35"}`}
@@ -101,7 +109,11 @@ export default function BottomNav() {
             </motion.div>
           </Link>
 
-          <Link to={createPageUrl("MyProfile")} className="flex flex-col items-center justify-center flex-1 py-2">
+          <Link
+            to={createPageUrl("MyProfile")}
+            className="flex flex-col items-center justify-center flex-1 h-full"
+            style={{ touchAction: 'manipulation' }}
+          >
             <motion.div
               whileTap={{ scale: 0.85 }}
               className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyProfile") ? "text-[#D4AF37]" : "text-white/35"}`}

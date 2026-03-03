@@ -51,9 +51,9 @@ export default function Swipe() {
   const navigate = useNavigate();
 
   const getDeviceId = () => {
-    return sessionStorage.getItem("wedding_device_id") || 
-           localStorage.getItem("wedding_device_id") ||
-           document.cookie.match(/wedding_device_id=([^;]+)/)?.[1];
+    return sessionStorage.getItem("wedding_device_id") ||
+      localStorage.getItem("wedding_device_id") ||
+      document.cookie.match(/wedding_device_id=([^;]+)/)?.[1];
   };
 
   useEffect(() => {
@@ -176,8 +176,8 @@ export default function Swipe() {
   };
 
   const filteredProfiles = useMemo(
-    () => profiles.filter(p => 
-      p.age >= ageRange.min && 
+    () => profiles.filter(p =>
+      p.age >= ageRange.min &&
       p.age <= ageRange.max &&
       (locationFilter === "all" || p.location === locationFilter)
     ),
@@ -186,7 +186,7 @@ export default function Swipe() {
 
   const isMatch = useCallback((profileId) => {
     if (!myProfile) return false;
-    return matches.some(m => 
+    return matches.some(m =>
       (m.user1_id === myProfile.id && m.user2_id === profileId) ||
       (m.user2_id === myProfile.id && m.user1_id === profileId)
     );
@@ -194,16 +194,16 @@ export default function Swipe() {
 
   const calculateCompatibility = useCallback((profile) => {
     if (!myProfile) return 75;
-    
+
     let score = 70;
-    
+
     // Location match (up to 10%)
     if (profile.location === myProfile.location) {
       score += 10;
     } else if (profile.location && myProfile.location) {
       score += 3;
     }
-    
+
     // Favorite drink similarity (up to 10%)
     if (profile.favorite_drink && myProfile.favorite_drink) {
       if (profile.favorite_drink.toLowerCase() === myProfile.favorite_drink.toLowerCase()) {
@@ -212,7 +212,7 @@ export default function Swipe() {
         score += 4;
       }
     }
-    
+
     // Funny fact length similarity (up to 8%)
     if (profile.funny_fact && myProfile.funny_fact) {
       const diff = Math.abs(profile.funny_fact.length - myProfile.funny_fact.length);
@@ -220,13 +220,13 @@ export default function Swipe() {
       else if (diff < 50) score += 5;
       else score += 2;
     }
-    
+
     return Math.min(98, Math.max(70, score));
   }, [myProfile]);
 
   const handleSendDrink = useCallback(async (targetProfile) => {
     if (!myProfile) return;
-    
+
     // Check if drink already sent
     const existingDrinks = await base44.entities.Drink.filter({
       sender_id: myProfile.id,
@@ -248,7 +248,7 @@ export default function Swipe() {
       description: `שלחת משקה ל${targetProfile.first_name}`,
       duration: 2000,
     });
-    
+
     const drink = await base44.entities.Drink.create({
       sender_id: myProfile.id,
       receiver_id: targetProfile.id,
@@ -273,13 +273,13 @@ export default function Swipe() {
 
   const handleDrinkResponse = useCallback(async (accepted) => {
     if (!drinkNotif || !myProfile) return;
-    
+
     setDrinkNotif(null);
     toast({
       title: accepted ? "🎉 המשקה בדרך!" : "אולי בפעם הבאה",
       duration: 2000,
     });
-    
+
     await base44.entities.Drink.update(drinkNotif.drink.id, {
       status: accepted ? "accepted" : "declined",
     });
@@ -288,11 +288,11 @@ export default function Swipe() {
     if (accepted) {
       const senderId = drinkNotif.drink.sender_id;
       const existingMatch = await base44.entities.Match.filter({});
-      const hasMatch = existingMatch.some(m => 
+      const hasMatch = existingMatch.some(m =>
         (m.user1_id === myProfile.id && m.user2_id === senderId) ||
         (m.user2_id === myProfile.id && m.user1_id === senderId)
       );
-      
+
       if (!hasMatch) {
         await base44.entities.Match.create({
           user1_id: myProfile.id,
@@ -385,22 +385,35 @@ export default function Swipe() {
       <div className="flex items-center justify-between px-5 py-4">
         <div>
           <h1 className="text-xl font-bold flex items-center gap-1.5">
-            <motion.span 
+            <motion.span
               animate={{ scale: [1, 1.15, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               🔥
             </motion.span>
-            <span style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.04em" }}
-              className="bg-gradient-to-r from-[#D4AF37] via-[#F5E6A3] to-[#D4AF37] bg-clip-text text-transparent font-black">
-              Buckaroo
+            <span
+              style={{
+                fontFamily: "var(--font-display)",
+                letterSpacing: "0.05em",
+                fontWeight: 400,
+                fontSize: "1.5rem",
+                background: "linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%)",
+                backgroundSize: "200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                animation: "text-shimmer 4s ease infinite",
+              }}
+            >
+              NightMatches
             </span>
           </h1>
-          <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.25em] uppercase">✦ Bar & Club Dating ✦</p>
+          <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.25em] uppercase"
+            style={{ fontFamily: "var(--font-body)" }}>✦ Swipe · Drink · Connect ✦</p>
         </div>
         <div className="flex items-center gap-3">
-          <AgeFilter 
-            ageRange={ageRange} 
+          <AgeFilter
+            ageRange={ageRange}
             locationFilter={locationFilter}
             onChangeRange={handleAgeRangeChange}
             onChangeLocation={handleLocationChange}
