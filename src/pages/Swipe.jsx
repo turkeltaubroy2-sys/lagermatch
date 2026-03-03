@@ -479,7 +479,8 @@ export default function Swipe() {
             profiles={filteredProfiles}
             calculateCompatibility={calculateCompatibility}
             isMatch={isMatch}
-            onSelect={setSelectedProfile}
+            onSendDrink={handleSendDrink}
+            onGoToChat={(profileId) => navigate(createPageUrl(`Chat?partnerId=${profileId}`))}
           />
         ) : (
           <div className="flex flex-col items-center justify-center h-[60vh]">
