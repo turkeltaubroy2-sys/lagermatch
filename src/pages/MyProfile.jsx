@@ -47,6 +47,8 @@ export default function MyProfile() {
         location: p.location || "",
         funny_fact: p.funny_fact || "",
         favorite_drink: p.favorite_drink || "",
+        gender: p.gender || "",
+        interested_in: p.interested_in || "",
       });
       const urls = p.photo_urls?.length ? p.photo_urls : (p.photo_url ? [p.photo_url] : []);
       setPhotos(urls.map(url => ({ url })));
@@ -126,6 +128,8 @@ export default function MyProfile() {
       age: parseInt(form.age),
       location: form.location,
       favorite_drink: form.favorite_drink.trim() || "",
+      gender: form.gender || null,
+      interested_in: form.interested_in || null,
       photo_url: urls[0],
       photo_urls: urls,
       funny_fact: form.funny_fact.trim(),
@@ -352,8 +356,8 @@ export default function MyProfile() {
                   onClick={() => openPhotoSheet(null)}
                   style={{ aspectRatio: "1" }}
                   className={`rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-1.5 transition-all ${errors.photo
-                      ? "border-red-500/50 bg-red-500/5"
-                      : "border-[#D4AF37]/20 bg-[#141414] active:border-[#D4AF37]/50"
+                    ? "border-red-500/50 bg-red-500/5"
+                    : "border-[#D4AF37]/20 bg-[#141414] active:border-[#D4AF37]/50"
                     }`}
                 >
                   {uploadingSlot === "new"
@@ -423,6 +427,58 @@ export default function MyProfile() {
             </motion.button>
           </FormField>
 
+          {/* Gender */}
+          <div>
+            <p className="text-[11px] font-black text-white/40 tracking-[0.25em] uppercase mb-2">✦ מגדר</p>
+            <div className="flex gap-2">
+              {[{ value: "male", label: "גבר" }, { value: "female", label: "אישה" }].map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, gender: opt.value }))}
+                  className="flex-1 h-[52px] rounded-2xl font-semibold text-sm transition-all"
+                  style={{
+                    background: form.gender === opt.value
+                      ? "linear-gradient(135deg, #FE3C72, #D4AF37)"
+                      : "rgba(255,255,255,0.04)",
+                    border: form.gender === opt.value ? "none" : "1px solid rgba(255,255,255,0.08)",
+                    color: form.gender === opt.value ? "#fff" : "rgba(255,255,255,0.4)",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Interested in */}
+          <div>
+            <p className="text-[11px] font-black text-white/40 tracking-[0.25em] uppercase mb-2">✦ אני מתעניין/ת ב...</p>
+            <div className="flex gap-2">
+              {[
+                { value: "women", label: "נשים" },
+                { value: "men", label: "גברים" },
+                { value: "all", label: "פתוח/ה" },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, interested_in: opt.value }))}
+                  className="flex-1 h-[52px] rounded-2xl font-semibold text-sm transition-all"
+                  style={{
+                    background: form.interested_in === opt.value
+                      ? "linear-gradient(135deg, #D4AF37, #F5E6A3)"
+                      : "rgba(255,255,255,0.04)",
+                    border: form.interested_in === opt.value ? "none" : "1px solid rgba(255,255,255,0.08)",
+                    color: form.interested_in === opt.value ? "#0A0A0A" : "rgba(255,255,255,0.4)",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Drink */}
           <FormField label="משקה אהוב 🍸  (אופציונלי)">
             <Input
@@ -456,10 +512,10 @@ export default function MyProfile() {
           disabled={isBusy}
           whileTap={{ scale: 0.97 }}
           className={`w-full h-[58px] rounded-3xl font-black text-[15px] tracking-[0.15em] uppercase transition-all duration-300 mb-4 ${saved
-              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
-              : isBusy
-                ? "bg-[#1A1A1A] text-white/25 border border-white/[0.06]"
-                : "bg-gradient-to-r from-[#D4AF37] via-[#F0D060] to-[#D4AF37] text-[#080808] shadow-[0_8px_40px_rgba(212,175,55,0.35)]"
+            ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
+            : isBusy
+              ? "bg-[#1A1A1A] text-white/25 border border-white/[0.06]"
+              : "bg-gradient-to-r from-[#D4AF37] via-[#F0D060] to-[#D4AF37] text-[#080808] shadow-[0_8px_40px_rgba(212,175,55,0.35)]"
             }`}
         >
           {saving
@@ -481,8 +537,8 @@ export default function MyProfile() {
               whileTap={{ scale: 0.97 }}
               onClick={() => { setForm(f => ({ ...f, location: opt.value })); setShowLocationSheet(false); }}
               className={`w-full py-4 px-5 rounded-2xl text-right font-bold text-[15px] flex items-center justify-between transition-all ${form.location === opt.value
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] shadow-[0_4px_20px_rgba(212,175,55,0.3)]"
-                  : "bg-[#1C1C1C] text-white/80 border border-white/[0.05]"
+                ? "bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] shadow-[0_4px_20px_rgba(212,175,55,0.3)]"
+                : "bg-[#1C1C1C] text-white/80 border border-white/[0.05]"
                 }`}
             >
               <span className="text-xl">{opt.flag}</span>

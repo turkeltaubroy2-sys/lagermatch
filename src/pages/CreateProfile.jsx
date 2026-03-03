@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 const BAD_WORDS = ["מילהגסה1", "מילהגסה2"]; // Basic filter
 
 export default function CreateProfile() {
-  const [form, setForm] = useState({ first_name: "", age: "", location: "", funny_fact: "", favorite_drink: "" });
+  const [form, setForm] = useState({ first_name: "", age: "", location: "", funny_fact: "", favorite_drink: "", gender: "", interested_in: "" });
   const [photos, setPhotos] = useState([]); // [{file, preview}]
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -117,6 +117,8 @@ export default function CreateProfile() {
     if (!form.age) newErrors.age = "גיל הוא שדה חובה";
     else if (isNaN(age) || age < 18 || age > 60) newErrors.age = "גיל חייב להיות בין 18 ל-60";
 
+    if (!form.gender) newErrors.gender = "נא לבחור מגדר";
+    if (!form.interested_in) newErrors.interested_in = "נא לבחור העדפה";
     if (!form.location) newErrors.location = "איזור מגורים הוא שדה חובה";
 
     if (photos.length === 0) newErrors.photo = "תמונה היא שדה חובה";
@@ -148,6 +150,8 @@ export default function CreateProfile() {
         age: parseInt(form.age),
         location: form.location,
         favorite_drink: form.favorite_drink.trim() || null,
+        gender: form.gender,
+        interested_in: form.interested_in,
         photo_url: uploadedUrls[0] || null,
         photo_urls: uploadedUrls,
         funny_fact: form.funny_fact.trim(),
@@ -419,6 +423,37 @@ export default function CreateProfile() {
             )}
           </div>
 
+          {/* Gender */}
+          <div>
+            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ מגדר</Label>
+            <div className="flex gap-2">
+              {[{ value: "male", label: "גבר" }, { value: "female", label: "אישה" }].map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setForm({ ...form, gender: opt.value })}
+                  className="flex-1 h-12 rounded-xl font-semibold text-sm transition-all"
+                  style={{
+                    background: form.gender === opt.value
+                      ? "linear-gradient(135deg, #FE3C72, #D4AF37)"
+                      : "rgba(255,255,255,0.05)",
+                    border: form.gender === opt.value
+                      ? "none"
+                      : "1px solid rgba(255,255,255,0.12)",
+                    color: form.gender === opt.value ? "#fff" : "rgba(255,255,255,0.5)",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            {errors.gender && (
+              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" /> {errors.gender}
+              </p>
+            )}
+          </div>
+
           <div>
             <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ איזור מגורים</Label>
             <button
@@ -438,6 +473,42 @@ export default function CreateProfile() {
             {errors.location && (
               <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" /> {errors.location}
+              </p>
+            )}
+          </div>
+
+          {/* Interested in */}
+          <div>
+            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ אני מתעניין/ת ב...</Label>
+            <div className="flex gap-2">
+              {[
+                { value: "women", label: "נשים" },
+                { value: "men", label: "גברים" },
+                { value: "all", label: "פתוח/ה להכל" },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setForm({ ...form, interested_in: opt.value })}
+                  className="flex-1 h-12 rounded-xl font-semibold text-sm transition-all"
+                  style={{
+                    background: form.interested_in === opt.value
+                      ? "linear-gradient(135deg, #D4AF37, #F5E6A3)"
+                      : "rgba(255,255,255,0.05)",
+                    border: form.interested_in === opt.value
+                      ? "none"
+                      : "1px solid rgba(255,255,255,0.12)",
+                    color: form.interested_in === opt.value ? "#0A0A0A" : "rgba(255,255,255,0.5)",
+                    fontSize: opt.value === "all" ? "11px" : "14px",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            {errors.interested_in && (
+              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" /> {errors.interested_in}
               </p>
             )}
           </div>

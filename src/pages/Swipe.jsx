@@ -215,12 +215,17 @@ export default function Swipe() {
   };
 
   const filteredProfiles = useMemo(
-    () => profiles.filter(p =>
-      p.age >= ageRange.min &&
-      p.age <= ageRange.max &&
-      (locationFilter === "all" || p.location === locationFilter)
-    ),
-    [profiles, ageRange, locationFilter]
+    () => profiles.filter(p => {
+      if (p.age < ageRange.min || p.age > ageRange.max) return false;
+      if (locationFilter !== "all" && p.location !== locationFilter) return false;
+
+      // Filter by my interested_in preference
+      if (myProfile?.interested_in === "women" && p.gender && p.gender !== "female") return false;
+      if (myProfile?.interested_in === "men" && p.gender && p.gender !== "male") return false;
+
+      return true;
+    }),
+    [profiles, ageRange, locationFilter, myProfile]
   );
 
   const isMatch = useCallback((profileId) => {
