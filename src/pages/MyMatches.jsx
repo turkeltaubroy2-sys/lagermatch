@@ -227,7 +227,7 @@ export default function MyMatches() {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem", fontWeight: 400, letterSpacing: "0.02em" }} className="text-white mb-1">{item.profile.first_name}</h3>
+                  <h3 className="text-white font-bold text-lg mb-1" style={{ fontFamily: "var(--font-body)" }}>{item.profile.first_name}</h3>
                   <p className="text-white/50 text-sm">{item.profile.age} • {
                     item.profile.location === "tel_aviv" ? "תל אביב" :
                       item.profile.location === "south" ? "דרום" :

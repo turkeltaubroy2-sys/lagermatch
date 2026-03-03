@@ -214,14 +214,8 @@
     overscroll-behavior: none;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-display);
-  }
+  /* NOTE: No global font-display on headings — app is RTL/Hebrew.
+     Apply fontFamily: var(--font-display) inline only on English text elements. */
 
   #root {
     height: 100%;
