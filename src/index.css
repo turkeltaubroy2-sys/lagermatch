@@ -12,9 +12,15 @@
   --pink: #FE3C72;
   --gold: #D4AF37;
   --gold-light: #F5E6A3;
-  --dark: #0A0A0A;
-  --dark-2: #111111;
-  --dark-3: #1A1A1A;
+  --gold-muted: rgba(212, 175, 55, 0.2);
+  --dark: #050505;
+  --dark-2: #0F0F0F;
+  --dark-3: #161616;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 16px;
 }
 
 /* ── Custom Animations ─────────────────────────────────────── */
@@ -268,20 +274,57 @@
 
 /* ── Safe area utility classes ─────────────────────────── */
 @layer utilities {
-  .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .px-safe { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+  .h-screen-safe { height: 100dvh; }
+
+  /* Premium UI Effects */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
   }
 
-  .pt-safe {
-    padding-top: env(safe-area-inset-top);
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .px-safe {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+  .shimmer-gold {
+    background: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-shimmer 4s linear infinite;
   }
 
-  .h-screen-safe {
-    height: 100dvh;
+  .premium-gradient {
+    background: linear-gradient(165deg, #111 0%, #050505 100%);
+  }
+  
+  .shimmer-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer-card::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(212, 175, 55, 0.03),
+      transparent
+    );
+    transform: rotate(45deg);
+    animation: shimmer 10s infinite linear;
   }
 }

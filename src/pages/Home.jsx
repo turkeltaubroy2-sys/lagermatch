@@ -126,7 +126,20 @@ export default function Home() {
       </div>
 
       {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Premium Dark Overlay */}
+      <div className="fixed inset-0 bg-gradient-to-b from-transparent via-[#050505]/40 to-[#050505] pointer-events-none z-10" />
+      
+      {/* Decorative Ornaments */}
+      <motion.div 
+        animate={{ opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 5, repeat: Infinity }}
+        className="fixed top-20 -left-10 w-40 h-40 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" 
+      />
+      <motion.div 
+        animate={{ opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 7, repeat: Infinity }}
+        className="fixed bottom-40 -right-20 w-80 h-80 bg-[#FE3C72]/5 rounded-full blur-[120px] pointer-events-none" 
+      />
         {FLOATING_PARTICLES.map((p, i) => (
           <motion.span
             key={i}
@@ -210,17 +223,16 @@ export default function Home() {
           <div className="mt-1 text-[#D4AF37] font-bold tracking-[0.4em] text-lg">5.5.26</div>
         </motion.div>
 
-        {/* Tagline */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-        >
-          <p className="text-[10px] font-medium tracking-[0.45em] uppercase text-white/35 mb-2"
-            style={{ fontFamily: "var(--font-body)" }}>
-            ✦ Discover Connections · Celebrate the Union · Shared Moments ✦
-          </p>
-        </motion.div>
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           transition={{ delay: 0.4, duration: 0.8 }}
+         >
+           <p className="text-[10px] font-bold tracking-[0.5em] uppercase shimmer-gold mb-2"
+             style={{ fontFamily: "var(--font-body)" }}>
+             ✦ Discover Connections · Celebrate the Union · Shared Moments ✦
+           </p>
+         </motion.div>
 
         {/* Divider */}
         <motion.div
@@ -329,9 +341,8 @@ export default function Home() {
               transition={{ type: "spring", damping: 28, stiffness: 340 }}
             >
               {/* Glass card */}
-              <div className="relative rounded-[2rem] overflow-hidden"
+              <div className="relative rounded-[2rem] overflow-hidden glass"
                 style={{
-                  background: "linear-gradient(160deg, rgba(30,15,25,0.98) 0%, rgba(15,10,20,0.99) 100%)",
                   border: "1px solid rgba(255,255,255,0.08)",
                   boxShadow: "0 -20px 60px rgba(254,60,114,0.15), 0 0 0 1px rgba(255,255,255,0.05)",
                 }}
@@ -360,22 +371,17 @@ export default function Home() {
                   </motion.div>
 
                   {/* Title */}
-                  <h2 className="text-center mb-3"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "1.8rem",
-                      fontWeight: 400,
-                      letterSpacing: "0.04em",
-                      background: "linear-gradient(135deg, #D4AF37, #F5E6A3, #D4AF37)",
-                      backgroundSize: "200%",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                      animation: "text-shimmer 3s ease infinite",
-                    }}
-                  >
-                    ברוכים הבאים לחתונה של רועי ויעל ✦ 5.5.26 🔥
-                  </h2>
+                  <h2
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "1.8rem",
+                        fontWeight: 400,
+                        letterSpacing: "0.04em",
+                      }}
+                      className="shimmer-gold text-center"
+                    >
+                      ברוכים הבאים לחתונה של רועי ויעל ✦ 5.5.26 🔥
+                    </h2>
 
                   <p className="text-center text-white/60 text-sm leading-relaxed mb-7"
                     style={{ fontFamily: "var(--font-body)", fontWeight: 400 }}

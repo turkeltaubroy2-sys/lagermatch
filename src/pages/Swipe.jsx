@@ -452,7 +452,7 @@ export default function Swipe() {
               Roy & Yael
             </span>
           </h1>
-          <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.18em] uppercase"
+          <p className="tracking-[0.2em] uppercase shimmer-gold text-[10px] items-center"
             style={{ fontFamily: "var(--font-body)" }}>✦ 5.5.26 · Discover · Celebrate · Connect ✦</p>
         </div>
         <div className="flex items-center gap-3">
@@ -637,8 +637,7 @@ export default function Swipe() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.08 }}
-                      className="flex items-center gap-3 rounded-2xl p-3"
-                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+                      className="flex items-center gap-3 rounded-2xl p-3 glass border border-white/5"
                     >
                       <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-[#D4AF37]/30">
                         <img src={other.photo_url} alt={other.first_name} className="w-full h-full object-cover" />

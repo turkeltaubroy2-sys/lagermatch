@@ -182,11 +182,9 @@ export default function MyMatches() {
             fontSize: "2.2rem",
             fontWeight: 400,
             letterSpacing: "0.04em",
-            background: "linear-gradient(135deg, #FE3C72, #FF6B9D 40%, #D4AF37)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
             backgroundClip: "text",
           }}
+          className="shimmer-gold"
         >
           Roy & Yael
         </h1>
@@ -216,7 +214,7 @@ export default function MyMatches() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-gradient-to-br from-[#1A1A1A] to-[#1F1F1F] border border-[#333] rounded-3xl p-4 shadow-lg"
+              className="glass border border-white/5 rounded-[2.2rem] p-4 shadow-2xl relative overflow-hidden shimmer-card"
             >
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#D4AF37] shadow-lg shadow-[#D4AF37]/20 flex-shrink-0">

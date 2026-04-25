@@ -51,8 +51,8 @@ export default function BottomNav() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.3 }}
     >
-      <div className="bg-[#111]/90 backdrop-blur-xl border-t border-white/8 shadow-[0_-4px_30px_rgba(0,0,0,0.4)]">
-        <div className="max-w-md mx-auto flex justify-around items-center px-4" style={{ height: '56px' }}>
+      <div className="glass border-t border-white/[0.03] shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div className="max-w-md mx-auto flex justify-around items-center px-4" style={{ height: '64px' }}>
           <Link
             to={createPageUrl("Swipe")}
             className="flex flex-col items-center justify-center flex-1 h-full"

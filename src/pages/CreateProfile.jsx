@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, ArrowLeft, AlertCircle } from "lucide-react";
+import { Camera, ArrowLeft, AlertCircle, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,11 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
 const BAD_WORDS = ["מילהגסה1", "מילהגסה2"]; // Basic filter
+const LOCATIONS = [
+  { value: "tel_aviv", label: "תל אביב", flag: "🌊" },
+  { value: "south", label: "דרום", flag: "☀️" },
+  { value: "north", label: "צפון", flag: "🌿" },
+];
 
 export default function CreateProfile() {
   const [form, setForm] = useState({ first_name: "", age: "", location: "", funny_fact: "", favorite_drink: "", gender: "", interested_in: "" });
@@ -28,30 +33,26 @@ export default function CreateProfile() {
     const check = async () => {
       try {
         const id = getDeviceId();
-        const existing = await base44.entities.Profile.filter({ device_id: id });
-        if (existing.length > 0) {
-          navigate(createPageUrl('Swipe'), { replace: true });
-          return;
+        const profiles = await base44.entities.Profile.filter({ device_id: id });
+        if (profiles.length > 0) {
+          navigate(createPageUrl("Swipe"));
+        } else {
+          setRedirectChecked(true);
         }
-      } catch (e) {
-        console.error('Profile redirect check failed:', e);
+      } catch (err) {
+        console.error('Redirect check error:', err);
+        setRedirectChecked(true);
       }
-      setRedirectChecked(true);
     };
     check();
   }, [navigate]);
 
   const getDeviceId = () => {
-    // Check sessionStorage first (fastest)
     let id = sessionStorage.getItem("wedding_device_id");
-
-    // Then check localStorage
     if (!id) {
       id = localStorage.getItem("wedding_device_id");
       if (id) sessionStorage.setItem("wedding_device_id", id);
     }
-
-    // Then check cookies
     if (!id) {
       const match = document.cookie.match(/wedding_device_id=([^;]+)/);
       if (match) {
@@ -60,28 +61,21 @@ export default function CreateProfile() {
         sessionStorage.setItem("wedding_device_id", id);
       }
     }
-
-    // Create new if none exists
     if (!id) {
       id = crypto.randomUUID();
       localStorage.setItem("wedding_device_id", id);
       sessionStorage.setItem("wedding_device_id", id);
     }
-
-    // Always sync to all storage types (3 year expiry)
     const isSecure = window.location.protocol === 'https:';
     const secureFlag = isSecure ? '; Secure' : '';
     document.cookie = `wedding_device_id=${id}; max-age=94608000; path=/; SameSite=Lax${secureFlag}`;
-    localStorage.setItem("wedding_device_id", id);
-    sessionStorage.setItem("wedding_device_id", id);
-
     return id;
   };
 
   const handlePhotoFile = (file) => {
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, photo: "התמונה גדולה מדי (מקסימום 5MB)" }));
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "התמונה גדולה מדי (מקסימום 10MB)", duration: 2500 });
       return;
     }
     const preview = URL.createObjectURL(file);
@@ -105,31 +99,20 @@ export default function CreateProfile() {
 
   const openPhotoOptions = (slot = null) => {
     setActivePhotoSlot(slot);
-    // Directly trigger hidden camera input instead of showing options
     document.getElementById("camera-input").click();
   };
 
   const validate = () => {
     const newErrors = {};
     if (!form.first_name.trim()) newErrors.first_name = "שם הוא שדה חובה";
-    if (form.first_name.includes(" ")) newErrors.first_name = "שם פרטי בלבד, בלי רווחים";
-
+    else if (form.first_name.trim().includes(" ")) newErrors.first_name = "שם פרטי בלבד, בלי רווחים";
     const age = parseInt(form.age);
     if (!form.age) newErrors.age = "גיל הוא שדה חובה";
     else if (isNaN(age) || age < 18 || age > 60) newErrors.age = "גיל חייב להיות בין 18 ל-60";
-
-    if (!form.gender) newErrors.gender = "נא לבחור מגדר";
-    if (!form.interested_in) newErrors.interested_in = "נא לבחור העדפה";
     if (!form.location) newErrors.location = "איזור מגורים הוא שדה חובה";
-
-    if (photos.length === 0) newErrors.photo = "תמונה היא שדה חובה";
-
-    if (!form.funny_fact.trim()) newErrors.funny_fact = "הפרט המצחיק הוא שדה חובה";
-    else if (form.funny_fact.length > 200) newErrors.funny_fact = "מקסימום 200 תווים";
-
-    const hasBadWords = BAD_WORDS.some(w => form.funny_fact.toLowerCase().includes(w));
-    if (hasBadWords) newErrors.funny_fact = "בבקשה השתמש בשפה הולמת 😊";
-
+    if (photos.length === 0) newErrors.photo = "חובה להוסיף לפחות תמונה אחת";
+    if (!form.gender) newErrors.gender = "מגדר הוא שדה חובה";
+    if (!form.interested_in) newErrors.interested_in = "העדפה היא שדה חובה";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -137,15 +120,13 @@ export default function CreateProfile() {
   const handleSubmit = async () => {
     if (!validate()) return;
     setSaving(true);
-
     try {
       const deviceId = getDeviceId();
-
-      // Upload photos first
-      const uploadedUrls = await Promise.all(
-        photos.map(p => base44.integrations.Core.UploadFile({ file: p.file }).then(r => r.file_url))
-      );
-
+      const uploadedUrls = [];
+      for (const p of photos) {
+        const res = await base44.integrations.Core.UploadFile({ file: p.file });
+        uploadedUrls.push(res.file_url);
+      }
       await base44.entities.Profile.create({
         first_name: form.first_name.trim(),
         age: parseInt(form.age),
@@ -159,23 +140,17 @@ export default function CreateProfile() {
         device_id: deviceId,
         is_blocked: false,
       });
-
       navigate(createPageUrl("Swipe"));
     } catch (err) {
       console.error('Profile creation error:', err);
-      toast({
-        title: "שגיאה ביצירת הפרופיל",
-        description: err?.message || "נסה שוב",
-        variant: "destructive",
-        duration: 4000,
-      });
+      toast({ title: "שגיאה ביצירת הפרופיל", description: err?.message || "נסה שוב", variant: "destructive" });
       setSaving(false);
     }
   };
 
   if (!redirectChecked) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
+      <div className="min-h-screen flex items-center justify-center bg-[#050505]">
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
           <span className="text-4xl">🔥</span>
         </motion.div>
@@ -184,328 +159,150 @@ export default function CreateProfile() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#0F0F0F] px-5 py-8 max-w-md mx-auto pb-16"
+    <div className="min-h-[100dvh] bg-[#050505] px-5 py-8 max-w-md mx-auto pb-16"
       style={{ paddingTop: "max(2rem, env(safe-area-inset-top))", paddingBottom: "max(4rem, env(safe-area-inset-bottom))" }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <button onClick={() => window.history.back()} className="text-white/50 hover:text-white">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "1.7rem",
-              fontWeight: 400,
-              letterSpacing: "0.04em",
-              background: "linear-gradient(135deg, #FE3C72, #D4AF37)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Roy & Yael ✦
-          </h1>
+          <h1 className="text-[1.7rem] font-display shimmer-gold tracking-widest uppercase">Roy & Yael ✦</h1>
           <div className="w-6" />
         </div>
 
-        <p className="text-center text-white/30 text-xs mb-6 tracking-widest uppercase"
-          style={{ fontFamily: "var(--font-body)" }}>✦ גלו חיבורים חדשים · חגגו יחד · צרו זיכרונות ✦</p>
+        <p className="text-center text-white/30 text-[10px] mb-8 tracking-[0.3em] uppercase shimmer-gold">✦ גלו חיבורים חדשים · חגגו יחד · צרו זיכרונות ✦</p>
 
         {/* Photo upload */}
-        <div className="mb-6">
-          <p className="text-white/40 text-[10px] text-center mb-3 tracking-widest uppercase">✦ Photos — ראשית + עד 5 נוספות ✦</p>
-          <div className="grid grid-cols-3 gap-2">
-            {/* Existing photos */}
+        <div className="mb-10">
+          <p className="text-white/40 text-[10px] text-center mb-4 tracking-[0.2em] uppercase">✦ תמונות — חובה לפחות אחת ✦</p>
+          <div className="grid grid-cols-3 gap-3">
             {photos.map((p, i) => (
               <div key={i} className="relative aspect-square">
-                <img src={p.preview} alt="" className="w-full h-full object-cover rounded-2xl" />
-                {i === 0 && (
-                  <div className="absolute top-1 right-1 bg-[#D4AF37] text-[#0F0F0F] text-[9px] font-black px-1.5 py-0.5 rounded-full">
-                    ראשית
-                  </div>
-                )}
-                <button
-                  onClick={() => removePhoto(i)}
-                  className="absolute top-1 left-1 w-6 h-6 bg-black/70 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                >
-                  ×
-                </button>
-                <button
-                  onClick={() => openPhotoOptions(i)}
-                  className="absolute inset-0 rounded-2xl opacity-0 hover:opacity-100 bg-black/30 flex items-center justify-center transition-opacity"
-                >
-                  <Camera className="w-5 h-5 text-white" />
-                </button>
+                <img src={p.preview} alt="" className="w-full h-full object-cover rounded-[1.5rem]" />
+                {i === 0 && <div className="absolute top-1.5 right-1.5 bg-[#D4AF37] text-black text-[8px] font-black px-2 py-0.5 rounded-full uppercase">ראשית</div>}
+                <button onClick={() => removePhoto(i)} className="absolute top-1.5 left-1.5 w-6 h-6 glass-dark rounded-full flex items-center justify-center text-white/80 text-lg">×</button>
               </div>
             ))}
-            {/* Add photo slot */}
             {photos.length < 6 && (
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => openPhotoOptions(null)}
-                className={`aspect-square rounded-2xl border-2 border-dashed ${errors.photo ? "border-red-500" : "border-[#D4AF37]/40"
-                  } flex flex-col items-center justify-center bg-[#1A1A1A] hover:border-[#D4AF37] transition-all`}
-              >
+              <motion.button whileTap={{ scale: 0.95 }} onClick={() => openPhotoOptions(null)}
+                className={`aspect-square rounded-[1.5rem] border-2 border-dashed ${errors.photo ? "border-red-500/50" : "border-[#D4AF37]/20"} glass flex flex-col items-center justify-center hover:border-[#D4AF37]/50 transition-all`}>
                 <Camera className="w-6 h-6 text-[#D4AF37]/60 mb-1" />
-                <span className="text-[10px] text-white/30">צלם תמונה</span>
+                <span className="text-[9px] text-[#D4AF37]/40 uppercase tracking-widest font-bold">צלם</span>
               </motion.button>
             )}
           </div>
-          {/* Hidden camera input enforced */}
-          <input
-            id="camera-input"
-            type="file"
-            accept="image/*"
-            capture="user"
-            className="hidden"
-            onChange={(e) => handlePhotoFile(e.target.files[0])}
-          />
+          <input id="camera-input" type="file" accept="image/*" capture="user" className="hidden" onChange={(e) => handlePhotoFile(e.target.files[0])} />
+          {errors.photo && <p className="text-red-400 text-[10px] text-center mt-3">{errors.photo}</p>}
         </div>
 
-        {/* Location sheet */}
-        <AnimatePresence>
-          {showLocationSheet && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-                onClick={() => setShowLocationSheet(false)}
+        {/* Form groups with glass effect */}
+        <div className="space-y-6">
+          <div className="glass rounded-[2rem] p-6 space-y-6">
+            <p className="text-[10px] font-black text-[#D4AF37] tracking-[0.4em] uppercase text-center">✦ פרטים אישיים ✦</p>
+            <div className="space-y-4">
+              <Input
+                placeholder="שם פרטי"
+                value={form.first_name}
+                onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+                className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/10 transition-all ${errors.first_name ? "border-red-500/30" : ""}`}
               />
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] rounded-t-3xl p-6 z-50"
-                dir="rtl"
+              <Input
+                type="number"
+                placeholder="גיל"
+                value={form.age}
+                onChange={(e) => setForm({ ...form, age: e.target.value })}
+                className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/10 transition-all ${errors.age ? "border-red-500/30" : ""}`}
+                inputMode="numeric"
+              />
+              <button
+                type="button"
+                onClick={() => setShowLocationSheet(true)}
+                className={`w-full h-14 glass border-transparent rounded-[1.2rem] text-center transition-all ${errors.location ? "border-red-500/30" : ""}`}
               >
-                <h3 className="text-white text-lg font-bold mb-4 text-center tracking-widest uppercase text-sm">✦ בחר איזור</h3>
-                <div className="space-y-2">
-                  {[
-                    { value: "tel_aviv", label: "תל אביב" },
-                    { value: "south", label: "דרום" },
-                    { value: "north", label: "צפון" },
-                  ].map(option => (
-                    <button
-                      key={option.value}
-                      onClick={() => {
-                        setForm({ ...form, location: option.value });
-                        setShowLocationSheet(false);
-                      }}
-                      className={`w-full py-4 px-6 rounded-xl text-right transition-all ${form.location === option.value
-                        ? "bg-[#D4AF37] text-[#0F0F0F] font-bold"
-                        : "bg-[#252525] text-white hover:bg-[#333]"
-                        }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="w-full py-6 text-lg font-semibold rounded-2xl text-white/50 hover:text-white hover:bg-white/5 mt-3"
-                  onClick={() => setShowLocationSheet(false)}
-                >
-                  ביטול
-                </Button>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-
-        {errors.photo && (
-          <p className="text-red-400 text-sm text-center mb-4 flex items-center justify-center gap-1">
-            <AlertCircle className="w-3 h-3" /> {errors.photo}
-          </p>
-        )}
-
-        {/* Form */}
-        <div className="space-y-5">
-          <div>
-            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ שם פרטי</Label>
-            <Input
-              value={form.first_name}
-              onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-              placeholder="איך קוראים לך?"
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right text-base"
-              inputMode="text"
-              autoCapitalize="words"
-            />
-            {errors.first_name && (
-              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.first_name}
-              </p>
-            )}
+                <span className={`text-sm ${form.location ? "text-white" : "text-white/10"}`}>
+                  {form.location ? LOCATIONS.find(l => l.value === form.location)?.label : "בחר איזור מגורים"}
+                </span>
+                <ChevronDown className="inline-block w-3 h-3 opacity-30 ml-2" />
+              </button>
+            </div>
           </div>
 
-          <div>
-            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ גיל</Label>
-            <Input
-              type="number"
-              min={18}
-              max={60}
-              value={form.age}
-              onChange={(e) => setForm({ ...form, age: e.target.value })}
-              placeholder="מה הגיל שלך?"
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right text-base"
-              inputMode="numeric"
-            />
-            {errors.age && (
-              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.age}
-              </p>
-            )}
-          </div>
-
-          {/* Gender */}
-          <div>
-            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ מגדר</Label>
-            <div className="flex gap-2">
-              {[{ value: "male", label: "גבר" }, { value: "female", label: "אישה" }].map(opt => (
+          <div className="glass rounded-[2rem] p-6 space-y-5">
+            <p className="text-[10px] font-black text-[#D4AF37] tracking-[0.4em] uppercase text-center">✦ העדפות ✦</p>
+            <div className="grid grid-cols-2 gap-3">
+              {[{ v: 'male', l: 'גבר' }, { v: 'female', l: 'אישה' }].map(opt => (
                 <button
-                  key={opt.value}
+                  key={opt.v}
                   type="button"
-                  onClick={() => setForm({ ...form, gender: opt.value })}
-                  className="flex-1 h-12 rounded-xl font-semibold text-sm transition-all"
-                  style={{
-                    background: form.gender === opt.value
-                      ? "linear-gradient(135deg, #FE3C72, #D4AF37)"
-                      : "rgba(255,255,255,0.05)",
-                    border: form.gender === opt.value
-                      ? "none"
-                      : "1px solid rgba(255,255,255,0.12)",
-                    color: form.gender === opt.value ? "#fff" : "rgba(255,255,255,0.5)",
-                  }}
+                  onClick={() => setForm({ ...form, gender: opt.v })}
+                  className={`h-12 rounded-xl text-xs font-bold transition-all ${form.gender === opt.v ? "bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white" : "glass border-transparent text-white/20"}`}
                 >
-                  {opt.label}
+                  {opt.l}
                 </button>
               ))}
             </div>
-            {errors.gender && (
-              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.gender}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ איזור מגורים</Label>
-            <button
-              type="button"
-              onClick={() => setShowLocationSheet(true)}
-              className={`w-full h-12 px-4 rounded-xl bg-[#1A1A1A] border ${errors.location ? "border-red-500" : "border-[#333]"
-                } text-right flex items-center justify-between ${form.location ? "text-white" : "text-white/30"
-                }`}
-            >
-              <span>
-                {form.location === "tel_aviv" ? "תל אביב" :
-                  form.location === "south" ? "דרום" :
-                    form.location === "north" ? "צפון" :
-                      "איפה את/ה גר/ה?"}
-              </span>
-            </button>
-            {errors.location && (
-              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.location}
-              </p>
-            )}
-          </div>
-
-          {/* Interested in */}
-          <div>
-            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ אני מתעניין/ת ב...</Label>
-            <div className="flex gap-2">
-              {[
-                { value: "women", label: "נשים" },
-                { value: "men", label: "גברים" },
-                { value: "all", label: "פתוח/ה להכל" },
-              ].map(opt => (
+            <div className="grid grid-cols-3 gap-2">
+              {[{ v: 'women', l: 'נשים' }, { v: 'men', l: 'גברים' }, { v: 'all', l: 'כולם' }].map(opt => (
                 <button
-                  key={opt.value}
+                  key={opt.v}
                   type="button"
-                  onClick={() => setForm({ ...form, interested_in: opt.value })}
-                  className="flex-1 h-12 rounded-xl font-semibold text-sm transition-all"
-                  style={{
-                    background: form.interested_in === opt.value
-                      ? "linear-gradient(135deg, #D4AF37, #F5E6A3)"
-                      : "rgba(255,255,255,0.05)",
-                    border: form.interested_in === opt.value
-                      ? "none"
-                      : "1px solid rgba(255,255,255,0.12)",
-                    color: form.interested_in === opt.value ? "#0A0A0A" : "rgba(255,255,255,0.5)",
-                    fontSize: opt.value === "all" ? "11px" : "14px",
-                  }}
+                  onClick={() => setForm({ ...form, interested_in: opt.v })}
+                  className={`h-10 rounded-xl text-[10px] font-bold transition-all ${form.interested_in === opt.v ? "bg-white/10 text-white" : "glass border-transparent text-white/10"}`}
                 >
-                  {opt.label}
+                  {opt.l}
                 </button>
               ))}
             </div>
-            {errors.interested_in && (
-              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.interested_in}
-              </p>
-            )}
           </div>
 
-          <div>
-            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ משקה אהוב (אופציונלי)</Label>
+          <div className="glass rounded-[2rem] p-6 space-y-4">
             <Input
+              placeholder="משקה אהוב (אופציונלי)"
               value={form.favorite_drink}
               onChange={(e) => setForm({ ...form, favorite_drink: e.target.value })}
-              placeholder="מה תרצה לשתות?"
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 h-12 rounded-xl text-right text-base"
-              inputMode="text"
+              className="h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/10 transition-all"
             />
-          </div>
-
-          <div>
-            <Label className="text-white/50 text-[10px] mb-2 block tracking-widest uppercase">✦ משהו מצחיק עליך 😂</Label>
             <Textarea
+              placeholder="משהו מצחיק עליך..."
               value={form.funny_fact}
               onChange={(e) => setForm({ ...form, funny_fact: e.target.value })}
-              placeholder="משהו מצחיק, מפתיע, שמייחד אותך..."
-              maxLength={200}
-              className="bg-[#1A1A1A] border-[#333] text-white placeholder:text-white/30 rounded-xl resize-none h-24 text-right text-base"
-              inputMode="text"
+              className="glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-right p-4 text-sm min-h-[100px] placeholder:text-white/10 resize-none"
             />
-            <div className="flex justify-between items-center mt-1">
-              {errors.funny_fact ? (
-                <p className="text-red-400 text-xs flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.funny_fact}
-                </p>
-              ) : <div />}
-              <span className="text-xs text-white/30">{form.funny_fact.length}/200</span>
-            </div>
           </div>
-
-
 
           <Button
             onClick={handleSubmit}
             disabled={saving}
-            className="w-full py-6 text-lg font-black rounded-2xl bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] text-white hover:opacity-90 transition-all duration-300 shadow-2xl shadow-[#FE3C72]/30 mt-4"
+            className="w-full py-7 text-sm font-black rounded-[1.5rem] bg-gradient-to-r from-[#FE3C72] via-[#FF6B9D] to-[#FF8A5B] text-white tracking-[0.2em] shadow-2xl shadow-[#FE3C72]/20 uppercase"
           >
-            {saving ? (
-              <motion.span
-                animate={{ opacity: [1, 0.5, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              >
-                ✦ יוצר פרופיל...
-              </motion.span>
-            ) : (
-              "🔥 Enter the Wedding"
-            )}
+            {saving ? "✦ Creating Profile..." : "✦ Enter the Wedding ✦"}
           </Button>
         </div>
       </motion.div>
+
+      {/* Location sheet */}
+      <AnimatePresence>
+        {showLocationSheet && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLocationSheet(false)} className="fixed inset-0 bg-black/80 backdrop-blur-md z-40" />
+            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }} className="fixed bottom-0 inset-x-0 glass border-t border-white/5 rounded-t-[2.5rem] p-8 z-50 max-w-md mx-auto">
+              <div className="w-10 h-1 bg-white/10 rounded-full mx-auto mb-6" />
+              <h3 className="text-white text-center font-bold tracking-[0.3em] uppercase text-xs mb-6">✦ בחר איזור ✦</h3>
+              <div className="space-y-2">
+                {LOCATIONS.map(opt => (
+                  <button key={opt.value} onClick={() => { setForm({ ...form, location: opt.value }); setShowLocationSheet(false); }}
+                    className={`w-full py-4 rounded-2xl text-right px-6 transition-all ${form.location === opt.value ? "bg-[#D4AF37] text-black font-bold" : "glass border-transparent text-white/60"}`}>
+                    {opt.flag} {opt.label}
+                  </button>
+                ))}
+              </div>
+              <button onClick={() => setShowLocationSheet(false)} className="w-full mt-4 py-2 text-white/20 text-xs uppercase tracking-widest">ביטול</button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
