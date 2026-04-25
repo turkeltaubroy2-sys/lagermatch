@@ -215,7 +215,7 @@ export default function CreateProfile() {
         </div>
 
         <p className="text-center text-white/30 text-xs mb-6 tracking-widest uppercase"
-          style={{ fontFamily: "var(--font-body)" }}>✦ הצג את עצמך · תמצא/י מישהו ✦</p>
+          style={{ fontFamily: "var(--font-body)" }}>✦ גלו חיבורים חדשים · חגגו יחד · צרו זיכרונות ✦</p>
 
         {/* Photo upload */}
         <div className="mb-6">

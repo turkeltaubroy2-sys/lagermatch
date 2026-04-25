@@ -218,7 +218,7 @@ export default function Home() {
         >
           <p className="text-[10px] font-medium tracking-[0.45em] uppercase text-white/35 mb-2"
             style={{ fontFamily: "var(--font-body)" }}>
-            ✦ Swipe · Drink · Match · Connect ✦
+            ✦ Discover Connections · Celebrate the Union · Shared Moments ✦
           </p>
         </motion.div>
 

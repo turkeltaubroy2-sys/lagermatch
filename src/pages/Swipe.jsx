@@ -452,8 +452,8 @@ export default function Swipe() {
               Roy & Yael
             </span>
           </h1>
-          <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.25em] uppercase"
-            style={{ fontFamily: "var(--font-body)" }}>✦ 5.5.26 · Swipe · Drink · Connect ✦</p>
+          <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.18em] uppercase"
+            style={{ fontFamily: "var(--font-body)" }}>✦ 5.5.26 · Discover · Celebrate · Connect ✦</p>
         </div>
         <div className="flex items-center gap-3">
           <AgeFilter
