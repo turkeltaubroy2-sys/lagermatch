@@ -239,17 +239,6 @@ export default function Home() {
       <div className="mt-1 text-[#D4AF37] font-bold tracking-[0.4em] text-lg">5.5.26</div>
     </motion.div>
 
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.4, duration: 0.8 }}
-    >
-      <p className="text-[10px] font-bold tracking-[0.5em] uppercase shimmer-gold mb-2"
-        style={{ fontFamily: "var(--font-body)" }}>
-        ✦  Connections · Celebrate the Union · Shared Moments ✦
-      </p>
-    </motion.div>
-
     {/* Divider */}
     <motion.div
       className="mx-auto mb-10"
