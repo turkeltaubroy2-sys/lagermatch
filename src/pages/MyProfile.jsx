@@ -195,7 +195,7 @@ export default function MyProfile() {
                 {form.first_name || "My Profile"}
               </h1>
               <p className="text-[10px] text-[#D4AF37]/50 tracking-[0.3em] uppercase mt-0.5">
-                ✦ NightMatches
+                ✦ Roy & Yael
               </p>
             </div>
           </div>
@@ -560,16 +560,6 @@ export default function MyProfile() {
               className="w-full py-5 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#C09B2A] text-[#080808] font-black text-[15px] flex items-center justify-center gap-2.5 shadow-[0_4px_24px_rgba(212,175,55,0.3)] cursor-pointer pointer-events-none"
             >
               <Camera className="w-5 h-5" /> 📸 צלם תמונה
-            </motion.div>
-          </label>
-          <label className="block cursor-pointer">
-            <input type="file" accept="image/*" className="hidden"
-              onChange={(e) => { handlePhotoFile(e.target.files[0], photoSheetSlot); e.target.value = ""; }} />
-            <motion.div
-              whileTap={{ scale: 0.97 }}
-              className="w-full py-5 rounded-2xl bg-[#1C1C1C] text-white font-bold text-[15px] flex items-center justify-center gap-2.5 border border-white/[0.07] cursor-pointer pointer-events-none"
-            >
-              📁 בחר מהגלריה
             </motion.div>
           </label>
           <button onClick={() => setPhotoSheetOpen(false)} className="w-full py-3 text-white/25 text-sm">ביטול</button>

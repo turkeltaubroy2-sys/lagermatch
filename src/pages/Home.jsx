@@ -179,21 +179,35 @@ export default function Home() {
                 animation: "text-shimmer 4s ease infinite",
               }}
             >
-              Night
+              Roy
             </span>
             <span
+              className="mx-2"
               style={{
                 background: "linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%)",
                 backgroundSize: "200% 200%",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                animation: "text-shimmer 4s ease infinite 0.5s",
+                animation: "text-shimmer 4s ease infinite 0.2s",
               }}
             >
-              Matches
+              &
+            </span>
+            <span
+              style={{
+                background: "linear-gradient(135deg, #FE3C72 0%, #FF8A5B 40%, #D4AF37 70%, #F5E6A3 100%)",
+                backgroundSize: "200% 200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                animation: "text-shimmer 4s ease infinite 0.4s",
+              }}
+            >
+              Yael
             </span>
           </h1>
+          <div className="mt-1 text-[#D4AF37] font-bold tracking-[0.4em] text-lg">5.5.26</div>
         </motion.div>
 
         {/* Tagline */}
@@ -286,7 +300,7 @@ export default function Home() {
               {/* Label below QR so it's never clipped */}
               <div className="text-[9px] font-bold px-3 py-1 rounded-full tracking-widest uppercase whitespace-nowrap text-[#0A0A0A] mt-1"
                 style={{ background: "linear-gradient(135deg, #D4AF37, #F5E6A3)" }}>
-                ✦ NightMatches ✦
+                ✦ Roy & Yael ✦
               </div>
             </motion.div>
           )}
@@ -360,7 +374,7 @@ export default function Home() {
                       animation: "text-shimmer 3s ease infinite",
                     }}
                   >
-                    ברוכים הבאים ל-NightMatches 🔥
+                    ברוכים הבאים לחתונה של רועי ויעל ✦ 5.5.26 🔥
                   </h2>
 
                   <p className="text-center text-white/60 text-sm leading-relaxed mb-7"

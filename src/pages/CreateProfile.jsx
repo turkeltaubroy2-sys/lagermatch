@@ -105,7 +105,8 @@ export default function CreateProfile() {
 
   const openPhotoOptions = (slot = null) => {
     setActivePhotoSlot(slot);
-    setShowPhotoOptions(true);
+    // Directly trigger hidden camera input instead of showing options
+    document.getElementById("camera-input").click();
   };
 
   const validate = () => {
@@ -208,7 +209,7 @@ export default function CreateProfile() {
               backgroundClip: "text",
             }}
           >
-            NightMatches ✦
+            Roy & Yael ✦
           </h1>
           <div className="w-6" />
         </div>
@@ -252,10 +253,19 @@ export default function CreateProfile() {
                   } flex flex-col items-center justify-center bg-[#1A1A1A] hover:border-[#D4AF37] transition-all`}
               >
                 <Camera className="w-6 h-6 text-[#D4AF37]/60 mb-1" />
-                <span className="text-[10px] text-white/30">הוסף</span>
+                <span className="text-[10px] text-white/30">צלם תמונה</span>
               </motion.button>
             )}
           </div>
+          {/* Hidden camera input enforced */}
+          <input
+            id="camera-input"
+            type="file"
+            accept="image/*"
+            capture="user"
+            className="hidden"
+            onChange={(e) => handlePhotoFile(e.target.files[0])}
+          />
         </div>
 
         {/* Location sheet */}
@@ -311,74 +321,6 @@ export default function CreateProfile() {
           )}
         </AnimatePresence>
 
-        {/* Photo options modal */}
-        <AnimatePresence>
-          {showPhotoOptions && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-                onClick={() => setShowPhotoOptions(false)}
-              />
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] rounded-t-3xl p-6 z-50"
-                dir="rtl"
-              >
-                <h3 className="text-white text-lg font-bold mb-4 text-center tracking-widest uppercase text-sm">✦ הוסף תמונה</h3>
-                <div className="space-y-3">
-                  <label className="block">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      className="hidden"
-                      onChange={(e) => handlePhotoFile(e.target.files[0])}
-                    />
-                    <Button
-                      type="button"
-                      className="w-full py-6 text-lg font-semibold rounded-2xl bg-gradient-to-r from-[#B8941F] via-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] hover:opacity-90"
-                      onClick={(e) => e.currentTarget.previousElementSibling.click()}
-                    >
-                      <Camera className="w-5 h-5 ml-2" />
-                      צלם תמונה
-                    </Button>
-                  </label>
-
-                  <label className="block">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handlePhotoFile(e.target.files[0])}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full py-6 text-lg font-semibold rounded-2xl border-[#333] text-white bg-[#252525] hover:bg-[#333]"
-                      onClick={(e) => e.currentTarget.previousElementSibling.click()}
-                    >
-                      📁 בחר מהגלריה
-                    </Button>
-                  </label>
-
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="w-full py-6 text-lg font-semibold rounded-2xl text-white/50 hover:text-white hover:bg-white/5"
-                    onClick={() => setShowPhotoOptions(false)}
-                  >
-                    ביטול
-                  </Button>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
         {errors.photo && (
           <p className="text-red-400 text-sm text-center mb-4 flex items-center justify-center gap-1">
             <AlertCircle className="w-3 h-3" /> {errors.photo}
@@ -559,7 +501,7 @@ export default function CreateProfile() {
                 ✦ יוצר פרופיל...
               </motion.span>
             ) : (
-              "🔥 Enter the Night"
+              "🔥 Enter the Wedding"
             )}
           </Button>
         </div>

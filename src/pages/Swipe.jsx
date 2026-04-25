@@ -449,11 +449,11 @@ export default function Swipe() {
                 animation: "text-shimmer 4s ease infinite",
               }}
             >
-              NightMatches
+              Roy & Yael
             </span>
           </h1>
           <p className="text-[11px] text-[#D4AF37]/50 font-bold tracking-[0.25em] uppercase"
-            style={{ fontFamily: "var(--font-body)" }}>✦ Swipe · Drink · Connect ✦</p>
+            style={{ fontFamily: "var(--font-body)" }}>✦ 5.5.26 · Swipe · Drink · Connect ✦</p>
         </div>
         <div className="flex items-center gap-3">
           <AgeFilter

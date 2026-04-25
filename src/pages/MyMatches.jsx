@@ -188,10 +188,10 @@ export default function MyMatches() {
             backgroundClip: "text",
           }}
         >
-          My Matches 🔥
+          Roy & Yael
         </h1>
         <p className="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/25"
-          style={{ fontFamily: "var(--font-body)" }}>✦ It's a Match ✦</p>
+          style={{ fontFamily: "var(--font-body)" }}>✦ It's a Match · 5.5.26 ✦</p>
       </div>
 
       {matchProfiles.length === 0 ? (
