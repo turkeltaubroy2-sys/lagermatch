@@ -43,6 +43,9 @@ export const db = {
             if (error) throw error;
             return mapProfile(data);
         },
+        async updatePresence(id) {
+            await supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', id);
+        },
         async delete(id) {
             const { error } = await supabase.from('profiles').delete().eq('id', id);
             if (error) throw error;

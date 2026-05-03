@@ -235,12 +235,15 @@ export default function MyMatches() {
               className="glass border border-white/5 rounded-[2.2rem] p-4 shadow-2xl relative overflow-hidden shimmer-card"
             >
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#D4AF37] shadow-lg shadow-[#D4AF37]/20 flex-shrink-0">
+                <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#D4AF37] shadow-lg shadow-[#D4AF37]/20 flex-shrink-0 relative">
                   <img
                     src={item.profile.photo_url}
                     alt={item.profile.first_name}
                     className="w-full h-full object-cover"
                   />
+                  {item.profile.last_seen && (Date.now() - new Date(item.profile.last_seen).getTime()) < 65000 && (
+                    <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0A0A0A] shadow-[0_0_10px_rgba(34,197,94,0.7)]" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-white font-bold text-lg mb-1" style={{ fontFamily: "var(--font-body)" }}>{item.profile.first_name}</h3>

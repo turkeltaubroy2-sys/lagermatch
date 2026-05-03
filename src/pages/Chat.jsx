@@ -312,23 +312,79 @@ export default function Chat() {
     );
   }
 
+  // Presence & Heartbeat
+  useEffect(() => {
+    if (!myProfile) return;
+    
+    // Immediate update
+    base44.entities.Profile.updatePresence(myProfile.id);
+    
+    // Heartbeat every 30 seconds
+    const interval = setInterval(() => {
+      base44.entities.Profile.updatePresence(myProfile.id);
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [myProfile]);
+
+  // Subscribe to other user's presence
+  useEffect(() => {
+    if (!otherProfile) return;
+    
+    const unsub = base44.entities.Profile.subscribe((event) => {
+      if (event.data.id === otherProfile.id) {
+        setOtherProfile(prev => ({ ...prev, ...event.data }));
+      }
+    });
+    
+    return unsub;
+  }, [otherProfile?.id]);
+
+  const getPresenceStatus = () => {
+    if (!otherProfile?.last_seen) return "לא מחובר/ת";
+    const lastSeen = new Date(otherProfile.last_seen).getTime();
+    const now = Date.now();
+    const diff = (now - lastSeen) / 1000;
+    
+    if (diff < 65) return "מחובר/ת";
+    
+    const mins = Math.floor(diff / 60);
+    if (mins < 60) return `נראה/תה לפני ${mins} דק'`;
+    
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `נראה/תה לפני ${hours} שע'`;
+    
+    return "לא מחובר/ת";
+  };
+
   return (
     <div className="flex flex-col h-[100dvh] bg-[#050505]"
       style={{ background: "radial-gradient(circle at 50% 0%, #1a0b14 0%, #050505 100%)" }}>
       {/* Header */}
-      <div className="glass border-b border-white/5 px-4 pt-safe pb-3 flex items-center gap-3 backdrop-blur-2xl z-20"
+      <div className="glass border-b border-white/5 px-4 pt-safe pb-3 flex items-center gap-3 backdrop-blur-3xl z-20"
         style={{ background: "rgba(10,10,10,0.6)", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
         <button onClick={() => navigate(createPageUrl("MyMatches"))} className="p-2 hover:bg-white/8 rounded-full transition-all active:scale-90">
           <ArrowRight className="w-5 h-5 text-white" />
         </button>
-        <button onClick={() => setShowImageModal(true)} className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 active:opacity-70 transition-opacity" style={{ border: "2px solid #D4AF37" }}>
-          <img src={otherProfile?.photo_url} alt="" className="w-full h-full object-cover" />
-        </button>
-        <div className="flex-1 min-w-0">
-          <h2 className="text-white font-black text-lg leading-none">{otherProfile?.first_name}</h2>
-          <p className="text-white/35 text-[10px] tracking-widest uppercase mt-0.5">ONLINE</p>
+        
+        <div className="flex items-center gap-3 flex-1">
+          <div className="relative">
+            <button onClick={() => setShowImageModal(true)} className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 active:opacity-70 transition-all border-2 border-white/10">
+              <img src={otherProfile?.photo_url} alt="" className="w-full h-full object-cover" />
+            </button>
+            {getPresenceStatus() === "מחובר/ת" && (
+              <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-[3px] border-[#0A0A0A] shadow-[0_0_12px_rgba(34,197,94,0.6)]" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-white font-black text-base leading-none tracking-tight">{otherProfile?.first_name}</h2>
+            <p className={`text-[9px] font-bold mt-1 uppercase tracking-[0.1em] ${getPresenceStatus() === "מחובר/ת" ? "text-green-400" : "text-white/25"}`}>
+              {getPresenceStatus()}
+            </p>
+          </div>
         </div>
-        <button onClick={handleSendDrink} disabled={drinkSent} className={`h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all active:scale-90 ${drinkSent ? "bg-[#252525] text-white/20" : "bg-[#D4AF37]/15 text-[#D4AF37]"}`}>
+
+        <button onClick={handleSendDrink} disabled={drinkSent} className={`h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all active:scale-90 ${drinkSent ? "bg-[#252525] text-white/20" : "bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/20 shadow-[0_0_15px_rgba(212,175,55,0.1)]"}`}>
           <Wine className="w-4 h-4" />
         </button>
       </div>

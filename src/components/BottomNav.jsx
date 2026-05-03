@@ -51,7 +51,17 @@ export default function BottomNav() {
         loadUnreadCount();
       }
     });
-    return unsub;
+
+    // Global presence heartbeat
+    base44.entities.Profile.updatePresence(me.id);
+    const interval = setInterval(() => {
+      base44.entities.Profile.updatePresence(me.id);
+    }, 30000);
+
+    return () => {
+      unsub();
+      clearInterval(interval);
+    };
   };
 
   return (
