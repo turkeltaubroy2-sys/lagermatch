@@ -21,12 +21,30 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    
     pushManager.registerServiceWorker();
     checkExistingProfile();
+
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   const checkExistingProfile = async () => {
     try {
@@ -441,6 +459,17 @@ export default function Home() {
                 </div>
                 <p className="text-[11px] text-white/50 text-center font-bold italic mt-3">* ההתקנה ואישור ההתראות אינם חובה, אך מומלצים לחוויה מלאה.</p>
               </div>
+
+              {deferredPrompt && (
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  onClick={handleInstallClick}
+                  className="w-full bg-white/10 border border-white/20 text-[#D4AF37] font-black py-4 rounded-2xl mb-4 tracking-[0.1em] uppercase text-xs shadow-lg"
+                >
+                  ✦ התקנת האפליקציה (Android) ✦
+                </motion.button>
+              )}
 
               <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>
                 <motion.button
