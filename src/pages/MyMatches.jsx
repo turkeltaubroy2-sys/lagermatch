@@ -50,10 +50,10 @@ export default function MyMatches() {
     setMyProfile(me);
 
     // Fetch matches as both user1 and user2 in parallel, plus my messages
-    const [matches1, matches2, myMessages] = await Promise.all([
+    const [matches1, matches2, unreadMessages] = await Promise.all([
       base44.entities.Match.filter({ user1_id: me.id }),
       base44.entities.Match.filter({ user2_id: me.id }),
-      base44.entities.Message.filter({ receiver_id: me.id }),
+      base44.entities.Message.filter({ receiver_id: me.id, is_read: false }),
     ]);
 
     const myMatches = [...matches1, ...matches2];
@@ -83,7 +83,7 @@ export default function MyMatches() {
 
     // Count unread per sender from already-fetched messages
     const unreadMap = {};
-    myMessages.forEach(msg => {
+    unreadMessages.forEach(msg => {
       unreadMap[msg.sender_id] = (unreadMap[msg.sender_id] || 0) + 1;
     });
 

@@ -127,6 +127,7 @@ export const db = {
             if (filters.id) q = q.eq('id', filters.id);
             if (filters.sender_id) q = q.eq('sender_id', filters.sender_id);
             if (filters.receiver_id) q = q.eq('receiver_id', filters.receiver_id);
+            if (filters.is_read !== undefined) q = q.eq('is_read', filters.is_read);
             const { data, error } = await q.order('created_at', { ascending: true });
             if (error) { console.error('Message.filter error:', error); return []; }
             return (data || []).map(mapMessage);
@@ -140,6 +141,16 @@ export const db = {
             const { error } = await supabase.from('messages').delete().eq('id', id);
             if (error) throw error;
             return {};
+        },
+        async markAsRead(receiverId, senderId) {
+            const { error } = await supabase
+                .from('messages')
+                .update({ is_read: true })
+                .eq('receiver_id', receiverId)
+                .eq('sender_id', senderId)
+                .eq('is_read', false);
+            if (error) console.error('Error marking messages as read:', error);
+            return { error };
         },
         subscribe(callback) {
             const channel = supabase.channel(`messages-realtime-${Math.random()}`)
@@ -181,5 +192,17 @@ export async function uploadFile(file) {
     });
     if (error) throw error;
     const { data } = supabase.storage.from('photos').getPublicUrl(path);
+    return data.publicUrl;
+}
+
+export async function uploadAudio(blob) {
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.webm`;
+    const { error } = await supabase.storage.from('audio').upload(path, blob, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: 'audio/webm',
+    });
+    if (error) throw error;
+    const { data } = supabase.storage.from('audio').getPublicUrl(path);
     return data.publicUrl;
 }

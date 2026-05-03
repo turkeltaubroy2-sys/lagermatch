@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Send, Wine, Check, CheckCheck } from "lucide-react";
+import { ArrowRight, Send, Wine, Check, CheckCheck, Mic, Square, Smile, Play, Pause } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function Chat() {
@@ -22,11 +22,20 @@ export default function Chat() {
   const [pendingDrink, setPendingDrink] = useState(null);
   const [sending, setSending] = useState(false);
 
+  // Voice recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const myProfileRef = useRef(null);
   const otherProfileRef = useRef(null);
+  const timerRef = useRef(null);
+
+  const COMMON_EMOJIS = ["❤️", "🥂", "🔥", "✨", "😍", "😂", "😉", "🍸", "💃", "🕺", "🌹", "💎", "💍", "🍫", "🍓", "🎈"];
 
   // Smooth scroll to bottom
   const scrollToBottom = useCallback((behavior = "smooth") => {
@@ -38,6 +47,18 @@ export default function Chat() {
   useEffect(() => {
     loadChat();
   }, []);
+
+  // Mark messages as read when entering or receiving
+  const markMessagesAsRead = useCallback(async () => {
+    if (!myProfile || !otherProfile) return;
+    await base44.entities.Message.markAsRead(myProfile.id, otherProfile.id);
+  }, [myProfile, otherProfile]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      markMessagesAsRead();
+    }
+  }, [messages.length, markMessagesAsRead]);
 
   // Real-time message subscription
   useEffect(() => {
@@ -55,7 +76,9 @@ export default function Chat() {
           setMessages(prev => {
             // Replace temp message if it exists, or add new
             const tempIdx = prev.findIndex(
-              m => m.id?.startsWith("temp_") && m.content === msg.content && m.sender_id === msg.sender_id
+              m => m.id?.startsWith("temp_") && 
+                  (m.content === msg.content || m.audio_url === msg.audio_url) && 
+                  m.sender_id === msg.sender_id
             );
             if (tempIdx !== -1) {
               const updated = [...prev];
@@ -63,6 +86,10 @@ export default function Chat() {
               return updated;
             }
             if (prev.find(m => m.id === msg.id)) return prev;
+            // If message is from other person, mark it as read
+            if (msg.sender_id === otherProfileRef.current?.id) {
+              markMessagesAsRead();
+            }
             return [...prev, msg];
           });
           scrollToBottom();
@@ -73,21 +100,71 @@ export default function Chat() {
     return unsub;
   }, [myProfile, otherProfile, scrollToBottom]);
 
-  // Scroll when messages change
-  useEffect(() => {
-    if (messages.length > 0) {
-      scrollToBottom(messages.length === 1 ? "instant" : "smooth");
-    }
-  }, [messages.length]);
+  // Voice recording logic
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks = [];
 
-  // Handle keyboard on iOS - scroll to bottom when keyboard opens
-  useEffect(() => {
-    const handleResize = () => {
-      scrollToBottom("instant");
-    };
-    window.visualViewport?.addEventListener("resize", handleResize);
-    return () => window.visualViewport?.removeEventListener("resize", handleResize);
-  }, [scrollToBottom]);
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = async () => {
+        const blob = new Blob(chunks, { type: "audio/webm" });
+        stream.getTracks().forEach(t => t.stop());
+        handleSendVoice(blob);
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+      setRecordingTime(0);
+      timerRef.current = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+    } catch (err) {
+      console.error("Mic error:", err);
+      toast({ title: "שגיאה בגישה למיקרופון", variant: "destructive" });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
+    setIsRecording(false);
+    clearInterval(timerRef.current);
+  };
+
+  const handleSendVoice = async (blob) => {
+    if (!myProfile || !otherProfile) return;
+
+    // Optimistic UI for voice
+    const tempId = `temp_voice_${Date.now()}`;
+    const localUrl = URL.createObjectURL(blob);
+    setMessages(prev => [...prev, {
+      id: tempId,
+      sender_id: myProfile.id,
+      receiver_id: otherProfile.id,
+      type: "voice",
+      audio_url: localUrl,
+      created_date: new Date().toISOString(),
+      _temp: true
+    }]);
+
+    try {
+      const { file_url } = await base44.integrations.Core.UploadAudio({ blob });
+      await base44.entities.Message.create({
+        sender_id: myProfile.id,
+        receiver_id: otherProfile.id,
+        type: "voice",
+        audio_url: file_url,
+      });
+    } catch (err) {
+      console.error("Voice send failed:", err);
+      setMessages(prev => prev.filter(m => m.id !== tempId));
+      toast({ title: "שליחת הודעה קולית נכשלה", variant: "destructive" });
+    }
+  };
 
   const loadChat = async () => {
     const deviceId = localStorage.getItem("wedding_device_id");
@@ -147,7 +224,7 @@ export default function Chat() {
     if (!content || !myProfile || !otherProfile || sending) return;
 
     setNewMessage("");
-    setSending(false); // allow rapid sending
+    setShowEmojiPicker(false);
 
     // Optimistic update instantly
     const tempId = `temp_${Date.now()}_${Math.random()}`;
@@ -156,39 +233,25 @@ export default function Chat() {
       sender_id: myProfile.id,
       receiver_id: otherProfile.id,
       content,
+      type: "text",
       created_date: new Date().toISOString(),
       _temp: true,
     };
     setMessages(prev => [...prev, tempMsg]);
 
-    // Save in background (don't await - subscription will update)
+    // Save in background
     base44.entities.Message.create({
       sender_id: myProfile.id,
       receiver_id: otherProfile.id,
       content,
+      type: "text"
     }).catch(() => {
-      // On error, remove temp and restore input
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setNewMessage(content);
     });
 
-    // Keep focus on input
     inputRef.current?.focus();
   }, [newMessage, myProfile, otherProfile, sending]);
-
-  // Subscribe to drink requests
-  useEffect(() => {
-    if (!myProfile || !otherProfile) return;
-    const unsub = base44.entities.Drink.subscribe((event) => {
-      if (event.type === "create") {
-        const drink = event.data;
-        if (drink.sender_id === otherProfile.id && drink.receiver_id === myProfile.id) {
-          setPendingDrink(drink);
-        }
-      }
-    });
-    return unsub;
-  }, [myProfile, otherProfile]);
 
   const handleSendDrink = async () => {
     if (!myProfile || !otherProfile || drinkSent) return;
@@ -210,267 +273,120 @@ export default function Chat() {
     }
   };
 
-  // Group messages by time proximity
-  const groupedMessages = messages.reduce((groups, msg, i) => {
-    const prev = messages[i - 1];
-    const showAvatar = !prev || prev.sender_id !== msg.sender_id;
-    groups.push({ ...msg, showAvatar });
-    return groups;
-  }, []);
-
   if (loading) {
     return (
       <div className="h-[100dvh] bg-[#0F0F0F] flex flex-col max-w-md mx-auto">
-        {/* Skeleton header */}
-        <div className="bg-[#1A1A1A] border-b border-[#333] px-4 py-3 flex items-center gap-3" style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}>
-          <div className="w-9 h-9 rounded-full bg-[#252525] animate-pulse" />
-          <div className="w-12 h-12 rounded-full bg-[#252525] animate-pulse" />
+        <div className="bg-[#111]/95 backdrop-blur-xl border-b border-white/8 px-4 py-3 flex items-center gap-3" style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}>
+          <div className="w-10 h-10 rounded-full bg-[#252525] animate-pulse" />
           <div className="flex-1 space-y-2">
             <div className="h-4 w-28 bg-[#252525] rounded-full animate-pulse" />
             <div className="h-3 w-16 bg-[#252525] rounded-full animate-pulse" />
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <motion.div
-            animate={{ scale: [1, 1.15, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-            className="text-4xl"
-          >
-            💬
-          </motion.div>
+          <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-4xl">💬</motion.div>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      className="flex flex-col max-w-md mx-auto bg-[#0F0F0F]"
-      style={{ height: "100dvh" }}
-    >
+    <div className="flex flex-col max-w-md mx-auto bg-[#0F0F0F]" style={{ height: "100dvh" }}>
       {/* Header */}
-      <div
-        className="bg-[#111]/95 backdrop-blur-xl border-b border-white/8 px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-[0_2px_20px_rgba(0,0,0,0.4)]"
-        style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}
-      >
-        <button
-          onClick={() => navigate(createPageUrl("MyMatches"))}
-          className="p-2 hover:bg-white/8 rounded-full transition-all active:scale-90"
-        >
+      <div className="bg-[#111]/95 backdrop-blur-xl border-b border-white/8 px-4 py-3 flex items-center gap-3 flex-shrink-0 z-20" style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}>
+        <button onClick={() => navigate(createPageUrl("MyMatches"))} className="p-2 hover:bg-white/8 rounded-full transition-all active:scale-90">
           <ArrowRight className="w-5 h-5 text-white" />
         </button>
-        <button
-          onClick={() => setShowImageModal(true)}
-          className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 active:opacity-70 transition-opacity"
-          style={{ border: "2px solid #D4AF37", boxShadow: "0 0 12px rgba(212,175,55,0.3)" }}
-        >
-          <img src={otherProfile?.photo_url} alt="" className="w-full h-full object-cover" draggable={false} />
+        <button onClick={() => setShowImageModal(true)} className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 active:opacity-70 transition-opacity" style={{ border: "2px solid #D4AF37" }}>
+          <img src={otherProfile?.photo_url} alt="" className="w-full h-full object-cover" />
         </button>
         <div className="flex-1 min-w-0">
           <h2 className="text-white font-black text-lg leading-none">{otherProfile?.first_name}</h2>
-          <p className="text-white/35 text-[10px] tracking-widest uppercase mt-0.5">
-            {otherProfile?.age} ✦{" "}
-            {otherProfile?.location === "tel_aviv" ? "Tel Aviv" : otherProfile?.location === "south" ? "South" : "North"}
-          </p>
+          <p className="text-white/35 text-[10px] tracking-widest uppercase mt-0.5">ONLINE</p>
         </div>
-        {/* Send drink button in header */}
-        <button
-          onClick={handleSendDrink}
-          disabled={drinkSent}
-          className={`h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all active:scale-90 ${drinkSent ? "bg-[#252525] text-white/20" : "bg-[#D4AF37]/15 text-[#D4AF37] hover:bg-[#D4AF37]/25"
-            }`}
-        >
+        <button onClick={handleSendDrink} disabled={drinkSent} className={`h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all active:scale-90 ${drinkSent ? "bg-[#252525] text-white/20" : "bg-[#D4AF37]/15 text-[#D4AF37]"}`}>
           <Wine className="w-4 h-4" />
         </button>
       </div>
 
       {/* Messages */}
-      <div
-        ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto overscroll-contain px-4 py-4"
-        style={{ scrollbarWidth: "none" }}
-      >
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5" style={{ scrollbarWidth: "none" }}>
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full pb-10">
-            <motion.div
-              className="text-5xl mb-4"
-              animate={{ scale: [1, 1.12, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
-            >
-              💬
-            </motion.div>
-            <p className="text-white/50 font-semibold text-base mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-              {otherProfile?.first_name} מחכה לך ✦
-            </p>
-            <p className="text-white/25 text-sm text-center">שברו את הקרח עם משהו מצחיק 🥂</p>
+            <p className="text-white/20 text-sm">התחילו לדבר עם {otherProfile?.first_name} 🥂</p>
           </div>
         ) : (
-          <>
-            {groupedMessages.map((msg, i) => {
-              const isMe = msg.sender_id === myProfile?.id;
-              const isTemp = msg._temp;
-              const showTime =
-                i === 0 ||
-                new Date(msg.created_date) - new Date(groupedMessages[i - 1]?.created_date) > 5 * 60 * 1000;
-
-              return (
-                <React.Fragment key={msg.id}>
-                  {showTime && (
-                    <div className="flex justify-center my-3">
-                      <span className="text-white/20 text-[10px] font-medium tracking-wider bg-white/5 px-3 py-1 rounded-full">
-                        {formatTime(msg.created_date)}
-                      </span>
-                    </div>
+          messages.map((msg, i) => {
+            const isMe = msg.sender_id === myProfile?.id;
+            const isTemp = msg._temp;
+            return (
+              <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[80%] px-4 py-2.5 rounded-2xl ${isMe ? "bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] rounded-tr-sm" : "bg-[#1E1E1E] text-white rounded-tl-sm"}`}>
+                  {msg.type === "voice" ? (
+                    <VoicePlayer url={msg.audio_url} isMe={isMe} />
+                  ) : (
+                    <p className="text-sm leading-relaxed break-words">{msg.content}</p>
                   )}
-                  <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                    animate={{ opacity: isTemp ? 0.75 : 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.18, ease: "easeOut" }}
-                    className={`flex mb-1 ${isMe ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`max-w-[78%] px-4 py-2.5 ${isMe
-                          ? "rounded-[20px] rounded-tr-[6px]"
-                          : "rounded-[20px] rounded-tl-[6px]"
-                        }`}
-                      style={
-                        isMe
-                          ? {
-                            background: "linear-gradient(135deg, #B8941F, #D4AF37)",
-                            color: "#0F0F0F",
-                            boxShadow: "0 2px 12px rgba(212,175,55,0.25)",
-                          }
-                          : {
-                            background: "#1E1E1E",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                            color: "white",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                          }
-                      }
-                    >
-                      <p className="text-sm leading-relaxed break-words">{msg.content}</p>
-                      {isMe && (
-                        <div className="flex justify-end mt-0.5">
-                          {isTemp ? (
-                            <Check className="w-3 h-3 opacity-50" />
-                          ) : (
-                            <CheckCheck className="w-3 h-3 opacity-60" />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                </React.Fragment>
-              );
-            })}
-            <div ref={messagesEndRef} style={{ height: 1 }} />
-          </>
+                  <div className={`flex items-center gap-1 mt-1 ${isMe ? "justify-end" : "justify-start"}`}>
+                    <span className={`text-[9px] ${isMe ? "text-black/50" : "text-white/20"}`}>{formatTime(msg.created_date)}</span>
+                    {isMe && (msg.is_read ? <CheckCheck className="w-3 h-3 text-black/40" /> : <Check className="w-3 h-3 text-black/30" />)}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Pending drink notification */}
-      <AnimatePresence>
-        {pendingDrink && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="mx-4 mb-2 rounded-2xl px-4 py-3 flex items-center gap-3 flex-shrink-0"
-            style={{
-              background: "linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.06))",
-              border: "1px solid rgba(212,175,55,0.35)",
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            <span className="text-xl flex-shrink-0">🍹</span>
-            <p className="flex-1 text-white text-sm font-medium leading-tight">
-              {otherProfile?.first_name} שלח/ה לך דרינק!
-            </p>
-            <button
-              onClick={() => handleDrinkResponse(true)}
-              className="font-bold text-xs px-3 py-2 rounded-xl whitespace-nowrap active:scale-95 transition-transform flex-shrink-0"
-              style={{ background: "linear-gradient(135deg, #B8941F, #D4AF37)", color: "#0F0F0F" }}
-            >
-              יאאלה! 🍻
-            </button>
-            <button
-              onClick={() => handleDrinkResponse(false)}
-              className="text-white/35 text-xs px-2 py-2 whitespace-nowrap flex-shrink-0"
-            >
-              לא
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Input area */}
-      <div
-        className="bg-[#111]/95 backdrop-blur-xl border-t border-white/8 px-4 py-3 flex items-center gap-2 flex-shrink-0"
-        style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
-      >
-        <input
-          ref={inputRef}
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSend();
-            }
-          }}
-          placeholder={`הודעה ל${otherProfile?.first_name || ""}...`}
-          className="flex-1 rounded-full px-5 h-11 text-sm text-white placeholder:text-white/25 outline-none transition-all"
-          style={{
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-          autoComplete="off"
-          autoCorrect="off"
-          inputMode="text"
-          enterKeyHint="send"
-        />
-        <motion.button
-          whileTap={{ scale: 0.88 }}
-          onClick={handleSend}
-          disabled={!newMessage.trim()}
-          className="h-11 w-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
-          style={{
-            background: newMessage.trim()
-              ? "linear-gradient(135deg, #B8941F, #D4AF37)"
-              : "rgba(255,255,255,0.06)",
-            opacity: newMessage.trim() ? 1 : 0.4,
-          }}
-        >
-          <Send className="w-4 h-4" style={{ color: newMessage.trim() ? "#0F0F0F" : "white" }} />
-        </motion.button>
+      <div className="bg-[#111]/95 backdrop-blur-xl border-t border-white/8 px-4 py-3 space-y-2" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+        <AnimatePresence>
+          {showEmojiPicker && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="grid grid-cols-8 gap-2 pb-2">
+              {COMMON_EMOJIS.map(emoji => (
+                <button key={emoji} onClick={() => setNewMessage(prev => prev + emoji)} className="text-2xl p-1 active:scale-90 transition-transform">{emoji}</button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        <div className="flex items-center gap-2">
+          <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className={`p-2 rounded-full transition-colors ${showEmojiPicker ? "text-[#D4AF37] bg-[#D4AF37]/10" : "text-white/40 hover:text-white"}`}>
+            <Smile className="w-6 h-6" />
+          </button>
+          
+          <div className="flex-1 relative flex items-center">
+            {isRecording ? (
+              <div className="flex-1 h-11 bg-red-500/10 border border-red-500/20 rounded-full px-5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 rounded-full bg-red-500" />
+                  <span className="text-red-500 font-bold text-sm tracking-widest">{Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}</span>
+                </div>
+                <button onClick={stopRecording} className="text-red-500 font-black text-xs uppercase tracking-tighter">עצור ושלח</button>
+              </div>
+            ) : (
+              <input ref={inputRef} value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={`הודעה...`} className="flex-1 rounded-full px-5 h-11 text-sm text-white bg-white/5 border border-white/10 outline-none" />
+            )}
+          </div>
+
+          {newMessage.trim() ? (
+            <button onClick={handleSend} className="h-11 w-11 rounded-full bg-gradient-to-r from-[#B8941F] to-[#D4AF37] flex items-center justify-center active:scale-90 transition-transform">
+              <Send className="w-5 h-5 text-[#0F0F0F]" />
+            </button>
+          ) : (
+            <button onClick={isRecording ? stopRecording : startRecording} className={`h-11 w-11 rounded-full flex items-center justify-center active:scale-90 transition-transform ${isRecording ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]" : "bg-white/5 text-white/40"}`}>
+              {isRecording ? <Square className="w-5 h-5 text-white fill-white" /> : <Mic className="w-5 h-5" />}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Image Modal */}
       <AnimatePresence>
         {showImageModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowImageModal(false)}
-            className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-6 backdrop-blur-sm"
-          >
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              onClick={(e) => e.stopPropagation()}
-              className="text-center"
-            >
-              <img
-                src={otherProfile?.photo_url}
-                alt={otherProfile?.first_name}
-                className="max-w-[85vw] max-h-[75vh] rounded-3xl object-cover shadow-2xl"
-                draggable={false}
-              />
-              <p className="text-white/60 text-sm mt-3 font-medium">{otherProfile?.first_name}</p>
-            </motion.div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowImageModal(false)} className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6">
+            <motion.img initial={{ scale: 0.9 }} animate={{ scale: 1 }} src={otherProfile?.photo_url} className="max-w-full max-h-[80vh] rounded-2xl shadow-2xl" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -478,12 +394,42 @@ export default function Chat() {
   );
 }
 
+function VoicePlayer({ url, isMe }) {
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef(new Audio(url));
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    audio.onended = () => setPlaying(false);
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, []);
+
+  const toggle = () => {
+    if (playing) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setPlaying(!playing);
+  };
+
+  return (
+    <div className="flex items-center gap-3 py-1 min-w-[120px]">
+      <button onClick={toggle} className={`h-8 w-8 rounded-full flex items-center justify-center ${isMe ? "bg-black/10" : "bg-white/10"}`}>
+        {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+      </button>
+      <div className="flex-1 flex flex-col gap-1">
+        <div className="h-1 rounded-full bg-current opacity-20" />
+        <span className="text-[10px] font-bold opacity-60 uppercase">{playing ? "מנגן..." : "הודעה קולית"}</span>
+      </div>
+    </div>
+  );
+}
+
 function formatTime(dateStr) {
   const date = new Date(dateStr);
-  const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-  if (isToday) {
-    return date.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
-  }
-  return date.toLocaleDateString("he-IL", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  return date.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
 }

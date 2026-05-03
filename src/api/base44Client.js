@@ -1,5 +1,5 @@
 // Real base44Client — all calls backed by Supabase
-import { db, uploadFile } from '@/lib/supabase';
+import { db, uploadFile, uploadAudio } from '@/lib/supabase';
 
 export const base44 = {
   auth: {
@@ -21,6 +21,10 @@ export const base44 = {
         const url = await uploadFile(file);
         return { file_url: url };
       },
+      UploadAudio: async ({ blob }) => {
+        const url = await uploadAudio(blob);
+        return { file_url: url };
+      }
     },
   },
   appLogs: {

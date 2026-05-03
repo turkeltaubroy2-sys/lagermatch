@@ -143,6 +143,17 @@ export default function CreateProfile() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
+    
+    // Check for Supabase config
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      toast({ 
+        title: "שגיאת הגדרה", 
+        description: "חסרים נתוני התחברות ל-Supabase. בדקו את הגדרות ה-Environment Variables.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
     setSaving(true);
     try {
       const deviceId = getDeviceId();

@@ -65,12 +65,15 @@ create table if not exists messages (
   id uuid primary key default gen_random_uuid(),
   sender_id uuid references profiles(id) on delete cascade,
   receiver_id uuid references profiles(id) on delete cascade,
-  content text not null,
+  content text,
+  type text default 'text', -- 'text' or 'voice'
+  audio_url text,
+  is_read boolean default false,
   created_at timestamptz default now()
 );
 
 create index if not exists messages_conversation_idx on messages(sender_id, receiver_id);
-create index if not exists messages_receiver_idx on messages(receiver_id);
+create index if not exists messages_receiver_unread_idx on messages(receiver_id, is_read);
 
 -- ============================================================
 -- SWIPES (for admin stats tracking)
@@ -121,19 +124,24 @@ alter publication supabase_realtime add table messages;
 alter publication supabase_realtime add table matches;
 
 -- ============================================================
--- STORAGE BUCKET for photos
+-- STORAGE BUCKETS
 -- ============================================================
+-- 1. Photos
 insert into storage.buckets (id, name, public) values ('photos', 'photos', true)
 on conflict do nothing;
 
 drop policy if exists "allow public photo uploads" on storage.objects;
-create policy "allow public photo uploads" on storage.objects
-  for insert with check (bucket_id = 'photos');
-
+create policy "allow public photo uploads" on storage.objects for insert with check (bucket_id = 'photos');
 drop policy if exists "allow public photo reads" on storage.objects;
-create policy "allow public photo reads" on storage.objects
-  for select using (bucket_id = 'photos');
-
+create policy "allow public photo reads" on storage.objects for select using (bucket_id = 'photos');
 drop policy if exists "allow public photo deletes" on storage.objects;
-create policy "allow public photo deletes" on storage.objects
-  for delete using (bucket_id = 'photos');
+create policy "allow public photo deletes" on storage.objects for delete using (bucket_id = 'photos');
+
+-- 2. Audio (for voice messages)
+insert into storage.buckets (id, name, public) values ('audio', 'audio', true)
+on conflict do nothing;
+
+drop policy if exists "allow public audio uploads" on storage.objects;
+create policy "allow public audio uploads" on storage.objects for insert with check (bucket_id = 'audio');
+drop policy if exists "allow public audio reads" on storage.objects;
+create policy "allow public audio reads" on storage.objects for select using (bucket_id = 'audio');
