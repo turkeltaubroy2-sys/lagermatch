@@ -272,7 +272,7 @@ export default function CreateProfile() {
 
           <div className="glass rounded-[2rem] p-6 space-y-4">
             <Input
-              placeholder="משקה אהוב (אופציונלי)"
+              placeholder="משקה אהוב - מה אתם אוהבים לשתות?!"
               value={form.favorite_drink}
               onChange={(e) => setForm({ ...form, favorite_drink: e.target.value })}
               className="h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all"
