@@ -49,6 +49,7 @@ export default function Swipe() {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [returnNotifs, setReturnNotifs] = useState([]); // drinks received since last visit
   const [showReturnPanel, setShowReturnPanel] = useState(false);
+  const [isBubblePopupOpen, setIsBubblePopupOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -445,7 +446,6 @@ export default function Swipe() {
   }
 
   const currentProfile = filteredProfiles[0];
-  const [isBubblePopupOpen, setIsBubblePopupOpen] = useState(false);
 
   return (
     <div className="min-h-[100dvh] bg-[#050505] flex flex-col max-w-md mx-auto pb-20 relative overflow-hidden"
