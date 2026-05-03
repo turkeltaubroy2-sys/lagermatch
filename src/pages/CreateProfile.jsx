@@ -183,7 +183,7 @@ export default function CreateProfile() {
 
         {/* Photo upload */}
         <div className="mb-10">
-          <p className="text-white/80 font-bold text-[9px] text-center mb-4 tracking-tight uppercase whitespace-nowrap">✦ תמונות — חובה לפחות אחת - תראו לנו איך השקעתםם ✦</p>
+          <p className="text-white/80 font-bold text-[11px] text-center mb-4 tracking-tight uppercase whitespace-nowrap">✦ תמונות — חובה לפחות אחת - תראו לנו איך השקעתםם ✦</p>
           <div className="grid grid-cols-3 gap-3">
             {photos.map((p, i) => (
               <div key={i} className="relative aspect-square">
