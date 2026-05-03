@@ -183,7 +183,7 @@ export default function CreateProfile() {
 
         {/* Photo upload */}
         <div className="mb-10">
-          <p className="text-white/40 text-[10px] text-center mb-4 tracking-[0.2em] uppercase">✦ תמונות — חובה לפחות אחת - תראו לנו איך השקעתםם ✦</p>
+          <p className="text-white/80 font-bold text-[10px] text-center mb-4 tracking-[0.2em] uppercase">✦ תמונות — חובה לפחות אחת - תראו לנו איך השקעתםם ✦</p>
           <div className="grid grid-cols-3 gap-3">
             {photos.map((p, i) => (
               <div key={i} className="relative aspect-square">
@@ -196,7 +196,7 @@ export default function CreateProfile() {
               <motion.button whileTap={{ scale: 0.95 }} onClick={() => openPhotoOptions(null)}
                 className={`aspect-square rounded-[1.5rem] border-2 border-dashed ${errors.photo ? "border-red-500/50" : "border-[#D4AF37]/20"} glass flex flex-col items-center justify-center hover:border-[#D4AF37]/50 transition-all`}>
                 <Camera className="w-6 h-6 text-[#D4AF37]/60 mb-1" />
-                <span className="text-[9px] text-[#D4AF37]/40 uppercase tracking-widest font-bold">צלם</span>
+                <span className="text-[9px] text-[#D4AF37]/80 uppercase tracking-widest font-bold">צלם</span>
               </motion.button>
             )}
           </div>
@@ -213,14 +213,14 @@ export default function CreateProfile() {
                 placeholder="שם פרטי"
                 value={form.first_name}
                 onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-                className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/10 transition-all ${errors.first_name ? "border-red-500/30" : ""}`}
+                className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all ${errors.first_name ? "border-red-500/30" : ""}`}
               />
               <Input
                 type="number"
                 placeholder="גיל"
                 value={form.age}
                 onChange={(e) => setForm({ ...form, age: e.target.value })}
-                className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/10 transition-all ${errors.age ? "border-red-500/30" : ""}`}
+                className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all ${errors.age ? "border-red-500/30" : ""}`}
                 inputMode="numeric"
               />
               <button
@@ -228,7 +228,7 @@ export default function CreateProfile() {
                 onClick={() => setShowLocationSheet(true)}
                 className={`w-full h-14 glass border-transparent rounded-[1.2rem] text-center transition-all ${errors.location ? "border-red-500/30" : ""}`}
               >
-                <span className={`text-sm ${form.location ? "text-white" : "text-white/10"}`}>
+                <span className={`text-sm ${form.location ? "text-white font-bold" : "text-white/50 font-medium"}`}>
                   {form.location ? LOCATIONS.find(l => l.value === form.location)?.label : "בחר איזור מגורים"}
                 </span>
                 <ChevronDown className="inline-block w-3 h-3 opacity-30 ml-2" />
@@ -244,21 +244,21 @@ export default function CreateProfile() {
                   key={opt.v}
                   type="button"
                   onClick={() => setForm({ ...form, gender: opt.v })}
-                  className={`h-12 rounded-xl text-xs font-bold transition-all ${form.gender === opt.v ? "bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white" : "glass border-transparent text-white/20"}`}
+                  className={`h-12 rounded-xl text-xs font-bold transition-all ${form.gender === opt.v ? "bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white" : "glass border-transparent text-white/50"}`}
                 >
                   {opt.l}
                 </button>
               ))}
             </div>
             <div>
-              <p className="text-white/60 text-[11px] text-center mb-3">מי תרצו להכיר?</p>
+              <p className="text-white/90 font-bold text-[11px] text-center mb-3">מי תרצו להכיר?</p>
               <div className="grid grid-cols-3 gap-2">
                 {[{ v: 'women', l: 'נשים' }, { v: 'men', l: 'גברים' }, { v: 'all', l: 'כולם 😉' }].map(opt => (
                   <button
                     key={opt.v}
                     type="button"
                     onClick={() => setForm({ ...form, interested_in: opt.v })}
-                    className={`h-10 rounded-xl text-[10px] font-bold transition-all ${form.interested_in === opt.v ? "bg-white/10 text-white" : "glass border-transparent text-white/10"}`}
+                    className={`h-10 rounded-xl text-[10px] font-bold transition-all ${form.interested_in === opt.v ? "bg-white/10 text-white" : "glass border-transparent text-white/50"}`}
                   >
                     {opt.l}
                   </button>
@@ -272,13 +272,13 @@ export default function CreateProfile() {
               placeholder="משקה אהוב (אופציונלי)"
               value={form.favorite_drink}
               onChange={(e) => setForm({ ...form, favorite_drink: e.target.value })}
-              className="h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/10 transition-all"
+              className="h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all"
             />
             <Textarea
               placeholder="משהו מצחיק עליך..."
               value={form.funny_fact}
               onChange={(e) => setForm({ ...form, funny_fact: e.target.value })}
-              className="glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-right p-4 text-sm min-h-[100px] placeholder:text-white/10 resize-none"
+              className="glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-right p-4 text-sm min-h-[100px] placeholder:text-white/40 text-white font-medium resize-none"
             />
           </div>
 
