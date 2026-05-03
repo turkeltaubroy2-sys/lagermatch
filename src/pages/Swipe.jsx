@@ -382,7 +382,7 @@ export default function Swipe() {
     const handleTouchMove = (e) => {
       if (!triggered && !refreshing) {
         const currentY = e.touches[0].clientY;
-        if (currentY - startY > 80) {
+        if (currentY - startY > 150) {
           triggered = true;
           handleRefresh();
         }
@@ -548,7 +548,7 @@ export default function Swipe() {
             >
               🥂
             </motion.div>
-            <h2 className="text-xl font-bold text-white/80 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>אין תוצאות ✦</h2>
+            <h2 className="text-xl font-bold text-white/90 mb-2" style={{ fontFamily: "var(--font-display)", letterSpacing: "0.05em" }}>✦ אין תוצאות ✦</h2>
             <p className="text-white/40 text-sm text-center">
               נסה/י לשנות את הפילטרים 🔍
             </p>

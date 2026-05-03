@@ -134,7 +134,7 @@ export default function MyMatches() {
     const handleTouchMove = (e) => {
       if (!triggered && !refreshing) {
         const currentY = e.touches[0].clientY;
-        if (currentY - startY > 80) {
+        if (currentY - startY > 150) {
           triggered = true;
           handleRefresh();
         }
@@ -167,7 +167,7 @@ export default function MyMatches() {
     >
       {/* Pull to refresh indicator */}
       {refreshing && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold shadow-xl">
           <RefreshCw className="w-4 h-4 inline ml-1 animate-spin" />
           מעדכן...
         </div>
@@ -176,7 +176,7 @@ export default function MyMatches() {
       {/* Header */}
       <div className="flex flex-col items-center mb-8 pt-6">
         <h1
-          className="mb-1 shimmer-gold"
+          className="mb-1 shimmer-gold text-center"
           style={{
             fontFamily: "var(--font-display)",
             fontSize: "2.2rem",
@@ -200,8 +200,8 @@ export default function MyMatches() {
           >
             💔
           </motion.div>
-          <h2 className="text-xl font-bold text-white/80 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>עדיין אין התאמות ✦</h2>
-          <p className="text-white/40 text-sm text-center mb-6">
+          <h2 className="text-xl font-bold text-white/90 mb-2" style={{ fontFamily: "var(--font-display)", letterSpacing: "0.05em" }}>✦ עדיין אין התאמות ✦</h2>
+          <p className="text-white/40 text-sm text-center mb-6" style={{ fontFamily: "var(--font-body)" }}>
             המשיכו להחליק — הלילה ארוך 🥂
           </p>
         </div>
