@@ -77,7 +77,10 @@ export default function Chat() {
             // Replace temp message if it exists, or add new
             const tempIdx = prev.findIndex(
               m => m.id?.startsWith("temp_") && 
-                  (m.content === msg.content || m.audio_url === msg.audio_url) && 
+                  (
+                    (m.type === "text" && m.content === msg.content) || 
+                    (m.type === "voice" && msg.type === "voice")
+                  ) && 
                   m.sender_id === msg.sender_id
             );
             if (tempIdx !== -1) {
