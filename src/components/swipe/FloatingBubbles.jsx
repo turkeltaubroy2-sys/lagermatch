@@ -413,11 +413,11 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                 style={{
                   border: isMatch(profile.id)
                     ? "2.5px solid #FE3C72"
-                    : "2px solid rgba(212,175,55,0.45)",
+                    : "1.5px solid rgba(212,175,55,0.4)",
                   boxShadow: isMatch(profile.id)
-                    ? "0 0 20px rgba(254,60,114,0.35), 0 4px 20px rgba(0,0,0,0.4)"
-                    : "0 0 16px rgba(212,175,55,0.15), 0 4px 20px rgba(0,0,0,0.35)",
-                  background: "#1A1A1A",
+                    ? "0 8px 30px rgba(254,60,114,0.4), 0 0 15px rgba(254,60,114,0.2), inset 0 0 10px rgba(254,60,114,0.1)"
+                    : "0 10px 25px rgba(0,0,0,0.6), 0 0 12px rgba(212,175,55,0.15), inset 0 0 10px rgba(255,255,255,0.05)",
+                  background: "#121212",
                 }}
               >
                 <motion.img
@@ -425,47 +425,41 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                   src={photoSrc}
                   alt={profile.first_name}
                   className="absolute inset-0 w-full h-full object-cover"
-                  loading={index < 6 ? "eager" : "lazy"}
+                  loading={index < 8 ? "eager" : "lazy"}
                   decoding="async"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
                 />
 
                 {/* Multi-photo dots */}
                 {allPhotos.length > 1 && (
-                  <div className="absolute top-1 left-0 right-0 flex justify-center gap-0.5 z-10">
+                  <div className="absolute top-1.5 left-0 right-0 flex justify-center gap-0.5 z-10">
                     {allPhotos.map((_, i) => (
                       <div
                         key={i}
                         className="rounded-full transition-all"
                         style={{
-                          width: photoSrc === allPhotos[i] ? 6 : 3,
+                          width: photoSrc === allPhotos[i] ? 8 : 3,
                           height: 3,
                           background: photoSrc === allPhotos[i]
-                            ? "rgba(212,175,55,0.95)"
-                            : "rgba(255,255,255,0.35)",
+                            ? "white"
+                            : "rgba(255,255,255,0.3)",
                         }}
                       />
                     ))}
                   </div>
                 )}
 
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                {/* Refined gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
-                {/* Sheen on hover */}
-                <motion.div
-                  className="absolute inset-0 opacity-0 pointer-events-none"
-                  whileHover={{ opacity: 1 }}
-                  style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%)",
-                  }}
-                />
+                {/* Premium Shine Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
 
                 {/* Name */}
-                <div className="absolute bottom-1.5 left-0 right-0 text-center px-1">
-                  <p className="text-white text-[10px] font-semibold truncate leading-tight drop-shadow-lg">
+                <div className="absolute bottom-2 left-0 right-0 text-center px-1">
+                  <p className="text-white text-[10px] font-black uppercase tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                     {profile.first_name}
                   </p>
                 </div>

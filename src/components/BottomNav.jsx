@@ -14,30 +14,41 @@ export default function BottomNav() {
 
   useEffect(() => {
     loadUnreadCount();
+    window.addEventListener("focus", loadUnreadCount);
+    return () => window.removeEventListener("focus", loadUnreadCount);
   }, []);
 
   const loadUnreadCount = async () => {
     const deviceId = localStorage.getItem("wedding_device_id");
     if (!deviceId) return;
 
-    const profileId = sessionStorage.getItem("nightmatch_profile_id");
-    let myProfileId = profileId;
+    // Get my profile
+    const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
+    if (myProfiles.length === 0) return;
+    const me = myProfiles[0];
 
-    if (!myProfileId) {
-      const myProfiles = await base44.entities.Profile.filter({ device_id: deviceId });
-      if (myProfiles.length === 0) return;
-      myProfileId = myProfiles[0].id;
-      sessionStorage.setItem("nightmatch_profile_id", myProfileId);
-    }
+    // Fetch matches and unread messages in parallel
+    const [m1, m2, unreadMessages] = await Promise.all([
+      base44.entities.Match.filter({ user1_id: me.id }),
+      base44.entities.Match.filter({ user2_id: me.id }),
+      base44.entities.Message.filter({ receiver_id: me.id, is_read: false }),
+    ]);
 
-    const myMessages = await base44.entities.Message.filter({ receiver_id: myProfileId });
-    const senders = new Set(myMessages.map(m => m.sender_id));
-    setUnreadCount(senders.size);
+    const activeMatches = [...m1, ...m2];
+    const matchPartnerIds = new Set(activeMatches.map(m => m.user1_id === me.id ? m.user2_id : m.user1_id));
+    
+    // Only count unread messages from people I am currently matched with
+    const validUnread = unreadMessages.filter(msg => matchPartnerIds.has(msg.sender_id));
+    
+    // Count distinct senders
+    const unreadSenders = new Set(validUnread.map(m => m.sender_id));
+    setUnreadCount(unreadSenders.size);
 
-    // Real-time subscription for new messages
+    // Subscribe to new messages
     const unsub = base44.entities.Message.subscribe((event) => {
-      if (event.type === "create" && event.data.receiver_id === myProfileId) {
-        setUnreadCount(prev => prev + 1);
+      if (event.type === "create" && event.data.receiver_id === me.id) {
+        // Just reload for simplicity and accuracy
+        loadUnreadCount();
       }
     });
     return unsub;

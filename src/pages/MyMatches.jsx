@@ -56,8 +56,13 @@ export default function MyMatches() {
       base44.entities.Message.filter({ receiver_id: me.id, is_read: false }),
     ]);
 
-    const myMatches = [...matches1, ...matches2];
-    if (myMatches.length === 0) {
+    const activeMatches = [...matches1, ...matches2];
+    const matchPartnerIds = new Set(activeMatches.map(m => m.user1_id === me.id ? m.user2_id : m.user1_id));
+    
+    // Filter unread messages to only include active match partners
+    const validUnread = unreadMessages.filter(msg => matchPartnerIds.has(msg.sender_id));
+
+    if (activeMatches.length === 0) {
       setMatches([]);
       setMatchProfiles([]);
       setUnreadCounts({});
@@ -83,7 +88,7 @@ export default function MyMatches() {
 
     // Count unread per sender from already-fetched messages
     const unreadMap = {};
-    unreadMessages.forEach(msg => {
+    validUnread.forEach(msg => {
       unreadMap[msg.sender_id] = (unreadMap[msg.sender_id] || 0) + 1;
     });
 
