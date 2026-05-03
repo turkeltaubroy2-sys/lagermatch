@@ -284,11 +284,11 @@
   :root {
   --font-display: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --bg-dark: #050505;
+  --bg-dark: #020202;
   --accent-gold: #D4AF37;
   --accent-pink: #FE3C72;
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.15);
 }
 
 body {
@@ -299,39 +299,52 @@ body {
   font-family: var(--font-body);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Premium Noise Grain */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 9999;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+.diamond-border {
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.diamond-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .shimmer-gold {
-  background: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%);
+  background: linear-gradient(
+    to right,
+    #D4AF37 20%,
+    #FFF 40%,
+    #FFF 60%,
+    #D4AF37 80%
+  );
   background-size: 200% auto;
+  color: #000;
+  background-clip: text;
+  text-fill-color: transparent;
   -webkit-background-clip: text;
-  -webkit-text-fillColor: transparent;
-  animation: text-shimmer 4s linear infinite;
+  -webkit-text-fill-color: transparent;
+  animation: text-shimmer 3s linear infinite;
 }
 
 .premium-bg {
-  background: radial-gradient(circle at 50% -20%, #1a0b12 0%, #050505 60%);
+  background: radial-gradient(circle at 50% 0%, #150810 0%, #020202 100%);
   min-height: 100vh;
 }
 

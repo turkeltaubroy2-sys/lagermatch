@@ -295,23 +295,6 @@ export default function Chat() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="h-[100dvh] bg-[#0F0F0F] flex flex-col max-w-md mx-auto">
-        <div className="bg-[#111]/95 backdrop-blur-xl border-b border-white/8 px-4 py-3 flex items-center gap-3" style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}>
-          <div className="w-10 h-10 rounded-full bg-[#252525] animate-pulse" />
-          <div className="flex-1 space-y-2">
-            <div className="h-4 w-28 bg-[#252525] rounded-full animate-pulse" />
-            <div className="h-3 w-16 bg-[#252525] rounded-full animate-pulse" />
-          </div>
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-4xl">💬</motion.div>
-        </div>
-      </div>
-    );
-  }
-
   // Presence & Heartbeat
   useEffect(() => {
     if (!myProfile) return;
@@ -357,6 +340,32 @@ export default function Chat() {
     return "לא מחובר/ת";
   };
 
+  if (loading) {
+    return (
+      <div className="h-[100dvh] bg-[#020202] flex flex-col max-w-md mx-auto relative overflow-hidden"
+        style={{ background: "radial-gradient(circle at 50% 0%, #150810 0%, #020202 100%)" }}>
+        <div className="glass border-b border-white/10 px-4 py-3 flex items-center gap-3" style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}>
+          <div className="w-10 h-10 rounded-full bg-white/5 animate-pulse" />
+          <div className="flex-1 space-y-2">
+            <div className="h-4 w-28 bg-white/5 rounded-full animate-pulse" />
+            <div className="h-3 w-16 bg-white/5 rounded-full animate-pulse" />
+          </div>
+        </div>
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.6, 0.3] 
+            }} 
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <MessageCircle className="w-12 h-12 text-[#D4AF37]/20" />
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-[100dvh] bg-[#050505]"
       style={{ background: "radial-gradient(circle at 50% 0%, #1a0b14 0%, #050505 100%)" }}>
@@ -401,7 +410,7 @@ export default function Chat() {
             const isTemp = msg._temp;
             return (
               <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] px-4 py-2.5 rounded-2xl ${isMe ? "bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] rounded-tr-sm" : "bg-[#1E1E1E] text-white rounded-tl-sm"}`}>
+                <div className={`max-w-[80%] px-4 py-2.5 rounded-2xl border ${isMe ? "bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] rounded-tr-sm border-white/10 shadow-lg" : "bg-[#1A1A1A] text-white rounded-tl-sm border-white/5 shadow-xl"}`}>
                   {msg.type === "voice" ? (
                     <VoicePlayer url={msg.audio_url} isMe={isMe} />
                   ) : (
