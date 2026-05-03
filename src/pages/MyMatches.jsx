@@ -7,6 +7,16 @@ import { Heart, MessageCircle, Trash2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import BottomNav from "@/components/BottomNav";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function MyMatches() {
   const [myProfile, setMyProfile] = useState(null);
@@ -15,6 +25,7 @@ export default function MyMatches() {
   const [unreadCounts, setUnreadCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [matchToDelete, setMatchToDelete] = useState(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -238,23 +249,22 @@ export default function MyMatches() {
                 <div className="flex flex-col gap-2 flex-shrink-0">
                   <Button
                     onClick={() => handleSendMessage(item.match.id)}
-                    size="sm"
-                    className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold rounded-xl h-9 px-3 hover:opacity-90 transition-all relative"
+                    className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold rounded-xl h-12 px-4 hover:opacity-90 transition-all relative flex items-center justify-center min-w-[50px]"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <MessageCircle className="w-5 h-5 pointer-events-none" />
                     {unreadCounts[item.profile.id] > 0 && (
-                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-[#0F0F0F]">
                         {unreadCounts[item.profile.id] > 9 ? "9+" : unreadCounts[item.profile.id]}
                       </div>
                     )}
                   </Button>
                   <Button
-                    onClick={() => handleDeleteMatch(item.match.id, item.profile)}
+                    onClick={() => setMatchToDelete(item)}
                     variant="ghost"
                     size="sm"
-                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-xl h-9 px-3"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-xl h-10 px-3"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4 pointer-events-none" />
                   </Button>
                 </div>
               </div>
@@ -262,6 +272,32 @@ export default function MyMatches() {
           ))}
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!matchToDelete} onOpenChange={() => setMatchToDelete(null)}>
+        <AlertDialogContent className="bg-[#1A1A1A] border-[#333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white font-black text-right">מחיקת התאמה</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/50 text-right">
+              בטוח שאתה רוצה למחוק את המאץ' עם {matchToDelete?.profile?.first_name}? כל הצאט ביניכם יימחק לצמיתות.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row-reverse gap-3">
+            <AlertDialogAction
+              onClick={() => {
+                handleDeleteMatch(matchToDelete.match.id, matchToDelete.profile);
+                setMatchToDelete(null);
+              }}
+              className="bg-red-600 hover:bg-red-700 flex-1"
+            >
+              מחק
+            </AlertDialogAction>
+            <AlertDialogCancel className="bg-[#252525] border-[#444] text-white hover:bg-[#333] flex-1 mt-0">
+              ביטול
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Bottom Navigation */}
       <BottomNav />
