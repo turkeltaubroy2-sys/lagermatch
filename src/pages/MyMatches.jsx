@@ -225,57 +225,60 @@ export default function MyMatches() {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-3">
           {matchProfiles.map((item, i) => (
             <motion.div
               key={item.profile.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="glass border border-white/5 rounded-[2.2rem] p-4 shadow-2xl relative overflow-hidden shimmer-card"
+              transition={{ delay: i * 0.05 }}
+              onClick={() => handleSendMessage(item.match.id)}
+              className="glass border border-white/10 rounded-3xl p-3 shadow-xl relative overflow-hidden active:scale-[0.98] transition-transform cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-[#D4AF37] shadow-lg shadow-[#D4AF37]/20 flex-shrink-0 relative">
+                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#D4AF37]/50 shadow-md flex-shrink-0 relative">
                   <img
                     src={item.profile.photo_url}
                     alt={item.profile.first_name}
                     className="w-full h-full object-cover"
                   />
                   {item.profile.last_seen && (Date.now() - new Date(item.profile.last_seen).getTime()) < 65000 && (
-                    <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0A0A0A] shadow-[0_0_10px_rgba(34,197,94,0.7)]" />
+                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0A0A0A] shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                   )}
                 </div>
+                
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-bold text-lg mb-1" style={{ fontFamily: "var(--font-body)" }}>{item.profile.first_name}</h3>
-                  <p className="text-white/50 text-sm">{item.profile.age} • {
-                    item.profile.location === "tel_aviv" ? "תל אביב" :
-                      item.profile.location === "south" ? "דרום" :
-                        item.profile.location === "north" ? "צפון" :
-                          item.profile.location || ""
-                  }</p>
-                  {item.profile.favorite_drink && (
-                    <p className="text-[#D4AF37] text-xs mt-1">🍸 {item.profile.favorite_drink}</p>
-                  )}
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-white font-black text-base tracking-tight truncate">{item.profile.first_name}</h3>
+                    <span className="text-white/30 text-[10px] font-bold tracking-wider">{item.profile.age}</span>
+                  </div>
+                  <p className="text-white/40 text-[10px] uppercase tracking-[0.1em] mt-0.5 truncate">
+                    {item.profile.location === "tel_aviv" ? "Tel Aviv" :
+                     item.profile.location === "south" ? "South" :
+                     item.profile.location === "north" ? "North" :
+                     item.profile.location || "Guest"}
+                  </p>
                 </div>
-                <div className="flex flex-col gap-2 flex-shrink-0 relative z-10">
-                  <Button
-                    onClick={() => handleSendMessage(item.match.id)}
-                    className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold rounded-xl h-12 px-4 hover:opacity-90 transition-all relative flex items-center justify-center min-w-[50px]"
-                  >
-                    <MessageCircle className="w-5 h-5 pointer-events-none" />
+
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <MessageCircle className="w-5 h-5 text-[#D4AF37]/80" />
                     {unreadCounts[item.profile.id] > 0 && (
-                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-[#0F0F0F] pointer-events-none">
-                        {unreadCounts[item.profile.id] > 9 ? "9+" : unreadCounts[item.profile.id]}
+                      <div className="absolute -top-2 -right-2 bg-[#FE3C72] text-white text-[8px] font-black rounded-full w-4 h-4 flex items-center justify-center border border-[#0F0F0F]">
+                        {unreadCounts[item.profile.id]}
                       </div>
                     )}
-                  </Button>
+                  </div>
                   <Button
-                    onClick={() => setMatchToDelete(item)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMatchToDelete(item);
+                    }}
                     variant="ghost"
-                    size="sm"
-                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-xl h-10 px-3"
+                    size="icon"
+                    className="h-8 w-8 text-white/10 hover:text-red-400 hover:bg-red-400/5 rounded-full"
                   >
-                    <Trash2 className="w-4 h-4 pointer-events-none" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </Button>
                 </div>
               </div>
