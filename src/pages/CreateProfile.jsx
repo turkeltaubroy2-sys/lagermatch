@@ -115,7 +115,9 @@ export default function CreateProfile() {
     else if (form.first_name.trim().includes(" ")) newErrors.first_name = "שם פרטי בלבד, בלי רווחים";
     const age = parseInt(form.age);
     if (!form.age) newErrors.age = "גיל הוא שדה חובה";
-    else if (isNaN(age) || age < 18 || age > 60) newErrors.age = "גיל חייב להיות בין 18 ל-60";
+    else if (isNaN(age)) newErrors.age = "גיל לא תקין";
+    else if (age < 18) newErrors.age = "הופפ אתם קצת צעירים מידי 😅";
+    else if (age > 60) newErrors.age = "גיל חייב להיות עד 60";
     if (!form.location) newErrors.location = "איזור מגורים הוא שדה חובה";
     if (photos.length === 0) newErrors.photo = "חובה להוסיף לפחות תמונה אחת";
     if (!form.gender) newErrors.gender = "מגדר הוא שדה חובה";
