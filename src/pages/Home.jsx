@@ -397,7 +397,7 @@ export default function Home() {
                 }}
                 className="shimmer-gold text-center"
               >
-                שלום רווקים יקריםם 🥂
+                שלום רווקים ורווקות יקריםם 🥂
               </h2>
 
               <p className="text-center text-white/60 text-sm leading-relaxed mb-7"
