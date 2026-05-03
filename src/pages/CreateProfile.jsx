@@ -4,6 +4,8 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera, ArrowLeft, AlertCircle, ChevronDown, Check } from "lucide-react";
+import { usePageUrl } from "../lib/usePageUrl";
+import { pushManager } from "../lib/pushManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -162,6 +164,20 @@ export default function CreateProfile() {
         device_id: deviceId,
         is_blocked: false,
       });
+
+      // Request Push Notification permission (Optional)
+      try {
+        const granted = await pushManager.requestPermission();
+        if (granted) {
+          const profiles = await base44.entities.Profile.list({ device_id: deviceId });
+          if (profiles && profiles.length > 0) {
+            await pushManager.subscribeUser(profiles[0].id);
+          }
+        }
+      } catch (pushErr) {
+        console.error('Push registration failed:', pushErr);
+      }
+
       navigate(createPageUrl("Swipe"));
     } catch (err) {
       console.error('Profile creation error:', err);

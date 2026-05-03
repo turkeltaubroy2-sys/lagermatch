@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, X, Share2 } from "lucide-react";
 import QRCode from "@/components/QRCode";
+import { pushManager } from "../lib/pushManager";
 
 const FLOATING_PARTICLES = [
   { emoji: "🥂", delay: 0, top: "8%", left: "8%" },
@@ -23,6 +24,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    pushManager.registerServiceWorker();
     checkExistingProfile();
   }, []);
 
@@ -408,16 +410,36 @@ export default function Home() {
               </p>
 
               {/* Auto-delete notice */}
-              <div
-                className="mb-6 px-4 py-3 rounded-2xl text-center text-[12px] font-semibold leading-snug"
-                style={{
-                  background: "linear-gradient(135deg, rgba(0,210,200,0.12), rgba(0,180,220,0.08))",
-                  border: "1px solid rgba(0,210,200,0.25)",
-                  color: "#00D4C8",
-                  textShadow: "0 0 12px rgba(0,212,200,0.4)",
-                }}
-              >
-                ⚡ כל המשתמשים יימחקו אוטומטית בסוף האירוע
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-8">
+                <p className="text-[10px] text-[#D4AF37] text-center leading-relaxed font-bold">
+                  ✦ המערכת מאובטחת. כל ההודעות, ההתאמות והפרופילים יימחקו אוטומטית בסיום האירוע. ✦
+                </p>
+              </div>
+
+              {/* PWA Install Guide */}
+              <div className="space-y-4 mb-10">
+                <p className="text-[10px] font-display font-black text-[#D4AF37] tracking-[0.3em] uppercase text-center mb-2">✦ איך מתקינים? (מומלץ לקבלת התראות) ✦</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="glass rounded-2xl p-4 text-right">
+                    <div className="flex items-center justify-end gap-2 mb-2">
+                      <span className="text-[10px] font-bold text-white/80">iPhone (Safari)</span>
+                      <span className="text-xs">🍎</span>
+                    </div>
+                    <p className="text-[9px] text-white/40 leading-relaxed">
+                      לחצו על <span className="text-white/60 font-bold">שיתוף</span> (מרובע עם חץ למעלה) ואז על <span className="text-white/60 font-bold">"הוספה למסך הבית"</span>.
+                    </p>
+                  </div>
+                  <div className="glass rounded-2xl p-4 text-right">
+                    <div className="flex items-center justify-end gap-2 mb-2">
+                      <span className="text-[10px] font-bold text-white/80">Android (Chrome)</span>
+                      <span className="text-xs">🤖</span>
+                    </div>
+                    <p className="text-[9px] text-white/40 leading-relaxed">
+                      לחצו על <span className="text-white/60 font-bold">3 הנקודות</span> למעלה ואז על <span className="text-white/60 font-bold">"התקנת אפליקציה"</span>.
+                    </p>
+                  </div>
+                </div>
+                <p className="text-[9px] text-white/20 text-center italic mt-2">* ההתקנה ואישור ההתראות אינם חובה, אך מומלצים לחוויה מלאה.</p>
               </div>
 
               <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>

@@ -4,6 +4,7 @@
 -- ============================================================
 -- PROFILES
 -- ============================================================
+drop table if exists push_subscriptions cascade;
 drop table if exists swipes cascade;
 drop table if exists messages cascade;
 drop table if exists drinks cascade;
@@ -83,6 +84,18 @@ create table if not exists swipes (
 );
 
 -- ============================================================
+-- PUSH SUBSCRIPTIONS
+-- ============================================================
+create table if not exists push_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid references profiles(id) on delete cascade,
+  subscription jsonb not null,
+  created_at timestamptz default now()
+);
+
+create index if not exists push_subscriptions_profile_id_idx on push_subscriptions(profile_id);
+
+-- ============================================================
 -- ROW LEVEL SECURITY - Allow all (no auth needed, device-id based)
 -- ============================================================
 alter table profiles enable row level security;
@@ -90,6 +103,7 @@ alter table matches enable row level security;
 alter table drinks enable row level security;
 alter table messages enable row level security;
 alter table swipes enable row level security;
+alter table push_subscriptions enable row level security;
 
 -- Open policies (device-id based app, no user auth)
 create policy "allow all profiles" on profiles for all using (true) with check (true);
@@ -97,6 +111,7 @@ create policy "allow all matches" on matches for all using (true) with check (tr
 create policy "allow all drinks" on drinks for all using (true) with check (true);
 create policy "allow all messages" on messages for all using (true) with check (true);
 create policy "allow all swipes" on swipes for all using (true) with check (true);
+create policy "allow all push_subscriptions" on push_subscriptions for all using (true) with check (true);
 
 -- ============================================================
 -- REALTIME - Enable for live features
