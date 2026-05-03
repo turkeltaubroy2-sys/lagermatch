@@ -176,7 +176,7 @@ export default function MyMatches() {
       {/* Header */}
       <div className="flex flex-col items-center mb-8 pt-6">
         <h1
-          className="mb-1"
+          className="mb-1 shimmer-gold"
           style={{
             fontFamily: "var(--font-display)",
             fontSize: "2.2rem",
@@ -184,7 +184,6 @@ export default function MyMatches() {
             letterSpacing: "0.04em",
             backgroundClip: "text",
           }}
-          className="shimmer-gold"
         >
           Roy & Yael
         </h1>
