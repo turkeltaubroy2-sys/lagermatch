@@ -71,7 +71,7 @@ export default function MyMatches() {
     }
 
     // Fetch only the profiles we need
-    const otherIds = myMatches.map(m => m.user1_id === me.id ? m.user2_id : m.user1_id);
+    const otherIds = activeMatches.map(m => m.user1_id === me.id ? m.user2_id : m.user1_id);
     const profileResults = await Promise.all(
       otherIds.map(id => base44.entities.Profile.filter({ id }))
     );
@@ -81,7 +81,7 @@ export default function MyMatches() {
       if (res.length > 0) profileMap[res[0].id] = res[0];
     });
 
-    const matched = myMatches.map(m => {
+    const matched = activeMatches.map(m => {
       const otherId = m.user1_id === me.id ? m.user2_id : m.user1_id;
       return { match: m, profile: profileMap[otherId] };
     }).filter(item => item.profile);
@@ -92,7 +92,7 @@ export default function MyMatches() {
       unreadMap[msg.sender_id] = (unreadMap[msg.sender_id] || 0) + 1;
     });
 
-    setMatches(myMatches);
+    setMatches(activeMatches);
     setMatchProfiles(matched);
     setUnreadCounts(unreadMap);
     setLoading(false);
