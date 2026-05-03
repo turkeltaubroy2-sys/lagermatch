@@ -46,6 +46,12 @@ export default function Chat() {
 
   useEffect(() => {
     loadChat();
+    return () => {
+      // One final mark as read when leaving
+      if (myProfileRef.current && otherProfileRef.current) {
+        base44.entities.Message.markAsRead(myProfileRef.current.id, otherProfileRef.current.id);
+      }
+    };
   }, []);
 
   // Mark messages as read when entering or receiving
@@ -225,6 +231,11 @@ export default function Chat() {
 
     setMessages(chatMessages);
     setLoading(false);
+
+    // Mark messages as read immediately once both profiles are ready
+    if (me && other) {
+      base44.entities.Message.markAsRead(me.id, other.id);
+    }
 
     // Scroll to bottom after load
     setTimeout(() => scrollToBottom("instant"), 100);

@@ -143,13 +143,15 @@ export const db = {
             return {};
         },
         async markAsRead(receiverId, senderId) {
-            const { error } = await supabase
+            const { data, error, count } = await supabase
                 .from('messages')
                 .update({ is_read: true })
                 .eq('receiver_id', receiverId)
                 .eq('sender_id', senderId)
-                .eq('is_read', false);
+                .eq('is_read', false)
+                .select();
             if (error) console.error('Error marking messages as read:', error);
+            else console.log(`Marked ${data?.length || 0} messages as read`);
             return { error };
         },
         subscribe(callback) {
