@@ -251,9 +251,9 @@ export default function CreateProfile() {
               ))}
             </div>
             <div>
-              <p className="text-white/60 text-[11px] text-center mb-3">מי תרצו להכיר? 😉</p>
+              <p className="text-white/60 text-[11px] text-center mb-3">מי תרצו להכיר?</p>
               <div className="grid grid-cols-3 gap-2">
-                {[{ v: 'women', l: 'נשים' }, { v: 'men', l: 'גברים' }, { v: 'all', l: 'כולם' }].map(opt => (
+                {[{ v: 'women', l: 'נשים' }, { v: 'men', l: 'גברים' }, { v: 'all', l: 'כולם 😉' }].map(opt => (
                   <button
                     key={opt.v}
                     type="button"
