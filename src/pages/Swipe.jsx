@@ -653,13 +653,42 @@ export default function Swipe() {
                           <button
                             onClick={async (e) => {
                               e.stopPropagation();
-                              await base44.entities.Drink.update(drink.id, { status: "accepted" });
-                              await base44.entities.Match.create({ user1_id: myProfile.id, user2_id: other.id });
-                              setMatches(prev => [...prev, { user1_id: myProfile.id, user2_id: other.id }]);
-                              setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
-                              toast({ title: `💚 מאצ׳ עם ${other.first_name}!`, duration: 2000 });
+                              const btn = e.currentTarget;
+                              if (btn.disabled) return;
+                              btn.disabled = true;
+                              btn.style.opacity = "0.5";
+                              
+                              try {
+                                // 1. Update drink status
+                                await base44.entities.Drink.update(drink.id, { status: "accepted" });
+                                
+                                // 2. Check if match already exists
+                                const existingMatches = await base44.entities.Match.filter({});
+                                const hasMatch = existingMatches.some(m => 
+                                  (m.user1_id === myProfile.id && m.user2_id === other.id) ||
+                                  (m.user2_id === myProfile.id && m.user1_id === other.id)
+                                );
+                                
+                                // 3. Create match if not exists
+                                if (!hasMatch) {
+                                  await base44.entities.Match.create({ 
+                                    user1_id: myProfile.id, 
+                                    user2_id: other.id 
+                                  });
+                                  setMatches(prev => [...prev, { user1_id: myProfile.id, user2_id: other.id }]);
+                                }
+                                
+                                // 4. Update UI
+                                setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
+                                toast({ title: `💚 מאצ׳ עם ${other.first_name}!`, duration: 2000 });
+                              } catch (err) {
+                                console.error("Drink acceptance failed:", err);
+                                toast({ title: "שגיאה בקבלת המשקה", description: "נסה שוב בעוד רגע", variant: "destructive" });
+                                btn.disabled = false;
+                                btn.style.opacity = "1";
+                              }
                             }}
-                            className="px-4 py-2 rounded-xl text-sm font-bold text-[#0A0A0A] h-10 flex items-center justify-center"
+                            className="px-4 py-2 rounded-xl text-sm font-bold text-[#0A0A0A] h-10 flex items-center justify-center disabled:opacity-50"
                             style={{ background: "linear-gradient(135deg, #D4AF37, #F5E6A3)" }}
                           >
                             אשר
@@ -667,10 +696,19 @@ export default function Swipe() {
                           <button
                             onClick={async (e) => {
                               e.stopPropagation();
-                              await base44.entities.Drink.update(drink.id, { status: "declined" });
-                              setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
+                              const btn = e.currentTarget;
+                              if (btn.disabled) return;
+                              btn.disabled = true;
+                              
+                              try {
+                                await base44.entities.Drink.update(drink.id, { status: "declined" });
+                                setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
+                              } catch (err) {
+                                console.error("Drink decline failed:", err);
+                                btn.disabled = false;
+                              }
                             }}
-                            className="px-4 py-2 rounded-xl text-sm font-semibold text-white/50 h-10 flex items-center justify-center"
+                            className="px-4 py-2 rounded-xl text-sm font-semibold text-white/50 h-10 flex items-center justify-center disabled:opacity-30"
                             style={{ background: "rgba(255,255,255,0.06)" }}
                           >
                             דחה
