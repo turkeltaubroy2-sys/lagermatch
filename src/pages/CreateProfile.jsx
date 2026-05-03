@@ -17,9 +17,18 @@ const LOCATIONS = [
   { value: "north", label: "צפון", flag: "🌿" },
 ];
 
+const COMPLIMENTS = [
+  "שיאאלה תראו איזה יפים אתם",
+  "הAI עבר על כל התמונות של כולם בחתונה ויש לנו חדשות : אתם הכי יפים 🔥",
+  "האפליקציה קרובה לקריסה... כנראה בגלל כמה שאתם יפים 😉",
+  "יש פה תחרות קשה.. אבל אתם מובילים במדד היופי 😎",
+  "שקלתם ללכת לדוגמנות? 😮"
+];
+
 export default function CreateProfile() {
   const [form, setForm] = useState({ first_name: "", age: "", location: "", funny_fact: "", favorite_drink: "", gender: "", interested_in: "" });
   const [photos, setPhotos] = useState([]); // [{file, preview}]
+  const [compliment, setCompliment] = useState("");
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
@@ -96,6 +105,7 @@ export default function CreateProfile() {
       return updated;
     });
     setErrors(prev => ({ ...prev, photo: null }));
+    setCompliment(COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)]);
     setShowPhotoOptions(false);
     setActivePhotoSlot(null);
   };
@@ -203,6 +213,21 @@ export default function CreateProfile() {
             )}
           </div>
           <input id="camera-input" type="file" accept="image/*" capture="user" className="hidden" onChange={(e) => handlePhotoFile(e.target.files[0])} />
+          
+          <AnimatePresence>
+            {photos.length > 0 && compliment && (
+              <motion.p 
+                key={compliment}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="text-[#D4AF37] text-[11px] text-center mt-4 font-bold italic"
+              >
+                {compliment}
+              </motion.p>
+            )}
+          </AnimatePresence>
+
           {errors.photo && <p className="text-red-400 text-[10px] text-center mt-3">{errors.photo}</p>}
         </div>
 
