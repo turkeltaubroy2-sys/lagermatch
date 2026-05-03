@@ -107,7 +107,9 @@ export default function Chat() {
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
+      const recorder = new MediaRecorder(stream, {
+        audioBitsPerSecond: 128000
+      });
       const chunks = [];
 
       recorder.ondataavailable = (e) => chunks.push(e.data);
