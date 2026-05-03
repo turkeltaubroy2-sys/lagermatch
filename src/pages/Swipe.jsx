@@ -649,26 +649,28 @@ export default function Swipe() {
                         </p>
                       </div>
                       {type === "received" ? (
-                        <div className="flex gap-1.5 flex-shrink-0">
+                        <div className="flex gap-2 flex-shrink-0">
                           <button
-                            onClick={async () => {
+                            onClick={async (e) => {
+                              e.stopPropagation();
                               await base44.entities.Drink.update(drink.id, { status: "accepted" });
                               await base44.entities.Match.create({ user1_id: myProfile.id, user2_id: other.id });
                               setMatches(prev => [...prev, { user1_id: myProfile.id, user2_id: other.id }]);
                               setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
                               toast({ title: `💚 מאצ׳ עם ${other.first_name}!`, duration: 2000 });
                             }}
-                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#0A0A0A]"
+                            className="px-4 py-2 rounded-xl text-sm font-bold text-[#0A0A0A] h-10 flex items-center justify-center"
                             style={{ background: "linear-gradient(135deg, #D4AF37, #F5E6A3)" }}
                           >
                             אשר
                           </button>
                           <button
-                            onClick={async () => {
+                            onClick={async (e) => {
+                              e.stopPropagation();
                               await base44.entities.Drink.update(drink.id, { status: "declined" });
                               setReturnNotifs(prev => prev.filter((_, idx) => idx !== i));
                             }}
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold text-white/50"
+                            className="px-4 py-2 rounded-xl text-sm font-semibold text-white/50 h-10 flex items-center justify-center"
                             style={{ background: "rgba(255,255,255,0.06)" }}
                           >
                             דחה
@@ -676,7 +678,8 @@ export default function Swipe() {
                         </div>
                       ) : (
                         <button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             // Find the actual Match record to get its ID
                             const match = matches.find(m =>
                               (m.user1_id === myProfile?.id && m.user2_id === other.id) ||
@@ -689,7 +692,7 @@ export default function Swipe() {
                               toast({ title: "לא נמצא מאצ׳", duration: 2000 });
                             }
                           }}
-                          className="px-3 py-1.5 rounded-xl text-xs font-bold text-white flex-shrink-0"
+                          className="px-4 py-2 rounded-xl text-sm font-bold text-white flex-shrink-0 h-10 flex items-center justify-center"
                           style={{ background: "linear-gradient(135deg, #FE3C72, #FF8A5B)" }}
                         >
                           צ׳אט 💬
