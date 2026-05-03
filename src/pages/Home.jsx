@@ -439,7 +439,7 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-                <p className="text-[9px] text-white/20 text-center italic mt-2">* ההתקנה ואישור ההתראות אינם חובה, אך מומלצים לחוויה מלאה.</p>
+                <p className="text-[11px] text-white/50 text-center font-bold italic mt-3">* ההתקנה ואישור ההתראות אינם חובה, אך מומלצים לחוויה מלאה.</p>
               </div>
 
               <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>
