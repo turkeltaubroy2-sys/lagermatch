@@ -175,7 +175,7 @@ export default function CreateProfile() {
           <button onClick={() => window.history.back()} className="text-white/50 hover:text-white">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-[1.7rem] font-display shimmer-gold tracking-widest uppercase">Roy & Yael ✦</h1>
+          <h1 className="text-[1.7rem] font-display shimmer-gold tracking-widest uppercase">✦ Roy & Yael ✦</h1>
           <div className="w-6" />
         </div>
 
