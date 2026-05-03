@@ -250,17 +250,20 @@ export default function CreateProfile() {
                 </button>
               ))}
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              {[{ v: 'women', l: 'נשים' }, { v: 'men', l: 'גברים' }, { v: 'all', l: 'כולם' }].map(opt => (
-                <button
-                  key={opt.v}
-                  type="button"
-                  onClick={() => setForm({ ...form, interested_in: opt.v })}
-                  className={`h-10 rounded-xl text-[10px] font-bold transition-all ${form.interested_in === opt.v ? "bg-white/10 text-white" : "glass border-transparent text-white/10"}`}
-                >
-                  {opt.l}
-                </button>
-              ))}
+            <div>
+              <p className="text-white/60 text-[11px] text-center mb-3">מי תרצו להכיר? 😉</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[{ v: 'women', l: 'נשים' }, { v: 'men', l: 'גברים' }, { v: 'all', l: 'כולם' }].map(opt => (
+                  <button
+                    key={opt.v}
+                    type="button"
+                    onClick={() => setForm({ ...form, interested_in: opt.v })}
+                    className={`h-10 rounded-xl text-[10px] font-bold transition-all ${form.interested_in === opt.v ? "bg-white/10 text-white" : "glass border-transparent text-white/10"}`}
+                  >
+                    {opt.l}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
