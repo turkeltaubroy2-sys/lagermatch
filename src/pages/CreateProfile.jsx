@@ -151,7 +151,7 @@ export default function CreateProfile() {
         const res = await base44.integrations.Core.UploadFile({ file: p.file });
         uploadedUrls.push(res.file_url);
       }
-      await base44.entities.Profile.create({
+      const newProfile = await base44.entities.Profile.create({
         first_name: form.first_name.trim(),
         age: parseInt(form.age),
         location: form.location,
@@ -168,11 +168,8 @@ export default function CreateProfile() {
       // Request Push Notification permission (Optional)
       try {
         const granted = await pushManager.requestPermission();
-        if (granted) {
-          const profiles = await base44.entities.Profile.filter({ device_id: deviceId });
-          if (profiles && profiles.length > 0) {
-            await pushManager.subscribeUser(profiles[0].id);
-          }
+        if (granted && newProfile) {
+          await pushManager.subscribeUser(newProfile.id);
         }
       } catch (pushErr) {
         console.error('Push registration failed:', pushErr);
@@ -180,8 +177,14 @@ export default function CreateProfile() {
 
       navigate(createPageUrl("Swipe"));
     } catch (err) {
-      console.error('Profile creation error:', err);
-      toast({ title: "שגיאה ביצירת הפרופיל", description: err?.message || "נסה שוב", variant: "destructive" });
+      console.error('Profile creation full error:', err);
+      const errorMsg = err?.message || (typeof err === 'string' ? err : "שגיאה לא ידועה");
+      toast({ 
+        title: "שגיאה ביצירת הפרופיל", 
+        description: `פרטים: ${errorMsg}`, 
+        variant: "destructive",
+        duration: 5000 
+      });
       setSaving(false);
     }
   };
