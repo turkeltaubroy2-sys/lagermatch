@@ -278,7 +278,7 @@ export default function CreateProfile() {
               className="h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all"
             />
             <Textarea
-              placeholder="משהו מצחיק עליך..."
+              placeholder="משהו מצחיק עליך... על רועיקי... או על יעלי... 😮"
               value={form.funny_fact}
               onChange={(e) => setForm({ ...form, funny_fact: e.target.value })}
               className="glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-right p-4 text-sm min-h-[100px] placeholder:text-white/40 text-white font-medium resize-none"
