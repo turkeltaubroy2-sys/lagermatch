@@ -238,17 +238,20 @@ export default function CreateProfile() {
 
           <div className="glass rounded-[2rem] p-6 space-y-5">
             <p className="text-[10px] font-black text-[#D4AF37] tracking-[0.4em] uppercase text-center">✦ העדפות ✦</p>
-            <div className="grid grid-cols-2 gap-3">
-              {[{ v: 'male', l: 'גבר' }, { v: 'female', l: 'אישה' }].map(opt => (
-                <button
-                  key={opt.v}
-                  type="button"
-                  onClick={() => setForm({ ...form, gender: opt.v })}
-                  className={`h-12 rounded-xl text-xs font-bold transition-all ${form.gender === opt.v ? "bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white" : "glass border-transparent text-white/50"}`}
-                >
-                  {opt.l}
-                </button>
-              ))}
+            <div>
+              <p className="text-white/90 font-bold text-[11px] text-center mb-3">אתם....?</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[{ v: 'male', l: 'גבר' }, { v: 'female', l: 'אישה' }].map(opt => (
+                  <button
+                    key={opt.v}
+                    type="button"
+                    onClick={() => setForm({ ...form, gender: opt.v })}
+                    className={`h-12 rounded-xl text-xs font-bold transition-all ${form.gender === opt.v ? "bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white" : "glass border-transparent text-white/50"}`}
+                  >
+                    {opt.l}
+                  </button>
+                ))}
+              </div>
             </div>
             <div>
               <p className="text-white/90 font-bold text-[11px] text-center mb-3">מי תרצו להכיר?</p>
