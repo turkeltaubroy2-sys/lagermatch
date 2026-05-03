@@ -105,7 +105,10 @@ export default function CreateProfile() {
       return updated;
     });
     setErrors(prev => ({ ...prev, photo: null }));
-    setCompliment(COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)]);
+    setCompliment(prev => {
+      const remaining = COMPLIMENTS.filter(c => c !== prev);
+      return remaining[Math.floor(Math.random() * remaining.length)];
+    });
     setShowPhotoOptions(false);
     setActivePhotoSlot(null);
   };
