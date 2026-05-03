@@ -327,5 +327,6 @@
     );
     transform: rotate(45deg);
     animation: shimmer 10s infinite linear;
+    pointer-events: none;
   }
 }

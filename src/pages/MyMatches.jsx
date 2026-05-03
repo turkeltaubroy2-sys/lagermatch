@@ -246,14 +246,14 @@ export default function MyMatches() {
                     <p className="text-[#D4AF37] text-xs mt-1">🍸 {item.profile.favorite_drink}</p>
                   )}
                 </div>
-                <div className="flex flex-col gap-2 flex-shrink-0">
+                <div className="flex flex-col gap-2 flex-shrink-0 relative z-10">
                   <Button
                     onClick={() => handleSendMessage(item.match.id)}
                     className="bg-gradient-to-r from-[#B8941F] to-[#D4AF37] text-[#0F0F0F] font-bold rounded-xl h-12 px-4 hover:opacity-90 transition-all relative flex items-center justify-center min-w-[50px]"
                   >
                     <MessageCircle className="w-5 h-5 pointer-events-none" />
                     {unreadCounts[item.profile.id] > 0 && (
-                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-[#0F0F0F]">
+                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-[#0F0F0F] pointer-events-none">
                         {unreadCounts[item.profile.id] > 9 ? "9+" : unreadCounts[item.profile.id]}
                       </div>
                     )}
