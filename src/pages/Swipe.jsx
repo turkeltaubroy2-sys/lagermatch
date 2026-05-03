@@ -241,31 +241,65 @@ export default function Swipe() {
 
     let score = 70;
 
-    // Location match (up to 10%)
+    // 1. Location match (up to 8%)
     if (profile.location === myProfile.location) {
-      score += 10;
+      score += 8;
     } else if (profile.location && myProfile.location) {
       score += 3;
     }
 
-    // Favorite drink similarity (up to 10%)
-    if (profile.favorite_drink && myProfile.favorite_drink) {
-      if (profile.favorite_drink.toLowerCase() === myProfile.favorite_drink.toLowerCase()) {
-        score += 10;
+    // 2. Alcohol Family Match (up to 12%)
+    const getDrinkFamily = (drink) => {
+      if (!drink) return null;
+      const d = drink.toLowerCase();
+      if (d.includes("בירה") || d.includes("beer") || d.includes("גולדסטאר") || d.includes("הייניקן") || d.includes("קורונה")) return "beer";
+      if (d.includes("יין") || d.includes("wine") || d.includes("אדום") || d.includes("לבן")) return "wine";
+      if (d.includes("ג'ין") || d.includes("gin") || d.includes("טוניק")) return "gin";
+      if (d.includes("וודקה") || d.includes("vodka") || d.includes("ואן גוך") || d.includes("van gogh")) return "vodka";
+      if (d.includes("וויסקי") || d.includes("whiskey") || d.includes("ג'ק") || d.includes("jack")) return "whiskey";
+      if (d.includes("ערק") || d.includes("arak")) return "arak";
+      if (d.includes("קוקטייל") || d.includes("cocktail") || d.includes("מרגריטה") || d.includes("מוחיטו")) return "cocktail";
+      return "other";
+    };
+
+    const myFamily = getDrinkFamily(myProfile.favorite_drink);
+    const targetFamily = getDrinkFamily(profile.favorite_drink);
+
+    if (myProfile.favorite_drink && profile.favorite_drink) {
+      if (myProfile.favorite_drink.toLowerCase() === profile.favorite_drink.toLowerCase()) {
+        score += 12; // Exact match
+      } else if (myFamily && targetFamily && myFamily === targetFamily) {
+        score += 8; // Same family
       } else {
-        score += 4;
+        score += 2; // Both like something
       }
     }
 
-    // Funny fact length similarity (up to 8%)
+    // 3. Funny Fact Similarity (up to 8%)
     if (profile.funny_fact && myProfile.funny_fact) {
-      const diff = Math.abs(profile.funny_fact.length - myProfile.funny_fact.length);
-      if (diff < 20) score += 8;
-      else if (diff < 50) score += 5;
-      else score += 2;
+      const myFact = myProfile.funny_fact.toLowerCase();
+      const targetFact = profile.funny_fact.toLowerCase();
+      
+      // Look for common keywords/themes
+      const keywords = ["ים", "כלב", "חתול", "טיול", "אוכל", "בישול", "ספורט", "מוזיקה", "שינה", "עבודה"];
+      let matches = 0;
+      keywords.forEach(word => {
+        if (myFact.includes(word) && targetFact.includes(word)) matches++;
+      });
+      
+      if (matches > 0) score += Math.min(8, matches * 4);
+      else {
+        // Fallback to length similarity
+        const diff = Math.abs(myFact.length - targetFact.length);
+        if (diff < 20) score += 4;
+        else if (diff < 50) score += 2;
+      }
     }
 
-    return Math.min(98, Math.max(70, score));
+    // Add a bit of randomness for flavor (±2%)
+    const randomFlavor = (profile.id.charCodeAt(0) % 5) - 2;
+    
+    return Math.min(99, Math.max(70, score + randomFlavor));
   }, [myProfile]);
 
   const handleSendDrink = useCallback(async (targetProfile) => {
