@@ -23,7 +23,7 @@ create table if not exists profiles (
   favorite_drink text,
   photo_url text,
   photo_urls text[] default '{}',
-  last_seen timestamptz default now(),
+  last_seen timestamptz,
   is_blocked boolean default false,
   created_at timestamptz default now()
 );

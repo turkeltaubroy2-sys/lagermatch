@@ -31,6 +31,16 @@ export default function MyMatches() {
 
   useEffect(() => {
     loadMatches();
+
+    const unsub = base44.entities.Profile.subscribe((event) => {
+      setMatchProfiles(prev => prev.map(item => 
+        item.profile.id === event.data.id 
+          ? { ...item, profile: { ...item.profile, ...event.data } }
+          : item
+      ));
+    });
+
+    return unsub;
   }, []);
 
   const loadMatches = async () => {

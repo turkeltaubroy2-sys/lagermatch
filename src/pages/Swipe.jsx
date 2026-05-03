@@ -445,6 +445,7 @@ export default function Swipe() {
   }
 
   const currentProfile = filteredProfiles[0];
+  const [isBubblePopupOpen, setIsBubblePopupOpen] = useState(false);
 
   return (
     <div className="min-h-[100dvh] bg-[#050505] flex flex-col max-w-md mx-auto pb-20 relative overflow-hidden"
@@ -560,7 +561,7 @@ export default function Swipe() {
       {/* Floating Bubbles - Free floating in space */}
       {/* When many users: make container taller and scrollable so all bubbles are reachable */}
       <div
-        className={`relative ${filteredProfiles.length > 20 ? "overflow-y-auto" : "overflow-hidden flex-1"}`}
+        className={`relative pb-32 ${filteredProfiles.length > 20 ? "overflow-y-auto" : "overflow-hidden flex-1"}`}
         style={filteredProfiles.length > 20 ? {
           minHeight: `${Math.max(100, Math.ceil(filteredProfiles.length / 4) * 120)}vh`,
           flex: "1",
@@ -572,6 +573,7 @@ export default function Swipe() {
             calculateCompatibility={calculateCompatibility}
             isMatch={isMatch}
             onSendDrink={handleSendDrink}
+            onOpenChange={setIsBubblePopupOpen}
             onGoToChat={(profileId) => {
               const match = matches.find(m =>
                 (m.user1_id === myProfile?.id && m.user2_id === profileId) ||
@@ -797,7 +799,7 @@ export default function Swipe() {
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <BottomNav />
+      <BottomNav hidden={!!selectedProfile || isBubblePopupOpen} />
     </div>
   );
 }

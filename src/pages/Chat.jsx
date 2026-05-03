@@ -334,12 +334,12 @@ export default function Chat() {
   }, [otherProfile?.id]);
 
   const getPresenceStatus = () => {
-    if (!otherProfile?.last_seen) return "מחובר/ת"; // Default to online if we have a match
+    if (!otherProfile?.last_seen) return "לא מחובר/ת";
     const lastSeen = new Date(otherProfile.last_seen).getTime();
     const now = Date.now();
     const diff = Math.max(0, (now - lastSeen) / 1000);
     
-    if (diff < 45) return "מחובר/ת";
+    if (diff < 35) return "מחובר/ת";
     if (diff < 90) return "נראה/תה לאחרונה";
     
     const mins = Math.floor(diff / 60);
@@ -428,8 +428,12 @@ export default function Chat() {
                     <p className="text-sm leading-relaxed break-words">{msg.content}</p>
                   )}
                   <div className={`flex items-center gap-1 mt-1 ${isMe ? "justify-end" : "justify-start"}`}>
-                    <span className={`text-[9px] ${isMe ? "text-black/50" : "text-white/20"}`}>{formatTime(msg.created_date)}</span>
-                    {isMe && (msg.is_read ? <CheckCheck className="w-3 h-3 text-black/40" /> : <Check className="w-3 h-3 text-black/30" />)}
+                    <span className={`text-[8px] font-bold ${isMe ? "text-black/50" : "text-white/20"}`}>{formatTime(msg.created_date)}</span>
+                    {isMe && (
+                      msg.is_read 
+                        ? <CheckCheck className="w-3.5 h-3.5 text-[#34B7F1] drop-shadow-[0_0_2px_rgba(52,183,241,0.5)]" /> 
+                        : <Check className="w-3.5 h-3.5 text-black/30" />
+                    )}
                   </div>
                 </div>
               </motion.div>

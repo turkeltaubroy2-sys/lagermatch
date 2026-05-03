@@ -100,8 +100,8 @@ function ProfileSheet({ profile, compatibility, isMatch, onClose, onSendDrink, o
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed inset-0 z-[9999] flex items-end justify-center"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -321,11 +321,15 @@ function usePhotoCycler(profiles) {
   return getPhoto;
 }
 
-export default function FloatingBubbles({ profiles, calculateCompatibility, isMatch, onSelect, onSendDrink, onGoToChat }) {
+export default function FloatingBubbles({ profiles, calculateCompatibility, isMatch, onSelect, onSendDrink, onGoToChat, onOpenChange }) {
   const containerRef = useRef(null);
   const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
   const [selected, setSelected] = useState(null);  // { profile, compatibility }
   const [poppingId, setPoppingId] = useState(null); // bubble currently popping
+
+  useEffect(() => {
+    onOpenChange?.(!!selected);
+  }, [!!selected, onOpenChange]);
 
   useEffect(() => {
     const el = containerRef.current;
