@@ -447,29 +447,34 @@ export default function Home() {
                       לחצו על <span className="text-white/60 font-bold">שיתוף</span> (מרובע עם חץ למעלה) ואז על <span className="text-white/60 font-bold">"הוספה למסך הבית"</span>.
                     </p>
                   </div>
-                  <div className="glass rounded-2xl p-4 text-right">
-                    <div className="flex items-center justify-end gap-2 mb-2">
-                      <span className="text-[10px] font-bold text-white/80">Android (Chrome)</span>
-                      <span className="text-xs">🤖</span>
+
+                  {deferredPrompt ? (
+                    <button
+                      onClick={handleInstallClick}
+                      className="glass rounded-2xl p-4 text-right border-[#D4AF37]/30 bg-[#D4AF37]/10 transition-all hover:bg-[#D4AF37]/20 active:scale-95"
+                    >
+                      <div className="flex items-center justify-end gap-2 mb-2">
+                        <span className="text-[10px] font-bold text-[#D4AF37]">Android (Chrome)</span>
+                        <span className="text-xs">🤖</span>
+                      </div>
+                      <p className="text-[10px] text-white font-bold leading-relaxed">
+                        לחצו כאן <br /> <span className="text-[#D4AF37] uppercase tracking-wider">להתקנה מהירה ✦</span>
+                      </p>
+                    </button>
+                  ) : (
+                    <div className="glass rounded-2xl p-4 text-right">
+                      <div className="flex items-center justify-end gap-2 mb-2">
+                        <span className="text-[10px] font-bold text-white/80">Android (Chrome)</span>
+                        <span className="text-xs">🤖</span>
+                      </div>
+                      <p className="text-[9px] text-white/40 leading-relaxed">
+                        לחצו על <span className="text-white/60 font-bold">3 הנקודות</span> למעלה ואז על <span className="text-white/60 font-bold">"התקנת אפליקציה"</span>.
+                      </p>
                     </div>
-                    <p className="text-[9px] text-white/40 leading-relaxed">
-                      לחצו על <span className="text-white/60 font-bold">3 הנקודות</span> למעלה ואז על <span className="text-white/60 font-bold">"התקנת אפליקציה"</span>.
-                    </p>
-                  </div>
+                  )}
                 </div>
                 <p className="text-[11px] text-white/50 text-center font-bold italic mt-3">* ההתקנה ואישור ההתראות אינם חובה, אך מומלצים לחוויה מלאה.</p>
               </div>
-
-              {deferredPrompt && (
-                <motion.button
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  onClick={handleInstallClick}
-                  className="w-full bg-white/10 border border-white/20 text-[#D4AF37] font-black py-4 rounded-2xl mb-4 tracking-[0.1em] uppercase text-xs shadow-lg"
-                >
-                  ✦ התקנת האפליקציה (Android) ✦
-                </motion.button>
-              )}
 
               <Link to={createPageUrl("CreateProfile")} onClick={() => setShowWelcome(false)}>
                 <motion.button
