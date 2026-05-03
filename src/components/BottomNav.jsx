@@ -66,12 +66,12 @@ export default function BottomNav() {
 
   return (
     <motion.div
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md"
+      className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none"
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.5 }}
     >
-      <div className="relative glass backdrop-blur-3xl bg-[#0D0D0D]/80 rounded-[2.5rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] px-2 py-2">
+      <div className="w-full max-w-md relative glass backdrop-blur-3xl bg-[#0D0D0D]/80 rounded-[2.5rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] px-2 py-2 pointer-events-auto">
         <div className="flex justify-around items-center h-[60px] relative">
           
           <Link
