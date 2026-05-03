@@ -337,7 +337,7 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
     return () => ro.disconnect();
   }, []);
 
-  // Smaller bubbles: /5.5 capped at 78px so ~60 users can be displayed
+  // Base bubble size
   const BUBBLE_SIZE = containerSize.w > 0 ? Math.min(Math.floor(containerSize.w / 5.5), 78) : 72;
   const positions = useBubblePhysics(profiles.length, containerSize.w, containerSize.h, BUBBLE_SIZE);
   const getPhoto = usePhotoCycler(profiles);
@@ -371,7 +371,12 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
           const pos = positions[index] || { x: 0, y: 0 };
           const compatibility = calculateCompatibility(profile);
           const isPopping = poppingId === profile.id;
-          const { current: photoSrc, all: allPhotos } = getPhoto(profile);
+          const { current: photoSrc } = getPhoto(profile);
+          
+          // Size variance based on score (70% to 100%)
+          // Higher score = slightly larger bubble
+          const scoreScale = 0.85 + ((compatibility - 70) / 30) * 0.35; // scales from 0.85x to 1.2x
+          const finalSize = BUBBLE_SIZE * scoreScale;
 
           return (
             <motion.div
@@ -380,8 +385,10 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
               style={{
                 left: pos.x,
                 top: pos.y,
-                width: BUBBLE_SIZE,
-                height: BUBBLE_SIZE,
+                width: finalSize,
+                height: finalSize,
+                animation: `float ${3 + Math.random() * 2}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`,
               }}
               initial={{ opacity: 0, scale: 0 }}
               animate={{
@@ -394,30 +401,30 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                   : { opacity: { duration: 0.4, delay: index * 0.04 }, scale: { duration: 0.4, type: "spring" } }
               }
             >
-              {/* Compatibility badge */}
+              {/* Compatibility score pill */}
               <div
-                className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 px-2 py-0.5 rounded-full text-[9px] font-black shadow-lg whitespace-nowrap"
+                className="absolute top-1 right-1 z-20 px-2 py-0.5 rounded-full text-[9px] font-black shadow-lg"
                 style={{
-                  background: "linear-gradient(135deg, #D4AF37, #F5E6A3)",
-                  color: "#0A0A0A",
+                  background: "linear-gradient(90deg, #D4AF37, #F9E79F)",
+                  color: "#000",
                 }}
               >
-                {compatibility}% ✨
+                ✨ {compatibility}%
               </div>
 
-              {/* Bubble */}
+              {/* Premium Discovery Bubble */}
               <motion.button
-                whileTap={{ scale: 0.9 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={() => !isPopping && handleBubbleClick(profile)}
                 className="relative w-full h-full rounded-full overflow-hidden"
                 style={{
-                  border: isMatch(profile.id)
-                    ? "2.5px solid #FE3C72"
-                    : "2px solid rgba(212,175,55,0.45)",
-                  boxShadow: isMatch(profile.id)
-                    ? "0 0 20px rgba(254,60,114,0.35), 0 4px 20px rgba(0,0,0,0.4)"
-                    : "0 0 16px rgba(212,175,55,0.15), 0 4px 20px rgba(0,0,0,0.35)",
-                  background: "#1A1A1A",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                  border: isMatch(profile.id) 
+                    ? "2px solid #FE3C72" 
+                    : "1px solid rgba(212, 175, 55, 0.4)",
+                  boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2)",
                 }}
               >
                 <motion.img
@@ -425,56 +432,25 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                   src={photoSrc}
                   alt={profile.first_name}
                   className="absolute inset-0 w-full h-full object-cover"
-                  loading={index < 6 ? "eager" : "lazy"}
-                  decoding="async"
+                  style={{ opacity: 0.85 }}
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  animate={{ opacity: 0.85 }}
                   transition={{ duration: 0.5 }}
                 />
 
-                {/* Multi-photo dots */}
-                {allPhotos.length > 1 && (
-                  <div className="absolute top-1 left-0 right-0 flex justify-center gap-0.5 z-10">
-                    {allPhotos.map((_, i) => (
-                      <div
-                        key={i}
-                        className="rounded-full transition-all"
-                        style={{
-                          width: photoSrc === allPhotos[i] ? 6 : 3,
-                          height: 3,
-                          background: photoSrc === allPhotos[i]
-                            ? "rgba(212,175,55,0.95)"
-                            : "rgba(255,255,255,0.35)",
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-                {/* Sheen on hover */}
-                <motion.div
-                  className="absolute inset-0 opacity-0 pointer-events-none"
-                  whileHover={{ opacity: 1 }}
-                  style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%)",
-                  }}
-                />
-
-                {/* Name */}
-                <div className="absolute bottom-1.5 left-0 right-0 text-center px-1">
-                  <p className="text-white text-[10px] font-semibold truncate leading-tight drop-shadow-lg">
+                {/* Name Overlay Gradient */}
+                <div 
+                  className="absolute bottom-0 left-0 right-0 py-2 flex items-center justify-center"
+                  style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.9))" }}
+                >
+                  <p className="text-white text-[10px] font-bold tracking-tight">
                     {profile.first_name}
                   </p>
                 </div>
 
                 {/* Match indicator */}
                 {isMatch(profile.id) && (
-                  <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-[#FE3C72] flex items-center justify-center text-[9px] shadow-lg">
-                    ❤️
-                  </div>
+                  <div className="absolute inset-0 border-2 border-[#FE3C72] rounded-full pointer-events-none" />
                 )}
 
                 {/* Ripple ring on pop */}
