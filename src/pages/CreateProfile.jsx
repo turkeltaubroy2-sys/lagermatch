@@ -217,14 +217,27 @@ export default function CreateProfile() {
                 onChange={(e) => setForm({ ...form, first_name: e.target.value })}
                 className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all ${errors.first_name ? "border-red-500/30" : ""}`}
               />
-              <Input
-                type="number"
-                placeholder="גיל"
-                value={form.age}
-                onChange={(e) => setForm({ ...form, age: e.target.value })}
-                className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all ${errors.age ? "border-red-500/30" : ""}`}
-                inputMode="numeric"
-              />
+              <div className="space-y-1">
+                <Input
+                  type="number"
+                  placeholder="גיל"
+                  value={form.age}
+                  onChange={(e) => setForm({ ...form, age: e.target.value })}
+                  onBlur={(e) => {
+                    const age = parseInt(e.target.value);
+                    if (e.target.value && (isNaN(age) || age < 18)) {
+                      setErrors(prev => ({ ...prev, age: "הופפ אתם קצת צעירים מידי 😅" }));
+                    } else if (e.target.value && age > 60) {
+                      setErrors(prev => ({ ...prev, age: "גיל חייב להיות עד 60" }));
+                    } else {
+                      setErrors(prev => ({ ...prev, age: null }));
+                    }
+                  }}
+                  className={`h-14 glass border-transparent focus:border-[#D4AF37]/40 rounded-[1.2rem] text-center placeholder:text-white/40 text-white font-medium transition-all ${errors.age ? "border-red-500/30" : ""}`}
+                  inputMode="numeric"
+                />
+                {errors.age && <p className="text-red-400 text-[10px] text-center">{errors.age}</p>}
+              </div>
               <button
                 type="button"
                 onClick={() => setShowLocationSheet(true)}
