@@ -169,7 +169,7 @@ export default function CreateProfile() {
       try {
         const granted = await pushManager.requestPermission();
         if (granted) {
-          const profiles = await base44.entities.Profile.list({ device_id: deviceId });
+          const profiles = await base44.entities.Profile.filter({ device_id: deviceId });
           if (profiles && profiles.length > 0) {
             await pushManager.subscribeUser(profiles[0].id);
           }
