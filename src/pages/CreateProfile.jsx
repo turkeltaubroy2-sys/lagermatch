@@ -179,11 +179,11 @@ export default function CreateProfile() {
           <div className="w-6" />
         </div>
 
-        <p className="text-center text-white/30 text-[10px] mb-8 tracking-[0.3em] uppercase shimmer-gold">✦ גלו חיבורים חדשים · חגגו יחד · צרו זיכרונות ✦</p>
+
 
         {/* Photo upload */}
         <div className="mb-10">
-          <p className="text-white/40 text-[10px] text-center mb-4 tracking-[0.2em] uppercase">✦ תמונות — חובה לפחות אחת ✦</p>
+          <p className="text-white/40 text-[10px] text-center mb-4 tracking-[0.2em] uppercase">✦ תמונות — חובה לפחות אחת - תראו לנו איך השקעתםם ✦</p>
           <div className="grid grid-cols-3 gap-3">
             {photos.map((p, i) => (
               <div key={i} className="relative aspect-square">
