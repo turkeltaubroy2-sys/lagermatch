@@ -132,7 +132,7 @@ export default function MyMatches() {
     setRefreshing(true);
     await loadMatches();
     setRefreshing(false);
-    toast({ title: "🔄 הרשימה עודכנה", duration: 2000 });
+    toast({ title: "🔄 הרשימה עודכנה", duration: 500 });
   };
 
   useEffect(() => {

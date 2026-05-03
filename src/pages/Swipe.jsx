@@ -394,7 +394,7 @@ export default function Swipe() {
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
-    toast({ title: "🔄 הרשימה עודכנה", duration: 2000 });
+    toast({ title: "🔄 הרשימה עודכנה", duration: 500 });
   }, [refreshing, loadData, toast]);
 
   const handleDeleteProfile = useCallback(async () => {
