@@ -60,7 +60,7 @@ export default function BottomNav() {
           >
             <motion.div
               whileTap={{ scale: 0.85 }}
-              className={`flex flex-col items-center transition-colors duration-200 ${isActive("Swipe") ? "text-[#D4AF37]" : "text-white/20"}`}
+              className={`flex flex-col items-center transition-colors duration-200 ${isActive("Swipe") ? "text-[#D4AF37]" : "text-white/35"}`}
             >
               {isActive("Swipe") ? (
                 <motion.div layoutId="nav-indicator" className="relative">
@@ -81,15 +81,15 @@ export default function BottomNav() {
           >
             <motion.div
               whileTap={{ scale: 0.85 }}
-              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyMatches") ? "text-[#D4AF37]" : "text-white/20"}`}
+              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyMatches") ? "text-[#FE3C72]" : "text-white/35"}`}
             >
               <div className="relative">
                 {isActive("MyMatches") ? (
                   <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    animate={{ scale: [1, 1.18, 1] }}
+                    transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    <motion.div className="absolute -inset-2 bg-[#D4AF37]/15 rounded-full blur-sm" />
+                    <motion.div className="absolute -inset-2 bg-[#FE3C72]/15 rounded-full blur-sm" />
                     <Heart className="w-6 h-6 mb-0.5 relative z-10" fill="currentColor" />
                   </motion.div>
                 ) : (
@@ -116,7 +116,7 @@ export default function BottomNav() {
           >
             <motion.div
               whileTap={{ scale: 0.85 }}
-              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyProfile") ? "text-[#D4AF37]" : "text-white/20"}`}
+              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyProfile") ? "text-[#D4AF37]" : "text-white/35"}`}
             >
               {isActive("MyProfile") ? (
                 <motion.div className="relative">

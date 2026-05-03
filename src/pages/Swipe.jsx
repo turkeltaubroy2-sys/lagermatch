@@ -447,77 +447,102 @@ export default function Swipe() {
   const currentProfile = filteredProfiles[0];
 
   return (
-    <div
-      className="h-[100dvh] flex flex-col overflow-hidden relative"
-      style={{
-        background: "linear-gradient(180deg, #0F0F0F 0%, #000000 100%)",
-        fontFamily: "'Assistant', sans-serif"
-      }}
-    >
-      {/* Premium Header */}
-      <div className="pt-10 pb-6 px-6 text-center z-20">
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-[#D4AF37] text-3xl font-black tracking-[0.15em]"
-          style={{ textShadow: "0 0 15px rgba(212, 175, 55, 0.3)" }}
-        >
-          ROY & YAEL
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-white/40 text-[9px] tracking-[0.3em] font-bold mt-2 uppercase"
-        >
-          DISCOVER • 5.5.26 • CELEBRATE
-        </motion.p>
-      </div>
+    <div className="min-h-[100dvh] bg-[#0F0F0F] flex flex-col max-w-md mx-auto pb-20 relative overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute top-0 right-0 w-72 h-72 bg-[#FE3C72]/6 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-24 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none" />
+      {/* Pull to refresh indicator */}
+      {refreshing && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold">
+          <RefreshCw className="w-4 h-4 inline ml-1 animate-spin" />
+          מעדכן...
+        </div>
+      )}
 
-      {/* Settings trigger */}
-      <div className="absolute top-10 right-6 z-30">
-        <Sheet open={showSettings} onOpenChange={setShowSettings}>
-          <SheetTrigger asChild>
-            <button className="p-2 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all active:scale-90">
-              <Settings className="w-4 h-4" />
-            </button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="bg-[#111] border-white/10 rounded-t-3xl">
-            <SheetHeader className="text-right">
-              <SheetTitle className="text-white text-lg">הגדרות</SheetTitle>
-              <SheetDescription className="text-white/40">
-                נהל את החוויה שלך באירוע
-              </SheetDescription>
-            </SheetHeader>
-            <div className="mt-8 space-y-4 pb-10">
-              <Button
-                onClick={() => { setShowSettings(false); setShowDeleteDialog(true); }}
-                variant="destructive"
-                className="w-full py-6 text-base font-bold rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all"
-              >
-                <Trash2 className="w-5 h-5 ml-2" />
-                מחק פרופיל
-              </Button>
-            </div>
-          </SheetContent>
-        </Sheet>
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4">
+        <div>
+          <h1 className="text-xl font-bold flex items-center gap-1.5">
+            <motion.span
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              🔥
+            </motion.span>
+            <span
+              style={{
+                fontFamily: "var(--font-display)",
+                letterSpacing: "0.05em",
+                fontWeight: 400,
+                fontSize: "1.5rem",
+                background: "linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%)",
+                backgroundSize: "200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                animation: "text-shimmer 4s ease infinite",
+              }}
+            >
+              Roy & Yael
+            </span>
+          </h1>
+          <p className="tracking-[0.2em] uppercase shimmer-gold text-[10px] items-center"
+            style={{ fontFamily: "var(--font-body)" }}>✦ 5.5.26 · Discover · Celebrate · Connect ✦</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <AgeFilter
+            ageRange={ageRange}
+            locationFilter={locationFilter}
+            onChangeRange={handleAgeRangeChange}
+            onChangeLocation={handleLocationChange}
+          />
+          <Sheet open={showSettings} onOpenChange={setShowSettings}>
+            <SheetTrigger asChild>
+              <button className="p-2 rounded-full bg-[#1A1A1A] border border-[#333] text-white/60 hover:text-white transition-all">
+                <Settings className="w-4 h-4" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="bg-[#1A1A1A] border-[#333]">
+              <SheetHeader>
+                <SheetTitle className="text-white text-right tracking-widest uppercase text-sm">✦ הגדרות</SheetTitle>
+                <SheetDescription className="text-white/40 text-right text-xs">
+                  נהל את הפרופיל שלך
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-6">
+                <Button
+                  onClick={() => {
+                    setShowSettings(false);
+                    setShowDeleteDialog(true);
+                  }}
+                  variant="destructive"
+                  className="w-full py-6 text-lg font-bold rounded-xl bg-red-600 hover:bg-red-700"
+                >
+                  <Trash2 className="w-5 h-5 ml-2" />
+                  מחק פרופיל
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+
+        </div>
       </div>
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent className="bg-[#1A1A1A] border-white/10 rounded-2xl">
-          <AlertDialogHeader className="text-right">
+        <AlertDialogContent className="bg-[#1A1A1A] border-[#333]">
+          <AlertDialogHeader>
             <AlertDialogTitle className="text-white font-black">מחיקת פרופיל</AlertDialogTitle>
             <AlertDialogDescription className="text-white/50">
               בטוח שאתה רוצה לצאת מהמשחק? הפרופיל יימחק לצמיתות.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row-reverse gap-2">
-            <AlertDialogCancel className="bg-white/5 border-white/10 text-white rounded-xl flex-1">
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-[#252525] border-[#444] text-white hover:bg-[#333]">
               ביטול
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteProfile}
-              className="bg-red-600 hover:bg-red-700 text-white rounded-xl flex-1"
+              className="bg-red-600 hover:bg-red-700"
             >
               מחק
             </AlertDialogAction>
