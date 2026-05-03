@@ -4,7 +4,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera, ArrowLeft, AlertCircle, ChevronDown, Check } from "lucide-react";
-import { usePageUrl } from "../lib/usePageUrl";
+
 import { pushManager } from "../lib/pushManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
