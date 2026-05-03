@@ -200,7 +200,7 @@ export async function uploadAudio(blob) {
     const { error } = await supabase.storage.from('audio').upload(path, blob, {
         cacheControl: '3600',
         upsert: false,
-        contentType: 'audio/webm',
+        contentType: 'audio/webm;codecs=opus',
     });
     if (error) throw error;
     const { data } = supabase.storage.from('audio').getPublicUrl(path);

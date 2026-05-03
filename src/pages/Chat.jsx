@@ -106,15 +106,21 @@ export default function Chat() {
   // Voice recording logic
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream, {
-        audioBitsPerSecond: 256000
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false
+        } 
       });
+      
+      const options = { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: 256000 };
+      const recorder = new MediaRecorder(stream, options);
       const chunks = [];
 
       recorder.ondataavailable = (e) => chunks.push(e.data);
       recorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: "audio/webm" });
+        const blob = new Blob(chunks, { type: "audio/webm;codecs=opus" });
         stream.getTracks().forEach(t => t.stop());
         handleSendVoice(blob);
       };
