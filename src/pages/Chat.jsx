@@ -313,9 +313,11 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col max-w-md mx-auto bg-[#0F0F0F]" style={{ height: "100dvh" }}>
+    <div className="flex flex-col h-[100dvh] bg-[#050505]"
+      style={{ background: "radial-gradient(circle at 50% 0%, #1a0b14 0%, #050505 100%)" }}>
       {/* Header */}
-      <div className="bg-[#111]/95 backdrop-blur-xl border-b border-white/8 px-4 py-3 flex items-center gap-3 flex-shrink-0 z-20" style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}>
+      <div className="glass border-b border-white/5 px-4 pt-safe pb-3 flex items-center gap-3 backdrop-blur-2xl z-20"
+        style={{ background: "rgba(10,10,10,0.6)", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
         <button onClick={() => navigate(createPageUrl("MyMatches"))} className="p-2 hover:bg-white/8 rounded-full transition-all active:scale-90">
           <ArrowRight className="w-5 h-5 text-white" />
         </button>
@@ -361,8 +363,9 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input area */}
-      <div className="bg-[#111]/95 backdrop-blur-xl border-t border-white/8 px-4 py-3 space-y-2" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+      {/* Input Area */}
+      <div className="glass border-t border-white/5 p-4 backdrop-blur-2xl z-20" 
+        style={{ background: "rgba(10,10,10,0.6)", paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
         <AnimatePresence>
           {showEmojiPicker && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="grid grid-cols-8 gap-2 pb-2">

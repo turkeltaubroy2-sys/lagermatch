@@ -125,7 +125,7 @@ export default function Home() {
     <div
       className="h-[100dvh] flex flex-col items-center justify-center relative overflow-hidden"
       style={{
-        background: "radial-gradient(ellipse at 60% 20%, #1a0810 0%, #0A0A0A 50%, #0a0d1a 100%)",
+        background: "radial-gradient(circle at 50% 30%, #1a0810 0%, #050505 70%, #020202 100%)",
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",
       }}

@@ -178,8 +178,11 @@ export default function MyMatches() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#0F0F0F] px-5 max-w-md mx-auto pb-24"
-      style={{ paddingTop: "max(1.5rem, env(safe-area-inset-top))" }}
+    <div className="min-h-[100dvh] bg-[#050505] px-5 max-w-md mx-auto pb-24"
+      style={{ 
+        paddingTop: "max(1.5rem, env(safe-area-inset-top))",
+        background: "radial-gradient(circle at 50% 0%, #100812 0%, #050505 100%)"
+      }}
     >
       {/* Pull to refresh indicator */}
       {refreshing && (

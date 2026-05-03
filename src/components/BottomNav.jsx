@@ -62,84 +62,98 @@ export default function BottomNav() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.3 }}
     >
-      <div className="glass border-t border-white/[0.03] shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-        <div className="max-w-md mx-auto flex justify-around items-center px-4" style={{ height: '64px' }}>
-          <Link
-            to={createPageUrl("Swipe")}
-            className="flex flex-col items-center justify-center flex-1 h-full"
-            style={{ touchAction: 'manipulation' }}
-          >
-            <motion.div
-              whileTap={{ scale: 0.85 }}
-              className={`flex flex-col items-center transition-colors duration-200 ${isActive("Swipe") ? "text-[#D4AF37]" : "text-white/35"}`}
+      <div className="relative">
+        {/* Golden top border with glow */}
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent shadow-[0_-2px_10px_rgba(212,175,55,0.15)]" />
+        
+        <div className="glass backdrop-blur-3xl bg-[#0A0A0A]/60 border-t border-white/5 shadow-[0_-15px_50px_rgba(0,0,0,0.8)]">
+          <div className="max-w-md mx-auto flex justify-around items-center px-4" style={{ height: '70px' }}>
+            <Link
+              to={createPageUrl("Swipe")}
+              className="flex flex-col items-center justify-center flex-1 h-full relative"
+              style={{ touchAction: 'manipulation' }}
             >
-              {isActive("Swipe") ? (
-                <motion.div layoutId="nav-indicator" className="relative">
-                  <motion.div className="absolute -inset-2 bg-[#D4AF37]/15 rounded-full blur-sm" />
-                  <Compass className="w-6 h-6 mb-0.5 relative z-10" />
-                </motion.div>
-              ) : (
-                <Compass className="w-6 h-6 mb-0.5" />
-              )}
-              <span className="text-[10px] font-semibold tracking-widest uppercase">Discover</span>
-            </motion.div>
-          </Link>
-
-          <Link
-            to={createPageUrl("MyMatches")}
-            className="flex flex-col items-center justify-center flex-1 h-full"
-            style={{ touchAction: 'manipulation' }}
-          >
-            <motion.div
-              whileTap={{ scale: 0.85 }}
-              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyMatches") ? "text-[#FE3C72]" : "text-white/35"}`}
-            >
-              <div className="relative">
-                {isActive("MyMatches") ? (
-                  <motion.div
-                    animate={{ scale: [1, 1.18, 1] }}
-                    transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    <motion.div className="absolute -inset-2 bg-[#FE3C72]/15 rounded-full blur-sm" />
-                    <Heart className="w-6 h-6 mb-0.5 relative z-10" fill="currentColor" />
-                  </motion.div>
-                ) : (
-                  <Heart className="w-6 h-6 mb-0.5" />
+              <motion.div
+                whileTap={{ scale: 0.85 }}
+                className={`flex flex-col items-center transition-all duration-300 ${isActive("Swipe") ? "text-[#D4AF37]" : "text-white/20"}`}
+              >
+                <div className="relative mb-1">
+                  {isActive("Swipe") && (
+                    <motion.div 
+                      layoutId="nav-glow"
+                      className="absolute -inset-4 bg-[#D4AF37]/10 rounded-full blur-xl"
+                    />
+                  )}
+                  <Compass className={`w-[22px] h-[22px] transition-transform ${isActive("Swipe") ? "scale-110" : ""}`} />
+                </div>
+                <span className={`text-[9px] font-black tracking-[0.25em] uppercase transition-opacity ${isActive("Swipe") ? "opacity-100" : "opacity-40"}`}>Discover</span>
+                {isActive("Swipe") && (
+                  <motion.div layoutId="nav-dot" className="absolute -bottom-1 w-1 h-1 bg-[#D4AF37] rounded-full shadow-[0_0_8px_#D4AF37]" />
                 )}
-                {unreadCount > 0 && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1.5 -right-1.5 bg-[#FE3C72] text-white text-[9px] font-black rounded-full w-4 h-4 flex items-center justify-center shadow-[0_0_8px_rgba(254,60,114,0.7)]"
-                  >
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </motion.div>
-                )}
-              </div>
-              <span className="text-[10px] font-semibold tracking-widest uppercase mt-0.5">Matches</span>
-            </motion.div>
-          </Link>
+              </motion.div>
+            </Link>
 
-          <Link
-            to={createPageUrl("MyProfile")}
-            className="flex flex-col items-center justify-center flex-1 h-full"
-            style={{ touchAction: 'manipulation' }}
-          >
-            <motion.div
-              whileTap={{ scale: 0.85 }}
-              className={`flex flex-col items-center transition-colors duration-200 ${isActive("MyProfile") ? "text-[#D4AF37]" : "text-white/35"}`}
+            <Link
+              to={createPageUrl("MyMatches")}
+              className="flex flex-col items-center justify-center flex-1 h-full relative"
+              style={{ touchAction: 'manipulation' }}
             >
-              {isActive("MyProfile") ? (
-                <motion.div className="relative">
-                  <motion.div className="absolute -inset-2 bg-[#D4AF37]/15 rounded-full blur-sm" />
-                  <UserCircle className="w-6 h-6 mb-0.5 relative z-10" />
-                </motion.div>
-              ) : (
-                <UserCircle className="w-6 h-6 mb-0.5" />
-              )}
-              <span className="text-[10px] font-semibold tracking-widest uppercase">Profile</span>
-            </motion.div>
-          </Link>
+              <motion.div
+                whileTap={{ scale: 0.85 }}
+                className={`flex flex-col items-center transition-all duration-300 ${isActive("MyMatches") ? "text-[#FE3C72]" : "text-white/20"}`}
+              >
+                <div className="relative mb-1">
+                  {isActive("MyMatches") && (
+                    <motion.div 
+                      layoutId="nav-glow"
+                      className="absolute -inset-4 bg-[#FE3C72]/10 rounded-full blur-xl"
+                    />
+                  )}
+                  <div className="relative">
+                    <Heart className={`w-[22px] h-[22px] transition-all ${isActive("MyMatches") ? "scale-110" : ""}`} fill={isActive("MyMatches") ? "currentColor" : "none"} />
+                    {unreadCount > 0 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-2 -right-2 bg-[#FE3C72] text-white text-[8px] font-black rounded-full w-[17px] h-[17px] flex items-center justify-center border-2 border-[#0A0A0A] shadow-[0_0_12px_rgba(254,60,114,0.6)]"
+                      >
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+                <span className={`text-[9px] font-black tracking-[0.25em] uppercase transition-opacity ${isActive("MyMatches") ? "opacity-100" : "opacity-40"}`}>Matches</span>
+                {isActive("MyMatches") && (
+                  <motion.div layoutId="nav-dot" className="absolute -bottom-1 w-1 h-1 bg-[#FE3C72] rounded-full shadow-[0_0_8px_#FE3C72]" />
+                )}
+              </motion.div>
+            </Link>
+
+            <Link
+              to={createPageUrl("MyProfile")}
+              className="flex flex-col items-center justify-center flex-1 h-full relative"
+              style={{ touchAction: 'manipulation' }}
+            >
+              <motion.div
+                whileTap={{ scale: 0.85 }}
+                className={`flex flex-col items-center transition-all duration-300 ${isActive("MyProfile") ? "text-[#D4AF37]" : "text-white/20"}`}
+              >
+                <div className="relative mb-1">
+                  {isActive("MyProfile") && (
+                    <motion.div 
+                      layoutId="nav-glow"
+                      className="absolute -inset-4 bg-[#D4AF37]/10 rounded-full blur-xl"
+                    />
+                  )}
+                  <UserCircle className={`w-[22px] h-[22px] transition-transform ${isActive("MyProfile") ? "scale-110" : ""}`} />
+                </div>
+                <span className={`text-[9px] font-black tracking-[0.25em] uppercase transition-opacity ${isActive("MyProfile") ? "opacity-100" : "opacity-40"}`}>Profile</span>
+                {isActive("MyProfile") && (
+                  <motion.div layoutId="nav-dot" className="absolute -bottom-1 w-1 h-1 bg-[#D4AF37] rounded-full shadow-[0_0_8px_#D4AF37]" />
+                )}
+              </motion.div>
+            </Link>
+          </div>
         </div>
       </div>
     </motion.div>
