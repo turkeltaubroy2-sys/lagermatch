@@ -227,6 +227,8 @@ export default function CreateProfile() {
                     const age = parseInt(e.target.value);
                     if (e.target.value && (isNaN(age) || age < 18)) {
                       setErrors(prev => ({ ...prev, age: "הופפ אתם קצת צעירים מידי 😅" }));
+                      toast({ title: "הופפ אתם קצת צעירים מידי 😅", variant: "destructive" });
+                      setTimeout(() => navigate(createPageUrl("Home")), 2000);
                     } else if (e.target.value && age > 60) {
                       setErrors(prev => ({ ...prev, age: "גיל חייב להיות עד 60" }));
                     } else {
