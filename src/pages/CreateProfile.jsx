@@ -183,7 +183,7 @@ export default function CreateProfile() {
 
         {/* Photo upload */}
         <div className="mb-10">
-          <p className="text-white/80 font-bold text-[10px] text-center mb-4 tracking-[0.2em] uppercase">✦ תמונות — חובה לפחות אחת - תראו לנו איך השקעתםם ✦</p>
+          <p className="text-white/80 font-bold text-[9px] text-center mb-4 tracking-tight uppercase whitespace-nowrap">✦ תמונות — חובה לפחות אחת - תראו לנו איך השקעתםם ✦</p>
           <div className="grid grid-cols-3 gap-3">
             {photos.map((p, i) => (
               <div key={i} className="relative aspect-square">
@@ -207,7 +207,7 @@ export default function CreateProfile() {
         {/* Form groups with glass effect */}
         <div className="space-y-6">
           <div className="glass rounded-[2rem] p-6 space-y-6">
-            <p className="text-[10px] font-black text-[#D4AF37] tracking-[0.4em] uppercase text-center">✦ פרטים אישיים ✦</p>
+            <p className="text-[13px] font-black text-[#D4AF37] tracking-[0.4em] uppercase text-center">✦ פרטים אישיים ✦</p>
             <div className="space-y-4">
               <Input
                 placeholder="שם פרטי"
@@ -237,7 +237,7 @@ export default function CreateProfile() {
           </div>
 
           <div className="glass rounded-[2rem] p-6 space-y-5">
-            <p className="text-[10px] font-black text-[#D4AF37] tracking-[0.4em] uppercase text-center">✦ העדפות ✦</p>
+            <p className="text-[13px] font-black text-[#D4AF37] tracking-[0.4em] uppercase text-center">✦ העדפות ✦</p>
             <div>
               <p className="text-white/90 font-bold text-[11px] text-center mb-3">אתם....?</p>
               <div className="grid grid-cols-2 gap-3">
