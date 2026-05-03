@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Send, Wine, Check, CheckCheck, Mic, Square, Smile, Play, Pause } from "lucide-react";
+import { ArrowRight, Send, Wine, Check, CheckCheck, Mic, Square, Smile, Play, Pause, MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function Chat() {
@@ -295,6 +295,8 @@ export default function Chat() {
     }
   };
 
+  const [presenceTick, setPresenceTick] = useState(0);
+
   // Presence & Heartbeat
   useEffect(() => {
     if (!myProfile) return;
@@ -302,20 +304,28 @@ export default function Chat() {
     // Immediate update
     base44.entities.Profile.updatePresence(myProfile.id);
     
-    // Heartbeat every 30 seconds
+    // Heartbeat every 20 seconds for higher precision
     const interval = setInterval(() => {
       base44.entities.Profile.updatePresence(myProfile.id);
-    }, 30000);
+    }, 20000);
     
-    return () => clearInterval(interval);
-  }, [myProfile]);
+    // Local tick to refresh relative time strings
+    const tickInterval = setInterval(() => {
+      setPresenceTick(t => t + 1);
+    }, 10000);
+    
+    return () => {
+      clearInterval(interval);
+      clearInterval(tickInterval);
+    };
+  }, [myProfile?.id]);
 
   // Subscribe to other user's presence
   useEffect(() => {
-    if (!otherProfile) return;
+    if (!otherProfile?.id) return;
     
     const unsub = base44.entities.Profile.subscribe((event) => {
-      if (event.data.id === otherProfile.id) {
+      if (event.data?.id === otherProfile.id) {
         setOtherProfile(prev => ({ ...prev, ...event.data }));
       }
     });
@@ -324,12 +334,13 @@ export default function Chat() {
   }, [otherProfile?.id]);
 
   const getPresenceStatus = () => {
-    if (!otherProfile?.last_seen) return "לא מחובר/ת";
+    if (!otherProfile?.last_seen) return "מחובר/ת"; // Default to online if we have a match
     const lastSeen = new Date(otherProfile.last_seen).getTime();
     const now = Date.now();
-    const diff = (now - lastSeen) / 1000;
+    const diff = Math.max(0, (now - lastSeen) / 1000);
     
-    if (diff < 65) return "מחובר/ת";
+    if (diff < 45) return "מחובר/ת";
+    if (diff < 90) return "נראה/תה לאחרונה";
     
     const mins = Math.floor(diff / 60);
     if (mins < 60) return `נראה/תה לפני ${mins} דק'`;
@@ -337,7 +348,7 @@ export default function Chat() {
     const hours = Math.floor(mins / 60);
     if (hours < 24) return `נראה/תה לפני ${hours} שע'`;
     
-    return "לא מחובר/ת";
+    return "לאחרונה";
   };
 
   if (loading) {
