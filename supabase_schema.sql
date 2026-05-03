@@ -4,12 +4,20 @@
 -- ============================================================
 -- PROFILES
 -- ============================================================
+drop table if exists swipes cascade;
+drop table if exists messages cascade;
+drop table if exists drinks cascade;
+drop table if exists matches cascade;
+drop table if exists profiles cascade;
+
 create table if not exists profiles (
   id uuid primary key default gen_random_uuid(),
   device_id text not null,
   first_name text not null,
   age integer not null,
   location text not null,
+  gender text not null,
+  interested_in text not null,
   funny_fact text,
   favorite_drink text,
   photo_url text,
@@ -103,11 +111,14 @@ alter publication supabase_realtime add table matches;
 insert into storage.buckets (id, name, public) values ('photos', 'photos', true)
 on conflict do nothing;
 
+drop policy if exists "allow public photo uploads" on storage.objects;
 create policy "allow public photo uploads" on storage.objects
   for insert with check (bucket_id = 'photos');
 
+drop policy if exists "allow public photo reads" on storage.objects;
 create policy "allow public photo reads" on storage.objects
   for select using (bucket_id = 'photos');
 
+drop policy if exists "allow public photo deletes" on storage.objects;
 create policy "allow public photo deletes" on storage.objects
   for delete using (bucket_id = 'photos');

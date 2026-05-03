@@ -58,7 +58,14 @@ export default function Home() {
       }
     }
     if (!id) {
-      id = crypto.randomUUID();
+      if (window.crypto && window.crypto.randomUUID) {
+        id = window.crypto.randomUUID();
+      } else {
+        id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
       localStorage.setItem("wedding_device_id", id);
       sessionStorage.setItem("wedding_device_id", id);
     }
@@ -390,14 +397,14 @@ export default function Home() {
                 }}
                 className="shimmer-gold text-center"
               >
-                ברוכים הבאים לחתונה של רועי ויעל ✦ 5.5.26 🥂
+                שלום רווקים יקריםם 🥂
               </h2>
 
               <p className="text-center text-white/60 text-sm leading-relaxed mb-7"
                 style={{ fontFamily: "var(--font-body)", fontWeight: 400 }}
               >
-                צרו פרופיל, החליקו ומצאו מישהו מיוחד הלילה.{" "}
-                <span className="text-[#D4AF37]">הלילה ארוך — תנצלו אותו.</span> 🍸
+                רועיקי עבד קשה לפתח לכם את האפליקציה שתסדר לו וליעלי מקום בגן עדן.{" "}
+                <span className="text-[#D4AF37]">אז יאאלה תתחברו, תכירו ואל תשכחו לספר 😉</span>
               </p>
 
               {/* Auto-delete notice */}
