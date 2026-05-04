@@ -31,6 +31,7 @@ import AgeFilter from "@/components/swipe/AgeFilter";
 import DrinkNotification from "@/components/swipe/DrinkNotification";
 import BottomNav from "@/components/BottomNav";
 import FloatingBubbles from "@/components/swipe/FloatingBubbles";
+import { pushManager } from "../lib/pushManager";
 
 export default function Swipe() {
   const [myProfile, setMyProfile] = useState(null);
@@ -47,6 +48,7 @@ export default function Swipe() {
   const [showSettings, setShowSettings] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [compatibilityFilter, setCompatibilityFilter] = useState(70);
   const [returnNotifs, setReturnNotifs] = useState([]); // drinks received since last visit
   const [showReturnPanel, setShowReturnPanel] = useState(false);
   const [isBubblePopupOpen, setIsBubblePopupOpen] = useState(false);
@@ -142,6 +144,15 @@ export default function Swipe() {
     }
 
     const me = myProfiles[0];
+
+    // Request push notification permission
+    setTimeout(async () => {
+      const granted = await pushManager.requestPermission();
+      if (granted) {
+        await pushManager.subscribe(me.id);
+      }
+    }, 2000);
+
     if (me.is_blocked) {
       toast({ title: "הפרופיל שלך נחסם", variant: "destructive", duration: 2000 });
       navigate(createPageUrl("Home"));
@@ -488,31 +499,25 @@ export default function Swipe() {
               Roy & Yael
             </span>
           </h1>
-          <p className="tracking-[0.15em] uppercase text-white/40 text-[9px] flex items-center gap-2 mt-1"
-            style={{ fontFamily: "var(--font-body)", fontWeight: 600 }}>
-            <span>Discover</span>
-            <span className="text-[#D4AF37]/50 text-[6px]">✦</span>
-            <span>Celebrate</span>
-            <span className="text-[#D4AF37]/50 text-[6px]">✦</span>
-            <span>Connect</span>
-          </p>
         </div>
         <div className="flex items-center gap-3">
           <AgeFilter
             ageRange={ageRange}
             locationFilter={locationFilter}
+            compatibilityFilter={compatibilityFilter}
             onChangeRange={handleAgeRangeChange}
             onChangeLocation={handleLocationChange}
+            onChangeCompatibility={setCompatibilityFilter}
           />
           <Sheet open={showSettings} onOpenChange={setShowSettings}>
             <SheetTrigger asChild>
-              <button className="p-2 rounded-full bg-[#1A1A1A] border border-[#333] text-white/60 hover:text-white transition-all">
-                <Settings className="w-4 h-4" />
+              <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all duration-300">
+                <Settings className="w-3.5 h-3.5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-[#1A1A1A] border-[#333]">
-              <SheetHeader>
-                <SheetTitle className="text-white text-right tracking-widest uppercase text-sm">✦ הגדרות</SheetTitle>
+            <SheetContent side="bottom" className="bg-[#0A0A0A] border-white/10 rounded-t-[2.5rem]">
+              <SheetHeader className="mb-8">
+                <SheetTitle className="text-white text-right tracking-[0.3em] uppercase text-[10px] font-black opacity-40">✦ הגדרות פרופיל</SheetTitle>
                 <SheetDescription className="text-white/40 text-right text-xs">
                   נהל את הפרופיל שלך
                 </SheetDescription>
