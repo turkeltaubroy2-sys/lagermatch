@@ -475,19 +475,20 @@ export default function Swipe() {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4">
         <div>
-          <h1 className="text-xl font-bold flex items-center gap-1.5">
+          <h1 className="text-xl font-bold flex items-center gap-2 mb-1">
             <motion.span
-              animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-2xl"
             >
-              🔥
+              🥂
             </motion.span>
             <span
               style={{
                 fontFamily: "var(--font-display)",
                 letterSpacing: "0.05em",
                 fontWeight: 400,
-                fontSize: "1.5rem",
+                fontSize: "1.6rem",
                 background: "linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%)",
                 backgroundSize: "200%",
                 WebkitBackgroundClip: "text",
@@ -499,12 +500,13 @@ export default function Swipe() {
             Roy & Yael
             </span>
           </h1>
-          <div className="w-full flex justify-center -mt-1 ml-6">
-            <p className="text-[7px] tracking-[0.5em] uppercase font-light text-[#D4AF37]/50"
+          <div className="w-full flex justify-center mt-0.5 ml-8">
+            <p className="text-[9px] tracking-[0.5em] uppercase font-light text-[#D4AF37]/40"
                style={{ 
-                 fontFamily: "serif", 
+                 fontFamily: "'Cormorant Garamond', serif", 
                  fontStyle: "italic",
-                 textShadow: "0 0 10px rgba(212, 175, 55, 0.1)"
+                 letterSpacing: "0.6em",
+                 textShadow: "0 0 15px rgba(212, 175, 55, 0.15)"
                }}>
               The Wedding
             </p>
