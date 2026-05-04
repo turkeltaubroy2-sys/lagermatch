@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, X, Settings, RefreshCw, Trash2 } from "lucide-react";
+import { Heart, X, Settings, RefreshCw, Trash2, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -544,14 +544,25 @@ export default function Swipe() {
                   נהל את הפרופיל שלך
                 </SheetDescription>
               </SheetHeader>
-              <div className="mt-6">
+              <div className="space-y-4 mt-6">
+                <Button
+                  onClick={() => {
+                    setShowSettings(false);
+                    navigate(createPageUrl("QRGenerator"));
+                  }}
+                  className="w-full py-7 text-lg font-black rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] shadow-xl shadow-[#D4AF37]/10"
+                >
+                  <QrCode className="w-5 h-5 ml-2" />
+                  הורד ברקוד זהב להדפסה
+                </Button>
+
                 <Button
                   onClick={() => {
                     setShowSettings(false);
                     setShowDeleteDialog(true);
                   }}
-                  variant="destructive"
-                  className="w-full py-6 text-lg font-bold rounded-xl bg-red-600 hover:bg-red-700"
+                  variant="outline"
+                  className="w-full py-7 text-lg font-bold rounded-2xl border-white/5 bg-white/5 text-red-500 hover:bg-red-500/10 hover:border-red-500/20"
                 >
                   <Trash2 className="w-5 h-5 ml-2" />
                   מחק פרופיל

@@ -55,6 +55,7 @@ import Menu from './pages/Menu';
 import MyMatches from './pages/MyMatches';
 import MyProfile from './pages/MyProfile';
 import Swipe from './pages/Swipe';
+import QRGenerator from './pages/QRGenerator';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +68,7 @@ export const PAGES = {
     "MyMatches": MyMatches,
     "MyProfile": MyProfile,
     "Swipe": Swipe,
+    "QRGenerator": QRGenerator,
 }
 
 export const pagesConfig = {
