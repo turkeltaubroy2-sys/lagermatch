@@ -473,58 +473,12 @@ export default function Swipe() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col items-center justify-center pt-8 pb-4 px-5 relative">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 pt-8 pb-4 relative">
         {/* Decorative background glow for header */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
         
-        <div className="flex items-center gap-3 mb-1">
-          <motion.span
-            animate={{ rotate: [-5, 5, -5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="text-2xl filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]"
-          >
-            🥂
-          </motion.span>
-          <h1 
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "1.85rem",
-              fontWeight: 500,
-              letterSpacing: "0.02em",
-              background: "linear-gradient(135deg, #FFF 0%, #D4AF37 50%, #FFF 100%)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              animation: "text-shimmer 5s linear infinite"
-            }}
-            className="drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
-          >
-            Roy & Yael
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-4 w-full max-w-[240px]">
-          <div className="h-[0.5px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
-          <p 
-            className="text-[9px] tracking-[0.6em] uppercase font-bold"
-            style={{ 
-              fontFamily: "serif",
-              fontStyle: "italic",
-              background: "linear-gradient(90deg, rgba(212,175,55,0.2) 0%, #FFF 50%, rgba(212,175,55,0.2) 100%)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              animation: "text-shimmer 2.5s ease-in-out infinite",
-              textShadow: "0 0 15px rgba(212,175,55,0.2)"
-            }}
-          >
-            The Wedding
-          </p>
-          <div className="h-[0.5px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
-        </div>
-
-        {/* Action Buttons moved to corners for cleaner look */}
-        <div className="absolute top-6 left-5">
+        {/* Left: Filter */}
+        <div className="justify-self-start z-10">
            <AgeFilter
             ageRange={ageRange}
             locationFilter={locationFilter}
@@ -534,7 +488,58 @@ export default function Swipe() {
             onChangeCompatibility={setCompatibilityFilter}
           />
         </div>
-        <div className="absolute top-6 right-5">
+
+        {/* Center: Title & Subtitle */}
+        <div className="flex flex-col items-center justify-center z-10 min-w-[180px]">
+          <div className="flex items-center gap-2 mb-1">
+            <motion.span
+              animate={{ rotate: [-5, 5, -5] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="text-xl filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]"
+            >
+              🥂
+            </motion.span>
+            <h1 
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "1.6rem",
+                fontWeight: 500,
+                letterSpacing: "0.02em",
+                background: "linear-gradient(135deg, #FFF 0%, #D4AF37 50%, #FFF 100%)",
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                animation: "text-shimmer 5s linear infinite"
+              }}
+              className="drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] whitespace-nowrap"
+            >
+              Roy & Yael
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2 w-full max-w-[160px]">
+            <div className="h-[0.5px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
+            <p 
+              className="text-[7px] tracking-[0.4em] uppercase font-bold"
+              style={{ 
+                fontFamily: "serif",
+                fontStyle: "italic",
+                background: "linear-gradient(90deg, rgba(212,175,55,0.1) 0%, #FFF 50%, rgba(212,175,55,0.1) 100%)",
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                animation: "text-shimmer 2.5s ease-in-out infinite",
+                textShadow: "0 0 15px rgba(212,175,55,0.2)"
+              }}
+            >
+              The Wedding
+            </p>
+            <div className="h-[0.5px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
+          </div>
+        </div>
+
+        {/* Right: Settings */}
+        <div className="justify-self-end z-10">
           <Sheet open={showSettings} onOpenChange={setShowSettings}>
             <SheetTrigger asChild>
               <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all duration-300">
