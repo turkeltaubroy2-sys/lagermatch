@@ -406,8 +406,7 @@ export default function Swipe() {
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
-    toast({ title: "🔄 הרשימה עודכנה", duration: 200 });
-  }, [refreshing, loadData, toast]);
+  }, [refreshing, loadData]);
 
   const handleDeleteProfile = useCallback(async () => {
     if (!myProfile) return;
@@ -428,7 +427,7 @@ export default function Swipe() {
     const handleTouchMove = (e) => {
       if (!triggered && !refreshing) {
         const currentY = e.touches[0].clientY;
-        if (currentY - startY > 150) {
+        if (currentY - startY > 220) {
           triggered = true;
           handleRefresh();
         }
