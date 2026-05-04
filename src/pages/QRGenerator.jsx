@@ -14,17 +14,12 @@ export default function QRGenerator() {
       height: 300,
       type: "svg",
       data: window.location.origin,
-      image: "https://raw.githubusercontent.com/lucide-react/lucide/main/icons/wine.svg",
       dotsOptions: {
         color: "#D4AF37",
         type: "extra-rounded",
       },
       backgroundOptions: {
         color: "transparent",
-      },
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 5,
       },
       cornersSquareOptions: {
         color: "#D4AF37",
