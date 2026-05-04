@@ -353,6 +353,9 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
     setPoppingId(profile.id);
     const compatibility = calculateCompatibility(profile);
     setSelected({ profile, compatibility });
+    
+    // Clear the popping state shortly after so it can be re-clicked if needed
+    setTimeout(() => setPoppingId(null), 300);
   }, [calculateCompatibility]);
 
   const handleSendDrink = useCallback(() => {
@@ -376,7 +379,7 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
           const { current: photoSrc, all: allPhotos } = getPhoto(profile);
 
           return (
-            <motion.div
+            <div
               key={profile.id}
               ref={el => bubbleRefs.current[index] = el}
               className="absolute"
@@ -385,22 +388,30 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                 top: 0,
                 width: BUBBLE_SIZE,
                 height: BUBBLE_SIZE,
-                willChange: "transform"
+                willChange: "transform",
+                zIndex: isPopping ? 20 : 1
               }}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{
-                opacity: 1,
-                scale: isPopping ? [1, 1.4, 0] : 1,
-              }}
-              transition={
-                isPopping
-                  ? { duration: 0.18, ease: "easeOut" }
-                  : { opacity: { duration: 0.4, delay: index * 0.04 }, scale: { duration: 0.4, type: "spring" } }
-              }
             >
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{
+                  opacity: 1,
+                  scale: isPopping ? [1, 1.4, 0] : 1,
+                }}
+                transition={
+                  isPopping
+                    ? { duration: 0.18, ease: "easeOut" }
+                    : { opacity: { duration: 0.4, delay: index * 0.04 }, scale: { duration: 0.4, type: "spring" } }
+                }
+                className="w-full h-full cursor-pointer pointer-events-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleBubbleClick(profile);
+                }}
+              >
               {/* Compatibility badge */}
               <div
-                className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 px-2 py-0.5 rounded-full text-[9px] font-black shadow-lg whitespace-nowrap"
+                className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 px-2 py-0.5 rounded-full text-[9px] font-black shadow-lg whitespace-nowrap pointer-events-none"
                 style={{
                   background: "linear-gradient(135deg, #D4AF37, #F5E6A3)",
                   color: "#0A0A0A",
@@ -409,11 +420,9 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                 {compatibility}% ✨
               </div>
 
-              {/* Bubble */}
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={() => !isPopping && handleBubbleClick(profile)}
-                className="relative w-full h-full rounded-full overflow-hidden"
+              {/* Bubble Wrapper (Non-button to fix click bug) */}
+              <div
+                className="relative w-full h-full rounded-full overflow-hidden pointer-events-none"
                 style={{
                   border: isMatch(profile.id)
                     ? "2.5px solid #FE3C72"
@@ -484,11 +493,12 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
                     transition={{ duration: 0.4, ease: "easeOut" }}
                   />
                 )}
-              </motion.button>
+              </div>
             </motion.div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
+    </div>
 
       {/* Profile Preview Sheet */}
       <AnimatePresence>
