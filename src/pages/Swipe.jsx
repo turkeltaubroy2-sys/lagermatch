@@ -482,7 +482,7 @@ export default function Swipe() {
         </div>
 
         {/* Center: Royal Logo Area */}
-        <div className="flex flex-col items-center justify-center z-10 text-center">
+        <div className="flex flex-col items-center justify-center z-10 text-center pl-8">
           <div className="flex items-center gap-2 mb-1">
             <h1 
               style={{

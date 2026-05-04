@@ -60,7 +60,7 @@ export default function AgeFilter({ ageRange, locationFilter, compatibilityFilte
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="fixed inset-x-4 top-24 mx-auto max-w-sm bg-[#111] border border-white/10 rounded-3xl p-6 z-[101] shadow-2xl"
+              className="fixed left-1/2 -translate-x-1/2 top-24 w-[92%] max-w-[320px] bg-[#111] border border-white/10 rounded-3xl p-6 z-[101] shadow-2xl"
               dir="rtl"
               onClick={(e) => e.stopPropagation()}
             >
