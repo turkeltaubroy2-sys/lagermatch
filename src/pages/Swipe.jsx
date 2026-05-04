@@ -464,16 +464,8 @@ export default function Swipe() {
       {/* Ambient background glow */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-[#FE3C72]/5 rounded-full blur-[100px] pointer-events-none opacity-40" />
       <div className="absolute bottom-24 left-0 w-72 h-72 bg-[#D4AF37]/5 rounded-full blur-[100px] pointer-events-none opacity-30" />
-      {/* Pull to refresh indicator */}
-      {refreshing && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#D4AF37] text-[#0F0F0F] px-4 py-2 rounded-full text-sm font-bold">
-          <RefreshCw className="w-4 h-4 inline ml-1 animate-spin" />
-          מעדכן...
-        </div>
-      )}
-
       {/* Header */}
-      <div className="grid grid-cols-3 items-center px-5 pt-8 pb-4 relative">
+      <div className="grid grid-cols-3 items-center px-5 pt-8 pb-4 relative" dir="ltr">
         {/* Decorative background glow for header */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
         
@@ -490,51 +482,52 @@ export default function Swipe() {
         </div>
 
         {/* Center: Title & Subtitle */}
-        <div className="flex flex-col items-center justify-center z-10 min-w-[180px]">
-          <div className="flex items-center gap-2 mb-1">
+        <div className="flex flex-col items-center justify-center z-10 min-w-[200px]">
+          <div className="flex items-center gap-2 mb-0.5">
             <motion.span
               animate={{ rotate: [-5, 5, -5] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="text-xl filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]"
+              className="text-xl filter drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]"
             >
               🥂
             </motion.span>
             <h1 
               style={{
                 fontFamily: "'Playfair Display', serif",
-                fontSize: "1.6rem",
-                fontWeight: 500,
+                fontSize: "1.7rem",
+                fontWeight: 600,
                 letterSpacing: "0.02em",
-                background: "linear-gradient(135deg, #FFF 0%, #D4AF37 50%, #FFF 100%)",
+                background: "linear-gradient(135deg, #FFF 0%, #D4AF37 40%, #F5E6A3 60%, #FFF 100%)",
                 backgroundSize: "200% auto",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                animation: "text-shimmer 5s linear infinite"
+                animation: "text-shimmer 4s linear infinite",
+                filter: "drop-shadow(0 0 15px rgba(212,175,55,0.3))"
               }}
-              className="drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] whitespace-nowrap"
+              className="whitespace-nowrap"
             >
               Roy & Yael
             </h1>
           </div>
 
-          <div className="flex items-center gap-2 w-full max-w-[160px]">
-            <div className="h-[0.5px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
+          <div className="flex items-center gap-2 w-full max-w-[150px]">
+            <div className="h-[0.5px] flex-1 bg-gradient-to-r from-transparent to-[#D4AF37]/40" />
             <p 
-              className="text-[7px] tracking-[0.4em] uppercase font-bold"
+              className="text-[7.5px] tracking-[0.5em] uppercase font-bold"
               style={{ 
                 fontFamily: "serif",
                 fontStyle: "italic",
-                background: "linear-gradient(90deg, rgba(212,175,55,0.1) 0%, #FFF 50%, rgba(212,175,55,0.1) 100%)",
+                background: "linear-gradient(90deg, rgba(212,175,55,0.3) 0%, #FFF 50%, rgba(212,175,55,0.3) 100%)",
                 backgroundSize: "200% auto",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                animation: "text-shimmer 2.5s ease-in-out infinite",
-                textShadow: "0 0 15px rgba(212,175,55,0.2)"
+                animation: "text-shimmer 3s ease-in-out infinite",
+                textShadow: "0 0 20px rgba(255,255,255,0.3)"
               }}
             >
               The Wedding
             </p>
-            <div className="h-[0.5px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
+            <div className="h-[0.5px] flex-1 bg-gradient-to-l from-transparent to-[#D4AF37]/40" />
           </div>
         </div>
 
