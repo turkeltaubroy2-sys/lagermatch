@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, ChevronRight } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const LOCATIONS = [
   { value: "all", label: "כל האיזורים" },
@@ -12,7 +19,6 @@ const LOCATIONS = [
 ];
 
 export default function AgeFilter({ ageRange, locationFilter, compatibilityFilter, onChangeRange, onChangeLocation, onChangeCompatibility }) {
-  const [open, setOpen] = useState(false);
   const [showLocationSheet, setShowLocationSheet] = useState(false);
   const [custom, setCustom] = useState({ min: ageRange.min, max: ageRange.max });
 
@@ -34,123 +40,150 @@ export default function AgeFilter({ ageRange, locationFilter, compatibilityFilte
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs tracking-widest uppercase transition-all duration-300 ${
-          isFiltered
-            ? "bg-gradient-to-r from-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] font-black shadow-[0_0_15px_rgba(212,175,55,0.3)]"
-            : "bg-white/5 text-white/50 hover:text-white border border-white/10 hover:border-white/20"
-        }`}
-      >
-        <SlidersHorizontal className="w-3.5 h-3.5" />
-        {isFiltered ? "מסונן" : "סינון"}
-      </button>
+      <Sheet>
+        <SheetTrigger asChild>
+          <button
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs tracking-widest uppercase transition-all duration-300 ${
+              isFiltered
+                ? "bg-gradient-to-r from-[#FE3C72] to-[#D4AF37] text-white font-black shadow-[0_0_15px_rgba(254,60,114,0.3)]"
+                : "bg-white/5 text-white/50 hover:text-white border border-white/10 hover:border-white/20"
+            }`}
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            {isFiltered ? "מסונן" : "סינון"}
+          </button>
+        </SheetTrigger>
+        <SheetContent side="bottom" className="bg-[#0A0A0A] border-white/10 rounded-t-[2.5rem] p-8 pb-12" dir="rtl">
+          <SheetHeader className="mb-10 text-right">
+            <SheetTitle className="text-white tracking-[0.3em] uppercase text-[10px] font-black opacity-30">✦ סינון מתקדם</SheetTitle>
+          </SheetHeader>
 
+          {/* Compatibility filter */}
+          <div className="mb-10">
+            <div className="flex justify-between items-center mb-4">
+              <label className="text-[11px] text-white/50 font-bold uppercase tracking-widest">אחוז התאמה מינימלי</label>
+              <span className="text-[#D4AF37] font-black text-lg">{compatibilityFilter}%</span>
+            </div>
+            <input
+              type="range"
+              min="70"
+              max="99"
+              value={compatibilityFilter}
+              onChange={(e) => onChangeCompatibility(parseInt(e.target.value))}
+              className="w-full h-2 bg-white/5 rounded-full appearance-none cursor-pointer accent-[#D4AF37]"
+              style={{ direction: 'ltr' }}
+            />
+            <div className="flex justify-between mt-2 opacity-20 text-[10px] font-bold">
+              <span>70%</span>
+              <span>99%</span>
+            </div>
+          </div>
+
+          {/* Location filter */}
+          <div className="mb-10">
+            <label className="text-[11px] text-white/50 font-bold uppercase tracking-widest mb-4 block">איזור מגורים</label>
+            <button
+              onClick={() => setShowLocationSheet(true)}
+              className="w-full h-14 px-5 rounded-2xl bg-white/5 border border-white/10 text-white text-right flex items-center justify-between hover:bg-white/10 transition-all"
+            >
+              <span className="text-sm font-semibold">{LOCATIONS.find(l => l.value === locationFilter)?.label}</span>
+              <ChevronRight className="w-4 h-4 opacity-30" />
+            </button>
+          </div>
+
+          {/* Age range */}
+          <div className="mb-10">
+            <label className="text-[11px] text-white/50 font-bold uppercase tracking-widest mb-4 block">טווח גילאים</label>
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <Input
+                  type="number"
+                  value={custom.min}
+                  onChange={e => setCustom({ ...custom, min: e.target.value })}
+                  onBlur={applyCustom}
+                  className="bg-white/5 border-white/10 text-white h-12 rounded-2xl text-center text-sm focus:ring-1 focus:ring-[#D4AF37]/50"
+                  min={18}
+                  max={60}
+                />
+              </div>
+              <div className="w-4 h-[1px] bg-white/10" />
+              <div className="flex-1">
+                <Input
+                  type="number"
+                  value={custom.max}
+                  onChange={e => setCustom({ ...custom, max: e.target.value })}
+                  onBlur={applyCustom}
+                  className="bg-white/5 border-white/10 text-white h-12 rounded-2xl text-center text-sm focus:ring-1 focus:ring-[#D4AF37]/50"
+                  min={18}
+                  max={60}
+                />
+              </div>
+            </div>
+          </div>
+
+          {isFiltered && (
+            <button
+              onClick={clearFilter}
+              className="w-full py-5 rounded-2xl bg-[#FE3C72]/10 text-[#FE3C72] text-[10px] font-black uppercase tracking-[0.3em] border border-[#FE3C72]/20 active:scale-[0.98] transition-all"
+            >
+              נקה את כל המסננים
+            </button>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* Location sub-sheet */}
       <AnimatePresence>
-        {open && (
+        {showLocationSheet && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100]"
-              onClick={() => setOpen(false)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-md z-[200]"
+              onClick={() => setShowLocationSheet(false)}
             />
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="fixed left-1/2 -translate-x-1/2 top-24 w-[92%] max-w-[320px] bg-[#111] border border-white/10 rounded-3xl p-6 z-[101] shadow-2xl"
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A] border-t border-white/10 rounded-t-[3rem] p-8 pb-12 z-[201]"
               dir="rtl"
-              onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-white text-sm font-black tracking-widest uppercase opacity-40">✦ סינון מתקדם</h3>
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="text-white text-sm font-black tracking-widest uppercase opacity-40">בחר איזור</h3>
                 <button 
-                  onClick={() => setOpen(false)} 
-                  className="text-white/20 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 transition-all"
+                  onClick={() => setShowLocationSheet(false)} 
+                  className="text-white/20 hover:text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
-
-            {/* Compatibility filter */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-3">
-                <label className="text-[10px] text-white/40 font-bold uppercase tracking-widest">אחוז התאמה מינימלי</label>
-                <span className="text-[#D4AF37] font-black text-sm">{compatibilityFilter}%</span>
+              <div className="space-y-3">
+                {LOCATIONS.map(location => (
+                  <button
+                    key={location.value}
+                    onClick={() => {
+                      onChangeLocation(location.value);
+                      setShowLocationSheet(false);
+                    }}
+                    className={`w-full py-5 px-8 rounded-2xl text-right transition-all duration-300 ${
+                      locationFilter === location.value
+                        ? "bg-gradient-to-r from-[#D4AF37] to-[#F5E6A3] text-[#0F0F0F] font-black shadow-xl"
+                        : "bg-white/5 text-white/70 hover:bg-white/10"
+                    }`}
+                  >
+                    {location.label}
+                  </button>
+                ))}
               </div>
-              <input
-                type="range"
-                min="70"
-                max="99"
-                value={compatibilityFilter}
-                onChange={(e) => onChangeCompatibility(parseInt(e.target.value))}
-                className="w-full h-1.5 bg-white/5 rounded-full appearance-none cursor-pointer accent-[#D4AF37]"
-                style={{ direction: 'ltr' }}
-              />
-              <div className="flex justify-between mt-1 opacity-20 text-[8px] font-bold">
-                <span>70%</span>
-                <span>99%</span>
-              </div>
-            </div>
-
-            {/* Location filter */}
-            <div className="mb-8">
-              <label className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-3 block">איזור מגורים</label>
-              <button
-                onClick={() => setShowLocationSheet(true)}
-                className="w-full h-12 px-4 rounded-2xl bg-white/5 border border-white/5 text-white text-right flex items-center justify-between hover:bg-white/10 transition-all"
-              >
-                <span className="text-sm font-medium">{LOCATIONS.find(l => l.value === locationFilter)?.label}</span>
-                <SlidersHorizontal className="w-3.5 h-3.5 opacity-30" />
-              </button>
-            </div>
-
-            {/* Age range */}
-            <div className="mb-8">
-              <label className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-3 block">טווח גילאים</label>
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <Input
-                    type="number"
-                    value={custom.min}
-                    onChange={e => setCustom({ ...custom, min: e.target.value })}
-                    onBlur={applyCustom}
-                    className="bg-white/5 border-white/5 text-white h-11 rounded-2xl text-center text-sm focus:ring-1 focus:ring-[#D4AF37]/50"
-                    min={18}
-                    max={60}
-                    placeholder="מ-"
-                  />
-                </div>
-                <div className="w-2 h-[1px] bg-white/10" />
-                <div className="flex-1">
-                  <Input
-                    type="number"
-                    value={custom.max}
-                    onChange={e => setCustom({ ...custom, max: e.target.value })}
-                    onBlur={applyCustom}
-                    className="bg-white/5 border-white/5 text-white h-11 rounded-2xl text-center text-sm focus:ring-1 focus:ring-[#D4AF37]/50"
-                    min={18}
-                    max={60}
-                    placeholder="עד-"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {isFiltered && (
-              <button
-                onClick={clearFilter}
-                className="w-full py-4 rounded-2xl text-[#FE3C72] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#FE3C72]/5 transition-all border border-[#FE3C72]/10"
-              >
-                נקה הכל
-              </button>
-            )}
             </motion.div>
           </>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
 
       {/* Location bottom sheet */}
       <AnimatePresence>
