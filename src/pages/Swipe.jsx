@@ -496,17 +496,19 @@ export default function Swipe() {
                 animation: "text-shimmer 4s ease infinite",
               }}
             >
-              Roy & Yael
+            Roy & Yael
             </span>
           </h1>
-          <p className="text-[8px] tracking-[0.4em] uppercase font-light text-[#D4AF37]/60 -mt-1"
-             style={{ 
-               fontFamily: "serif", 
-               fontStyle: "italic",
-               textShadow: "0 0 10px rgba(212, 175, 55, 0.2)"
-             }}>
-            The Wedding
-          </p>
+          <div className="w-full flex justify-center -mt-1 ml-6">
+            <p className="text-[7px] tracking-[0.5em] uppercase font-light text-[#D4AF37]/50"
+               style={{ 
+                 fontFamily: "serif", 
+                 fontStyle: "italic",
+                 textShadow: "0 0 10px rgba(212, 175, 55, 0.1)"
+               }}>
+              The Wedding
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <AgeFilter
