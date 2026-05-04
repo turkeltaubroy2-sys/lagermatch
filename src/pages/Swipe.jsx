@@ -473,7 +473,7 @@ export default function Swipe() {
       )}
 
       {/* Header */}
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 pt-8 pb-4 relative">
+      <div className="grid grid-cols-3 items-center px-5 pt-8 pb-4 relative">
         {/* Decorative background glow for header */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
         
