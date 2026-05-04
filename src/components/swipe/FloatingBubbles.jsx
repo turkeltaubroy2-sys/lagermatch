@@ -3,10 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Wine, MessageCircle, X, Heart } from "lucide-react";
 
 // ─── Physics Engine ──────────────────────────────────────────────────────────
-function useBubblePhysics(count, containerW, containerH, bubbleSize) {
+function useBubblePhysics(count, containerW, containerH, bubbleSize, bubbleRefs) {
   const stateRef = useRef([]);
   const rafRef = useRef(null);
-  const [positions, setPositions] = useState([]);
 
   useEffect(() => {
     if (containerW === 0 || containerH === 0 || count === 0) return;
@@ -23,9 +22,10 @@ function useBubblePhysics(count, containerW, containerH, bubbleSize) {
       vy: (Math.random() - 0.5) * 0.7,
     }));
 
+    let frameCount = 0;
     const tick = () => {
       const state = stateRef.current;
-      let changed = false;
+      const doCollisions = frameCount % 2 === 0;
 
       for (let i = 0; i < state.length; i++) {
         const b = state[i];
@@ -38,39 +38,41 @@ function useBubblePhysics(count, containerW, containerH, bubbleSize) {
         if (b.y <= 0) { b.y = 0; b.vy = Math.abs(b.vy); }
         if (b.y >= containerH - bubbleSize) { b.y = containerH - bubbleSize; b.vy = -Math.abs(b.vy); }
 
-        // Very gentle separation to avoid permanent overlap
-        for (let j = i + 1; j < state.length; j++) {
-          const b2 = state[j];
-          const dx = b2.x - b.x;
-          const dy = b2.y - b.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const minDist = bubbleSize * 0.95;
-          if (dist < minDist && dist > 0) {
-            const push = (minDist - dist) / minDist * 0.02;
-            const nx = dx / dist;
-            const ny = dy / dist;
-            b.vx -= nx * push;
-            b.vy -= ny * push;
-            b2.vx += nx * push;
-            b2.vy += ny * push;
+        if (doCollisions) {
+          for (let j = i + 1; j < state.length; j++) {
+            const b2 = state[j];
+            const dx = b2.x - b.x;
+            const dy = b2.y - b.y;
+            // Use squared distance for faster check
+            const distSq = dx * dx + dy * dy;
+            const minDist = bubbleSize * 0.95;
+            const minDistSq = minDist * minDist;
+            if (distSq < minDistSq && distSq > 0) {
+              const dist = Math.sqrt(distSq);
+              const push = (minDist - dist) / minDist * 0.03;
+              const nx = dx / dist;
+              const ny = dy / dist;
+              b.vx -= nx * push;
+              b.vy -= ny * push;
+              b2.vx += nx * push;
+              b2.vy += ny * push;
+            }
           }
         }
 
-        // Small random drift to keep things lively
-        b.vx += (Math.random() - 0.5) * 0.01;
-        b.vy += (Math.random() - 0.5) * 0.01;
-
         // Speed clamp
-        const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-        if (speed > 1.2) { b.vx *= 0.92; b.vy *= 0.92; }
-        if (speed < 0.15) { b.vx += (Math.random() - 0.5) * 0.08; b.vy += (Math.random() - 0.5) * 0.08; }
+        const speedSq = b.vx * b.vx + b.vy * b.vy;
+        if (speedSq > 1.44) { b.vx *= 0.92; b.vy *= 0.92; }
+        if (speedSq < 0.0225) { b.vx += (Math.random() - 0.5) * 0.08; b.vy += (Math.random() - 0.5) * 0.08; }
 
-        changed = true;
+        // Update DOM directly via ref to bypass React rendering cycle
+        const el = bubbleRefs.current[i];
+        if (el) {
+          el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+        }
       }
 
-      if (changed) {
-        setPositions(state.map(b => ({ id: b.id, x: b.x, y: b.y })));
-      }
+      frameCount++;
       rafRef.current = requestAnimationFrame(tick);
     };
 
@@ -78,9 +80,7 @@ function useBubblePhysics(count, containerW, containerH, bubbleSize) {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [count, containerW, containerH, bubbleSize]);
-
-  return positions;
+  }, [count, containerW, containerH, bubbleSize, bubbleRefs]);
 }
 
 // ─── Profile Preview Sheet ───────────────────────────────────────────────────
@@ -341,19 +341,18 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
     return () => ro.disconnect();
   }, []);
 
+  const bubbleRefs = useRef([]);
+
   // Smaller bubbles: /5.5 capped at 78px so ~60 users can be displayed
   const BUBBLE_SIZE = containerSize.w > 0 ? Math.min(Math.floor(containerSize.w / 5.5), 78) : 72;
-  const positions = useBubblePhysics(profiles.length, containerSize.w, containerSize.h, BUBBLE_SIZE);
+  useBubblePhysics(profiles.length, containerSize.w, containerSize.h, BUBBLE_SIZE, bubbleRefs);
   const getPhoto = usePhotoCycler(profiles);
 
   const handleBubbleClick = useCallback((profile) => {
-    // Trigger pop animation, then open sheet
+    // Trigger pop animation and open sheet immediately
     setPoppingId(profile.id);
-    setTimeout(() => {
-      setPoppingId(null);
-      const compatibility = calculateCompatibility(profile);
-      setSelected({ profile, compatibility });
-    }, 320);
+    const compatibility = calculateCompatibility(profile);
+    setSelected({ profile, compatibility });
   }, [calculateCompatibility]);
 
   const handleSendDrink = useCallback(() => {
@@ -371,8 +370,7 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
   return (
     <>
       <div ref={containerRef} className="absolute inset-0 overflow-hidden">
-        {containerSize.w > 0 && positions.length === profiles.length && profiles.map((profile, index) => {
-          const pos = positions[index] || { x: 0, y: 0 };
+        {containerSize.w > 0 && profiles.map((profile, index) => {
           const compatibility = calculateCompatibility(profile);
           const isPopping = poppingId === profile.id;
           const { current: photoSrc, all: allPhotos } = getPhoto(profile);
@@ -380,21 +378,23 @@ export default function FloatingBubbles({ profiles, calculateCompatibility, isMa
           return (
             <motion.div
               key={profile.id}
+              ref={el => bubbleRefs.current[index] = el}
               className="absolute"
               style={{
-                left: pos.x,
-                top: pos.y,
+                left: 0,
+                top: 0,
                 width: BUBBLE_SIZE,
                 height: BUBBLE_SIZE,
+                willChange: "transform"
               }}
               initial={{ opacity: 0, scale: 0 }}
               animate={{
                 opacity: 1,
-                scale: isPopping ? [1, 1.35, 0.9, 1.15, 0] : 1,
+                scale: isPopping ? [1, 1.4, 0] : 1,
               }}
               transition={
                 isPopping
-                  ? { duration: 0.32, ease: [0.36, 0.07, 0.19, 0.97] }
+                  ? { duration: 0.18, ease: "easeOut" }
                   : { opacity: { duration: 0.4, delay: index * 0.04 }, scale: { duration: 0.4, type: "spring" } }
               }
             >
