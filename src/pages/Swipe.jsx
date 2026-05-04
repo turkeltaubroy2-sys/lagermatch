@@ -473,47 +473,59 @@ export default function Swipe() {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4">
-        <div>
-          <h1 className="text-xl font-bold flex items-center gap-2 mb-1">
-            <motion.span
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="text-2xl"
-            >
-              🥂
-            </motion.span>
-            <span
-              style={{
-                fontFamily: "var(--font-display)",
-                letterSpacing: "0.05em",
-                fontWeight: 400,
-                fontSize: "1.6rem",
-                background: "linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%)",
-                backgroundSize: "200%",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "text-shimmer 4s ease infinite",
-              }}
-            >
+      <div className="flex flex-col items-center justify-center pt-8 pb-4 px-5 relative">
+        {/* Decorative background glow for header */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
+        
+        <div className="flex items-center gap-3 mb-1">
+          <motion.span
+            animate={{ rotate: [-5, 5, -5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="text-2xl filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]"
+          >
+            🥂
+          </motion.span>
+          <h1 
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: "1.85rem",
+              fontWeight: 500,
+              letterSpacing: "0.02em",
+              background: "linear-gradient(135deg, #FFF 0%, #D4AF37 50%, #FFF 100%)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              animation: "text-shimmer 5s linear infinite"
+            }}
+            className="drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+          >
             Roy & Yael
-            </span>
           </h1>
-          <div className="w-full flex justify-center mt-0.5 ml-8">
-            <p className="text-[9px] tracking-[0.5em] uppercase font-light text-[#D4AF37]/40"
-               style={{ 
-                 fontFamily: "'Cormorant Garamond', serif", 
-                 fontStyle: "italic",
-                 letterSpacing: "0.6em",
-                 textShadow: "0 0 15px rgba(212, 175, 55, 0.15)"
-               }}>
-              The Wedding
-            </p>
-          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <AgeFilter
+
+        <div className="flex items-center gap-4 w-full max-w-[240px]">
+          <div className="h-[0.5px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
+          <p 
+            className="text-[9px] tracking-[0.6em] uppercase font-bold"
+            style={{ 
+              fontFamily: "serif",
+              fontStyle: "italic",
+              background: "linear-gradient(90deg, rgba(212,175,55,0.2) 0%, #FFF 50%, rgba(212,175,55,0.2) 100%)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              animation: "text-shimmer 2.5s ease-in-out infinite",
+              textShadow: "0 0 15px rgba(212,175,55,0.2)"
+            }}
+          >
+            The Wedding
+          </p>
+          <div className="h-[0.5px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37]/40 to-[#D4AF37]/60" />
+        </div>
+
+        {/* Action Buttons moved to corners for cleaner look */}
+        <div className="absolute top-6 left-5">
+           <AgeFilter
             ageRange={ageRange}
             locationFilter={locationFilter}
             compatibilityFilter={compatibilityFilter}
@@ -521,6 +533,8 @@ export default function Swipe() {
             onChangeLocation={handleLocationChange}
             onChangeCompatibility={setCompatibilityFilter}
           />
+        </div>
+        <div className="absolute top-6 right-5">
           <Sheet open={showSettings} onOpenChange={setShowSettings}>
             <SheetTrigger asChild>
               <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all duration-300">
